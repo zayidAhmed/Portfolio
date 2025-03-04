@@ -437,7 +437,7 @@ nav {
             box-shadow: 0 0 20px var(--primary_color);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 0 70px var(--glass_color);
+            box-shadow: 0 0 100px #000000;
             & img{
                 height: 100%;
                 width: 100%;
