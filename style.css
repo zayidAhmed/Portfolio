@@ -138,8 +138,6 @@ nav {
         background-color: var(--glass_color);
         box-shadow: -5px 0 10px #9e9e9e33;
         backdrop-filter: blur(10px);
-        transition: var(--transition);
-        transform: translateX(100%);
         opacity: .3;
 
         ul {
@@ -697,10 +695,6 @@ nav {
 
     nav .menu {
         display: none;
-    }
-
-    .menu-toggle {
-        display: block;
     }
 
     .hero{
