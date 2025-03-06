@@ -72,7 +72,7 @@ const toggleMenu = document.getElementById("menu-toggle");
 
 let x = 0;
 toggleBars.addEventListener("click", () => {
-    if(x==0){
+    if (x == 0) {
         toggleMenu.style.transform = "translateX(0)";
         toggleMenu.style.opacity = "1";
         toggleBars.style.right = "10px";
@@ -80,7 +80,7 @@ toggleBars.addEventListener("click", () => {
         bar2.style.opacity = "0";
         bar3.style.transform = "rotate(-45deg) translateX(6px) translateY(-6px)";
         x = 1;
-    }else{
+    } else {
         toggleMenu.style.transform = "translateX(100%)";
         toggleMenu.style.opacity = ".3";
         toggleBars.style.right = "30px";
@@ -106,7 +106,7 @@ function setProgress(element, value) {
 document.querySelectorAll('.progress-container').forEach((container) => {
     let target = parseInt(container.getAttribute('data-progress'));
     let progress = 0;
-    
+
     let interval = setInterval(() => {
         if (progress >= target) {
             clearInterval(interval);
@@ -116,3 +116,39 @@ document.querySelectorAll('.progress-container').forEach((container) => {
         }
     }, 20);
 });
+
+
+
+const coords = { x: 0, y: 0 };
+const circles = document.querySelectorAll(".circle");
+circles.forEach(function (circle, index) {
+    circle.x = 0;
+    circle.y = 0;
+});
+
+window.addEventListener("mousemove", function (e) {
+    coords.x = e.clientX;
+    coords.y = e.clientY;
+});
+
+function animateCircles() {
+    let x = coords.x;
+    let y = coords.y;
+    circles.forEach(function (circle, index) {
+        circle.style.left = x - 12 + "px";
+        circle.style.top = y - 12 + "px";
+        
+        circle.style.scale = (circles.length - index) / circles.length;
+
+        circle.x = x;
+        circle.y = y;
+
+        const nextCircle = circles[index + 1] || circles[0];
+        x += (nextCircle.x - x) * 0.3;
+        y += (nextCircle.y - y) * 0.3;
+    });
+
+    requestAnimationFrame(animateCircles);
+}
+
+animateCircles();
