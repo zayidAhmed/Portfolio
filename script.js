@@ -1,5 +1,3 @@
-
-
 // const scrollContainer = document.querySelector(".scroll-container");
 // const scrollContent = document.querySelector(".scroll-content");
 // const scrollbarThumb = document.querySelector(".scrollbar-thumb");
@@ -70,7 +68,7 @@ const toggleMenu = document.getElementById("menu-toggle");
 let x = 0;
 toggleBars.addEventListener("click", () => {
     if (x == 0) {
-        toggleMenu.style.transform = "translateX(0)";
+        toggleMenu.style.display = "block";
         toggleMenu.style.opacity = "1";
         toggleBars.style.right = "10px";
         bar1.style.transform = "rotate(45deg) translateX(6px) translateY(5px)";
@@ -78,7 +76,7 @@ toggleBars.addEventListener("click", () => {
         bar3.style.transform = "rotate(-45deg) translateX(6px) translateY(-6px)";
         x = 1;
     } else {
-        toggleMenu.style.transform = "translateX(100%)";
+        toggleMenu.style.display = "none";
         toggleMenu.style.opacity = ".3";
         toggleBars.style.right = "30px";
         bar1.style.transform = "rotate(0deg) translateX(0px) translateY(0px)";
