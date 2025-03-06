@@ -1,11 +1,11 @@
 @font-face {
     font-family: saira;
-    src: url(./font/Saira-VariableFont_wdth\,wght.ttf);
+    src: url(Saira-VariableFont_wdth\,wght.ttf);
 }
 
 @font-face {
     font-family: saira_italic;
-    src: url(./font/Saira-Italic-VariableFont_wdth\,wght.ttf);
+    src: url(Saira-Italic-VariableFont_wdth\,wght.ttf);
 }
 
 * {
@@ -700,7 +700,7 @@ nav {
     }
 
     .menu-toggle {
-        display: block !important;
+        display: block;
     }
 
     .hero{
