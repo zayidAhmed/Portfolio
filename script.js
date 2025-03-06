@@ -1,7 +1,11 @@
-const scroll = new LocomotiveScroll({
-    el: document.querySelector('#main'),
-    smooth: true
-});
+const isMobile = window.innerWidth < 768;
+
+if (!isMobile) {
+    const scroll = new LocomotiveScroll({
+        el: document.querySelector("#main"),
+        smooth: true,
+    });
+}
 
 // const scrollContainer = document.querySelector(".scroll-container");
 // const scrollContent = document.querySelector(".scroll-content");
