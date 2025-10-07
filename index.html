@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Live HTML Editor</title>
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+            <h1>⚡ Live HTML Editor</h1>
+        </div>
+
+        <div class="editor-container">
+            <div class="editor-header">
+                <div class="editor-title">
+                    <div class="window-controls">
+                        <div class="control-btn close"></div>
+                        <div class="control-btn minimize"></div>
+                        <div class="control-btn maximize"></div>
+                    </div>
+                    <span>📝 index.html</span>
+                </div>
+                <div class="button-group">
+                    <button class="btn" id="clearBtn">Clear</button>
+                    <button class="btn" id="sampleBtn">Sample</button>
+                </div>
+            </div>
+            <div class="editor-wrapper">
+                <div class="line-numbers" id="lineNumbers">1</div>
+                <textarea class="editor-content" id="editor"
+                    placeholder="<!-- Start typing your HTML here -->"></textarea>
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-header">
+                <div class="preview-title">
+                    <div class="status-indicator"></div>
+                    <span>🌐 Live Preview</span>
+                </div>
+            </div>
+            <div class="error-panel" id="errorPanel">
+                <div class="error-title">⚠️ Syntax Errors:</div>
+                <ul class="error-list" id="errorList"></ul>
+            </div>
+            <iframe id="preview"></iframe>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
