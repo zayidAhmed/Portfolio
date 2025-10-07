@@ -1,149 +1,236 @@
-// const scrollContainer = document.querySelector(".scroll-container");
-// const scrollContent = document.querySelector(".scroll-content");
-// const scrollbarThumb = document.querySelector(".scrollbar-thumb");
 
-// let scrollY = 0;
-// let targetScrollY = 0;
-// let ease = 0.07; // Controls smoothness
-// let maxScroll;
+const editor = document.getElementById('editor');
+const previewFrame = document.getElementById('preview');
+const lineNumbers = document.getElementById('lineNumbers');
+const clearBtn = document.getElementById('clearBtn');
+const sampleBtn = document.getElementById('sampleBtn');
+const errorPanel = document.getElementById('errorPanel');
+const errorList = document.getElementById('errorList');
 
-// function updateScrollLimits() {
-//     maxScroll = scrollContent.offsetHeight - window.innerHeight;
-// }
+let errorLines = new Set();
 
-// function smoothScroll() {
-//     scrollY += (targetScrollY - scrollY) * ease; // Smooth transition
-//     scrollContent.style.transform = `translateY(${-scrollY}px)`;
+// Validate HTML syntax
+function validateHTML(html) {
+    const errors = [];
+    const lines = html.split('\n');
+    const tagStack = [];
+    const selfClosingTags = ['br', 'hr', 'img', 'input', 'meta', 'link', 'area', 'base', 'col', 'embed', 'source', 'track', 'wbr'];
 
-//     // Update scrollbar position
-//     let scrollRatio = scrollY / maxScroll;
-//     scrollbarThumb.style.top = `${scrollRatio * (window.innerHeight - scrollbarThumb.offsetHeight)}px`;
+    lines.forEach((line, index) => {
+        const lineNum = index + 1;
 
-//     requestAnimationFrame(smoothScroll);
-// }
+        // Find all tags in the line
+        const tagRegex = /<\/?([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>/g;
+        let match;
 
-// window.addEventListener("wheel", (e) => {
-//     targetScrollY += e.deltaY;
-//     targetScrollY = Math.max(0, Math.min(targetScrollY, maxScroll));
-// });
+        while ((match = tagRegex.exec(line)) !== null) {
+            const fullTag = match[0];
+            const tagName = match[1].toLowerCase();
 
-// // Update scroll limits on resize
-// window.addEventListener("resize", () => {
-//     updateScrollLimits();
-//     targetScrollY = Math.max(0, Math.min(targetScrollY, maxScroll));
-// });
+            // Check for malformed tags
+            if (!fullTag.endsWith('>')) {
+                errors.push({ line: lineNum, message: `Unclosed tag bracket in <${tagName}>` });
+                continue;
+            }
 
-// // Dragging the scrollbar thumb
-// let isDragging = false;
-// scrollbarThumb.addEventListener("mousedown", (e) => {
-//     isDragging = true;
-//     document.body.style.userSelect = "none"; // Prevent text selection
-// });
-// document.addEventListener("mouseup", () => isDragging = false);
-// document.addEventListener("mousemove", (e) => {
-//     if (!isDragging) return;
-//     let newTop = e.clientY - scrollbarThumb.offsetHeight / 2;
-//     newTop = Math.max(0, Math.min(newTop, window.innerHeight - scrollbarThumb.offsetHeight));
-//     scrollbarThumb.style.top = `${newTop}px`;
+            // Skip self-closing tags and comments
+            if (selfClosingTags.includes(tagName) || fullTag.endsWith('/>') || tagName === '!--') {
+                continue;
+            }
 
-//     // Sync scroll position with scrollbar movement
-//     targetScrollY = (newTop / (window.innerHeight - scrollbarThumb.offsetHeight)) * maxScroll;
-// });
-
-// // Initialize values and start animation
-// updateScrollLimits();
-// smoothScroll();
-
-
-
-
-
-// Toggle Nav Menu
-const toggleBars = document.getElementById("toggle_bars");
-const bar1 = document.getElementById("bar1");
-const bar2 = document.getElementById("bar2");
-const bar3 = document.getElementById("bar3");
-const toggleMenu = document.getElementById("menu-toggle");
-
-let x = 0;
-toggleBars.addEventListener("click", () => {
-    if (x == 0) {
-        toggleMenu.style.display = "block";
-        toggleMenu.style.opacity = "1";
-        toggleBars.style.right = "10px";
-        bar1.style.transform = "rotate(45deg) translateX(6px) translateY(5px)";
-        bar2.style.opacity = "0";
-        bar3.style.transform = "rotate(-45deg) translateX(6px) translateY(-6px)";
-        x = 1;
-    } else {
-        toggleMenu.style.display = "none";
-        toggleMenu.style.opacity = ".3";
-        toggleBars.style.right = "30px";
-        bar1.style.transform = "rotate(0deg) translateX(0px) translateY(0px)";
-        bar2.style.opacity = "1";
-        bar3.style.transform = "rotate(0deg) translateX(0px) translateY(0px)";
-        x = 0;
-    }
-})
-
-
-
-// progress bar
-function setProgress(element, value) {
-    const circle = element.querySelector('.progress');
-    const percentageText = element.querySelector('.percentage');
-    const totalLength = 440; // Circumference (2 * π * r)
-
-    let offset = totalLength - (value / 100) * totalLength;
-    circle.style.strokeDashoffset = offset;
-    percentageText.textContent = `${value}%`;
-}
-document.querySelectorAll('.progress-container').forEach((container) => {
-    let target = parseInt(container.getAttribute('data-progress'));
-    let progress = 0;
-
-    let interval = setInterval(() => {
-        if (progress >= target) {
-            clearInterval(interval);
-        } else {
-            progress++;
-            setProgress(container, progress);
+            // Closing tag
+            if (fullTag.startsWith('</')) {
+                if (tagStack.length === 0) {
+                    errors.push({ line: lineNum, message: `Closing tag </${tagName}> has no matching opening tag` });
+                } else {
+                    const lastTag = tagStack.pop();
+                    if (lastTag.name !== tagName) {
+                        errors.push({ line: lineNum, message: `Expected closing tag </${lastTag.name}>, found </${tagName}>` });
+                        tagStack.push(lastTag); // Put it back
+                    }
+                }
+            }
+            // Opening tag
+            else {
+                tagStack.push({ name: tagName, line: lineNum });
+            }
         }
-    }, 20);
-});
 
-
-
-const coords = { x: 0, y: 0 };
-const circles = document.querySelectorAll(".circle");
-circles.forEach(function (circle, index) {
-    circle.x = 0;
-    circle.y = 0;
-});
-
-window.addEventListener("mousemove", function (e) {
-    coords.x = e.clientX;
-    coords.y = e.clientY;
-});
-
-function animateCircles() {
-    let x = coords.x;
-    let y = coords.y;
-    circles.forEach(function (circle, index) {
-        circle.style.left = x - 12 + "px";
-        circle.style.top = y - 12 + "px";
-        
-        circle.style.scale = (circles.length - index) / circles.length;
-
-        circle.x = x;
-        circle.y = y;
-
-        const nextCircle = circles[index + 1] || circles[0];
-        x += (nextCircle.x - x) * 0.3;
-        y += (nextCircle.y - y) * 0.3;
+        // Check for unclosed quotes in attributes
+        const quoteRegex = /=["'][^"']*$/;
+        if (quoteRegex.test(line) && !line.trim().endsWith('>')) {
+            errors.push({ line: lineNum, message: 'Unclosed quote in attribute' });
+        }
     });
 
-    requestAnimationFrame(animateCircles);
+    // Check for unclosed tags at the end
+    while (tagStack.length > 0) {
+        const unclosedTag = tagStack.pop();
+        errors.push({ line: unclosedTag.line, message: `Unclosed tag <${unclosedTag.name}>` });
+    }
+
+    return errors;
 }
 
-animateCircles();
+// Update line numbers with error highlighting
+function updateLineNumbers() {
+    const lines = editor.value.split('\n').length;
+    lineNumbers.innerHTML = '';
+
+    for (let i = 1; i <= lines; i++) {
+        const lineSpan = document.createElement('div');
+        lineSpan.className = 'line-number';
+        lineSpan.textContent = i;
+
+        if (errorLines.has(i)) {
+            lineSpan.classList.add('error');
+        }
+
+        lineNumbers.appendChild(lineSpan);
+    }
+}
+
+// Display errors
+function displayErrors(errors) {
+    errorLines.clear();
+
+    if (errors.length === 0) {
+        errorPanel.classList.remove('show');
+        return;
+    }
+
+    errorPanel.classList.add('show');
+    errorList.innerHTML = '';
+
+    errors.forEach(error => {
+        errorLines.add(error.line);
+        const li = document.createElement('li');
+        li.textContent = `Line ${error.line}: ${error.message}`;
+        errorList.appendChild(li);
+    });
+}
+
+// Update preview
+function updatePreview() {
+    const content = editor.value;
+    const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+
+    iframeDoc.open();
+    iframeDoc.write(content);
+    iframeDoc.close();
+}
+
+// Sync scroll between line numbers and editor
+editor.addEventListener('scroll', () => {
+    lineNumbers.scrollTop = editor.scrollTop;
+});
+
+// Handle editor input
+editor.addEventListener('input', () => {
+    const errors = validateHTML(editor.value);
+    displayErrors(errors);
+    updateLineNumbers();
+    updatePreview();
+});
+
+// Handle tab key for indentation
+editor.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = editor.selectionStart;
+        const end = editor.selectionEnd;
+        editor.value = editor.value.substring(0, start) + '    ' + editor.value.substring(end);
+        editor.selectionStart = editor.selectionEnd = start + 4;
+        updateLineNumbers();
+    }
+});
+
+// Load sample code
+sampleBtn.addEventListener('click', () => {
+    const sample = `
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    h1,
+    p,
+    .btns {
+        text-align: center;
+        animation: fadeIn 1s;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .btns {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+
+    button {
+        background: white;
+        color: #667eea;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 10px 5px;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+        transition: 0.3s;
+    }
+</style>
+
+<h1>Welcome to Live HTML Editor!</h1>
+<p>This is a sample page with interactive elements.</p>
+<div class="btns">
+    <button onclick="alert('Hello from Live Preview!')">Click Me!</button>
+    <button onclick="changeColor()">Change Background</button>
+</div>
+
+<script>
+    function changeColor() {
+        const colors = ['#667eea', '#f093fb', '#4facfe', '#43e97b'];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        document.body.style.background = 'linear-gradient(135deg, ' + randomColor + ' 0%, #764ba2 100%)';
+    }
+</script>
+`;
+    editor.value = sample;
+    const errors = validateHTML(editor.value);
+    displayErrors(errors);
+    updateLineNumbers();
+    updatePreview();
+});
+
+// Clear editor
+clearBtn.addEventListener('click', () => {
+    editor.value = '';
+    errorLines.clear();
+    displayErrors([]);
+    updateLineNumbers();
+    updatePreview();
+});
+
+// Initialize
+updateLineNumbers();
