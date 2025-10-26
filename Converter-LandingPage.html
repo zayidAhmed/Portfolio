@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Format Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #060010;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-top: 20px;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1em;
+        }
+
+        .section-title {
+            color: #fff;
+            font-size: 1.8em;
+            margin: 40px 0 25px 0;
+            padding-left: 10px;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .converter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .converter-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 16px;
+            padding: 30px 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .converter-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .converter-card:hover {
+            transform: translateY(-8px);
+            border-color: #ff6b35;
+            box-shadow: 0 20px 60px rgba(255, 107, 53, 0.3);
+        }
+
+        .converter-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .card-title {
+            color: #fff;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-arrow {
+            color: #ff6b35;
+            font-size: 1.2em;
+            margin: 0 8px;
+        }
+
+        .card-description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9em;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        .features {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
+
+        .features h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            color: #ff6b35;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .feature-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+
+            .section-title {
+                font-size: 1.4em;
+                margin: 30px 0 20px 0;
+            }
+
+            .converter-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+
+            .converter-card {
+                padding: 25px 20px;
+            }
+
+            .card-icon {
+                font-size: 2.5em;
+            }
+
+            .card-title {
+                font-size: 1.2em;
+            }
+
+            .features {
+                padding: 20px;
+            }
+
+            .features h2 {
+                font-size: 1.5em;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            .header {
+                margin-bottom: 30px;
+            }
+
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-icon {
+                font-size: 2.2em;
+            }
+
+            .card-title {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Image Format Converter</h1>
+            <p class="subtitle">Convert images between formats - Fast, Free & Private</p>
+        </div>
+
+        <h2 class="section-title">GIF Tools</h2>
+        <div class="converter-grid">
+            <div class="converter-card featured" onclick="window.location.href='gif-maker.html'">
+                <div class="card-icon">🎬</div>
+                <div class="card-title">
+                    Images <span class="card-arrow">→</span> GIF
+                </div>
+                <p class="card-description">
+                    Create animated GIF from multiple images
+                </p>
+            </div>
+
+            <div class="converter-card featured" onclick="window.location.href='gif-maker.html?mode=video'">
+                <div class="card-icon">🎥</div>
+                <div class="card-title">
+                    Video <span class="card-arrow">→</span> GIF
+                </div>
+                <p class="card-description">
+                    Convert video clips to animated GIF
+                </p>
+            </div>
+        </div>
+
+        <h2 class="section-title">Convert to WebP</h2>
+        <div class="converter-grid">
+            <div class="converter-card" onclick="window.location.href='converter.html?from=jpg&to=webp'">
+                <div class="card-icon">🖼️</div>
+                <div class="card-title">
+                    JPG <span class="card-arrow">→</span> WebP
+                </div>
+                <p class="card-description">
+                    Convert JPEG to WebP with optimized compression
+                </p>
+            </div>
+
+            <div class="converter-card" onclick="window.location.href='converter.html?from=png&to=webp'">
+                <div class="card-icon">🎨</div>
+                <div class="card-title">
+                    PNG <span class="card-arrow">→</span> WebP
+                </div>
+                <p class="card-description">
+                    Convert PNG to WebP preserving transparency
+                </p>
+            </div>
+
+            <div class="converter-card" onclick="window.location.href='converter.html?from=gif&to=webp'">
+                <div class="card-icon">🎬</div>
+                <div class="card-title">
+                    GIF <span class="card-arrow">→</span> WebP
+                </div>
+                <p class="card-description">
+                    Convert animated GIF to WebP format
+                </p>
+            </div>
+        </div>
+
+        <h2 class="section-title">Convert from WebP</h2>
+        <div class="converter-grid">
+            <div class="converter-card" onclick="window.location.href='converter.html?from=webp&to=jpg'">
+                <div class="card-icon">📷</div>
+                <div class="card-title">
+                    WebP <span class="card-arrow">→</span> JPG
+                </div>
+                <p class="card-description">
+                    Convert WebP images to JPEG format
+                </p>
+            </div>
+
+            <div class="converter-card" onclick="window.location.href='converter.html?from=webp&to=png'">
+                <div class="card-icon">🖌️</div>
+                <div class="card-title">
+                    WebP <span class="card-arrow">→</span> PNG
+                </div>
+                <p class="card-description">
+                    Convert WebP to PNG with transparency
+                </p>
+            </div>
+        </div>
+
+        <h2 class="section-title">Popular Conversions</h2>
+        <div class="converter-grid">
+            <div class="converter-card" onclick="window.location.href='converter.html?from=png&to=jpg'">
+                <div class="card-icon">🔄</div>
+                <div class="card-title">
+                    PNG <span class="card-arrow">→</span> JPG
+                </div>
+                <p class="card-description">
+                    Convert PNG images to JPEG format
+                </p>
+            </div>
+
+            <div class="converter-card" onclick="window.location.href='converter.html?from=jpg&to=png'">
+                <div class="card-icon">🔁</div>
+                <div class="card-title">
+                    JPG <span class="card-arrow">→</span> PNG
+                </div>
+                <p class="card-description">
+                    Convert JPEG images to PNG format
+                </p>
+            </div>
+
+            <div class="converter-card" onclick="window.location.href='converter.html?from=bmp&to=jpg'">
+                <div class="card-icon">💾</div>
+                <div class="card-title">
+                    BMP <span class="card-arrow">→</span> JPG
+                </div>
+                <p class="card-description">
+                    Convert bitmap images to JPEG
+                </p>
+            </div>
+
+            <div class="converter-card" onclick="window.location.href='converter.html?from=bmp&to=png'">
+                <div class="card-icon">🗂️</div>
+                <div class="card-title">
+                    BMP <span class="card-arrow">→</span> PNG
+                </div>
+                <p class="card-description">
+                    Convert BMP images to PNG format
+                </p>
+            </div>
+
+            <div class="converter-card" onclick="window.location.href='converter.html?from=jpg&to=gif'">
+                <div class="card-icon">🎞️</div>
+                <div class="card-title">
+                    JPG <span class="card-arrow">→</span> GIF
+                </div>
+                <p class="card-description">
+                    Convert JPEG images to GIF format
+                </p>
+            </div>
+
+            <div class="converter-card" onclick="window.location.href='converter.html?from=png&to=gif'">
+                <div class="card-icon">🎭</div>
+                <div class="card-title">
+                    PNG <span class="card-arrow">→</span> GIF
+                </div>
+                <p class="card-description">
+                    Convert PNG images to GIF format
+                </p>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>Why Use Our Converter?</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">Lightning Fast</div>
+                    <p class="feature-text">Client-side processing means instant conversion</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-title">100% Private</div>
+                    <p class="feature-text">Images never leave your device</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🆓</div>
+                    <div class="feature-title">Completely Free</div>
+                    <p class="feature-text">No limits, no watermarks, no signup</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📦</div>
+                    <div class="feature-title">Batch Convert</div>
+                    <p class="feature-text">Convert multiple images at once</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
