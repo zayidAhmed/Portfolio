@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            font-family: montserrat;
+        }
+        @keyframes box1_anm {
+            0%{
+                transform: translateX(0px);
+            }
+            50%{
+                transform: translateX(300px);
+            }
+            100%{
+                transform: translateX(0px);
+            }
+        }
+        @keyframes box2_anm {
+            0%{
+                transform: translate(0px, 0px);
+            }
+            50%{
+                transform: translate(-200px, 100px);
+            }
+            100%{
+                transform: translate(0px, 0px);
+            }
+        }
+        @keyframes box3_anm {
+            0%{
+                transform: translate(0px, 0px);
+            }
+            50%{
+                transform: translate(-200px, 300px);
+            }
+            100%{
+                transform: translate(0px, 0px);
+            }
+        }
+        @keyframes box4_anm {
+            0%{
+                transform: translate(0px, 0px);
+            }
+            50%{
+                transform: translate(-500px, -150px);
+            }
+            100%{
+                transform: translate(0px, 0px);
+            }
+        }
+        .bg{
+            width: 100vw;
+            height: 100vh;
+            background-color: #060010;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            &::after{
+                content: "";
+                height: 100%;
+                width: 100%;
+                position: absolute;
+                background-color: transparent;
+                backdrop-filter: blur(150px);
+            }
+            & .box{
+                width: 250px;
+                height: 150px;
+                background-color: rgba(255, 255, 255, 0.507);
+                position: absolute;
+                
+            }
+            & .box:nth-child(1){
+                top: 100px;
+                left: 100px;
+                animation: box1_anm 10s linear  infinite;
+            }
+            & .box:nth-child(2){
+                top: 200px;
+                right: 150px;
+                animation: box2_anm 10s linear  infinite;
+            }
+            & .box:nth-child(3){
+                bottom: 350px;
+                left: 250px;
+                animation: box3_anm 10s linear  infinite;
+            }
+            & .box:nth-child(4){
+                bottom: 50px;
+                right: 50px;
+                animation: box4_anm 10s linear  infinite;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg">
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </div>
+</body>
+</html>

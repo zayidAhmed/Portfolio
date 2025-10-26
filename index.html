@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zayid Ahmed</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="Zayid_Animation_Pack.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- cursor  -->
+  <div class="cursor"></div>
+
+  <!-- preloader  -->
+  <div class="preloader" id="preloader">
+    <div class="spinner"></div>
+    <h1 class="fade-in">Hell<span>o</span></h1>
+  </div>
+
+  <!-- background style  -->
+  <div class="bg">
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <span class="close">&times;</span>
+    <img id="lightbox-img" class="lightbox-content" alt="">
+    <div id="caption" class="caption"></div>
+  </div>
+
+  <!-- navigation bar  -->
+  <header id="header">
+    <div class="logo">
+      <a href="index.html"><img src="images/updated logo.png" alt=""></a>
+    </div>
+    <div class="dropdown">
+      <div class="dropdown-trigger">
+        <p>Tools</p>
+      </div>
+      <div class="dropdown-menu">
+        <ul>
+          <li><a target="_blank" href="./ConverterApp/Converter-LandingPage.html"><span
+                class="menu-icon">🏠</span>Home</a></li>
+          <li><a target="_blank" href="./ConverterApp/converter.html"><span class="menu-icon">🔄</span>Image
+              Converter</a></li>
+          <li><a target="_blank" href="./ConverterApp/gif-maker.html"><span class="menu-icon">🎬</span>GIF Maker</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <nav class="nav" id="nav">
+      <button id="menuOpen">MENU</button>
+      <div class="inner">
+        <ul>
+          <li><a href="#hero"><i class="ri-arrow-right-up-line"></i>Home</a></li>
+          <li><a href="#experience"><i class="ri-arrow-right-up-line"></i>Experience</a></li>
+          <li><a href="#services"><i class="ri-arrow-right-up-line"></i>Services</a></li>
+          <li><a href="#"><i class="ri-arrow-right-up-line"></i>Portfolio</a></li>
+          <li><a href="#"><i class="ri-arrow-right-up-line"></i>Contact</a></li>
+        </ul>
+        <div class="socials">
+          <a name="Visit Facebook" href="https://www.facebook.com/zayid.ahmed.2024" target="_blank"><i
+              class="ri-facebook-circle-fill"></i></a>
+          <a name="See Linkedin" href="#"><i class="ri-linkedin-box-fill" target="_blank"></i></a>
+          <a name="WhatsApp Me" href="https://wa.me/qr/G3GLVYHKWWVCB1" target="_blank"><i
+              class="ri-whatsapp-fill"></i></a>
+          <a name="E-mail Me" href="mailto:zayidahamd514@gmail.com" target="_blank"><i
+              class="ri-mail-send-fill"></i></a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- tooltip container  -->
+  <div id="tooltip" class="tooltip"></div>
+
+  <!-- page start  -->
+  <main id="main">
+    <!-- Hero Section  -->
+    <section id="hero" class="heroContent">
+      <div class="hero_left">
+        <span class="fade-in-left delay-100 title">Hi I'm <h1><span>ZAYID</span> AHMED</h1></span>
+        <p class="fade-in-left delay-300">a Web Developer & Designer passionate about building clean, modern, and
+          growth-focused
+          websites. I help
+          businesses and individuals turn ideas into digital experiences that don’t just look good, but actually
+          deliver results.</p>
+        <p class="fade-in-left delay-500">"Crafting websites that inspire, engage, and grow your brand."</p>
+        <div class="btnWrapper fade-in-left delay-700">
+          <button>Contact Now<i class="ri-arrow-right-up-line"></i></button>
+        </div>
+      </div>
+      <div class="hero_right">
+        <div class="profile_img fade-in-right delay-500">
+          <img src="images/Zayid Ahmed.png" alt="Zayid Ahmed" onclick="openLightbox(this)">
+          <div class="typewriter"></div>
+        </div>
+        <div class="counter_container">
+          <div class="counter-box fade-in-bottom delay-700">
+            <div id="project" class="number">0</div>
+            <div class="label">Projects Completed</div>
+          </div>
+          <div class="counter-box fade-in-bottom delay-900">
+            <div id="experience" class="number">0</div>
+            <div class="label">Years of Experience</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Marquee Section -->
+    <section class="marquee">
+      <div class="fade-in delay-1100">
+        <div class="marquee-content">
+          <!-- original items -->
+          <div><img src="images/wordpress.webp" alt=""></div>
+          <div><img src="images/shopify.webp" alt=""></div>
+          <div><img src="images/elementor.webp" alt=""></div>
+          <div><img src="images/figma.webp" alt=""></div>
+          <div><img src="images/html.webp" alt=""></div>
+          <div><img src="images/css.webp" alt=""></div>
+          <div><img src="images/js.webp" alt=""></div>
+          <div><img src="images/bootstrap.webp" alt=""></div>
+
+          <!-- duplicate items -->
+          <div><img src="images/wordpress.webp" alt=""></div>
+          <div><img src="images/shopify.webp" alt=""></div>
+          <div><img src="images/elementor.webp" alt=""></div>
+          <div><img src="images/figma.webp" alt=""></div>
+          <div><img src="images/html.webp" alt=""></div>
+          <div><img src="images/css.webp" alt=""></div>
+          <div><img src="images/js.webp" alt=""></div>
+          <div><img src="images/bootstrap.webp" alt=""></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="experience">
+      <h5 class="section-subtitle fade-in-left">What I Do</h5>
+      <h2 class="section-title fade-in-left delay-200">EXPERIENCE</h2>
+      <div class="experience-timeline">
+        <div class="timeline-line"></div>
+        <div class="timeline-item">
+          <div class="timeline-content fade-in-bottom delay-100">
+            <div class="timeline-year">2025 - Present</div>
+            <h3 class="timeline-title">Web Developer</h3>
+            <div class="timeline-company">Built By Web</div>
+            <p>Designing and developing modern websites for businesses, focusing on growth-driven digital solutions that
+              enhance user experience and maximize online presence.</p>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content fade-in-bottom delay-100">
+            <div class="timeline-year">2024 - 2025</div>
+            <h3 class="timeline-title">Teaching Assistant</h3>
+            <div class="timeline-company">KnowledgeGate IT Institute</div>
+            <p>Guiding students in web development and practical projects, simplifying complex concepts into real-world
+              skills that prepare them for professional success.</p>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content fade-in-bottom delay-100">
+            <div class="timeline-year">2023 - 2025</div>
+            <h3 class="timeline-title">Raw Code</h3>
+            <div class="timeline-company">Self Projects & Client Work</div>
+            <p>Hands-on experience in HTML, CSS, JavaScript, and Bootstrap, coding websites from scratch and ensuring
+              clean, maintainable, and responsive structures.</p>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content fade-in-bottom delay-100">
+            <div class="timeline-year">2023 - 2025</div>
+            <h3 class="timeline-title">CMS Developer</h3>
+            <div class="timeline-company">Freelance</div>
+            <p>Building and customizing CMS platforms, creating scalable websites and e-commerce systems for startups,
+              small businesses, and international clients.</p>
+          </div>
+          <div class="timeline-dot"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+      <h5 class="section-subtitle fade-in-left">What I Offer</h5>
+      <h2 class="section-title fade-in-left delay-200">SERVICES</h2>
+      <div class="services-grid">
+        <div class="fade-in-bottom delay-100">
+          <div class="service-card">
+            <div class="service-number">01</div>
+            <h3>BRAND IDENTITY DESIGN</h3>
+            <p>I am truly creating thoughtful and strong brands that respond to target identity that demonstrates
+              and communicates who you focus for your clients reach standards.</p>
+          </div>
+        </div>
+        <div class="fade-in-bottom delay-300">
+          <div class="service-card">
+            <div class="service-number">02</div>
+            <h3>VISUAL DESIGN</h3>
+            <p>Bringing life to concepts through innovative visual design that helps to craft unique identity and
+              brand message.</p>
+          </div>
+        </div>
+        <div class="fade-in-bottom delay-500">
+          <div class="service-card">
+            <div class="service-number">03</div>
+            <h3>WEB DESIGN</h3>
+            <p>Designing modern and responsive websites that provide exceptional user experience and drive business
+              results.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+
+  <script src="Zayid_Animation_Pack.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
