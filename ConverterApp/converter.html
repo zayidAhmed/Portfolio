@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Format Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #060010;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .format-selector {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .selector-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .selector-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .selector-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        select {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        select:hover {
+            border-color: #ff6b35;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+
+        select option {
+            background: #060010;
+            color: #fff;
+        }
+
+        .arrow-icon {
+            color: #ff6b35;
+            font-size: 24px;
+            margin: 20px 0 0 0;
+        }
+
+        .upload-area {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px dashed rgba(255, 107, 53, 0.3);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #ff6b35;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 50px rgba(255, 107, 53, 0.2);
+        }
+
+        .upload-label {
+            display: inline-block;
+            padding: 15px 40px;
+            background: #ff6b35;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .upload-label:hover {
+            background: #ff7d4d;
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-info {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .convert-btn {
+            width: 100%;
+            padding: 15px;
+            background: #ff6b35;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .convert-btn:hover:not(:disabled) {
+            background: #ff7d4d;
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .convert-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .conversion-list {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .conversion-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.3s ease;
+            gap: 10px;
+        }
+
+        .conversion-item:last-child {
+            border-bottom: none;
+        }
+
+        .conversion-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .item-thumbnail {
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .item-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #fff;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .item-size {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .item-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #ff6b35;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .checkmark {
+            color: #4caf50;
+            font-size: 24px;
+        }
+
+        .error-mark {
+            color: #f44336;
+            font-size: 24px;
+        }
+
+        .progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #ff6b35;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .download-btn {
+            padding: 8px 16px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .download-btn:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .download-all-btn {
+            width: 100%;
+            padding: 15px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .download-all-btn:hover:not(:disabled) {
+            background: #45a049;
+            transform: scale(1.02);
+        }
+
+        .download-all-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+
+            .format-selector {
+                padding: 20px 15px;
+            }
+
+            .selector-row {
+                gap: 10px;
+            }
+
+            select {
+                min-width: 120px;
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+
+            .arrow-icon {
+                font-size: 20px;
+                margin: 15px 0 0 0;
+            }
+
+            .upload-area {
+                padding: 25px 15px;
+            }
+
+            .upload-label {
+                padding: 12px 30px;
+                font-size: 14px;
+            }
+
+            .convert-btn {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            .conversion-list {
+                padding: 10px;
+            }
+
+            .conversion-item {
+                padding: 12px 10px;
+                gap: 8px;
+            }
+
+            .item-thumbnail {
+                width: 45px;
+                height: 45px;
+                min-width: 45px;
+            }
+
+            .item-name {
+                font-size: 13px;
+            }
+
+            .item-size {
+                font-size: 11px;
+            }
+
+            .item-status {
+                min-width: 100px;
+                gap: 8px;
+            }
+
+            .progress-bar {
+                width: 60px;
+            }
+
+            .download-btn {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+
+            .download-all-btn {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.3em;
+            }
+
+            .selector-row {
+                flex-direction: column;
+            }
+
+            select {
+                width: 100%;
+            }
+
+            .arrow-icon {
+                transform: rotate(90deg);
+                margin: 5px 0;
+            }
+
+            .upload-label {
+                padding: 10px 25px;
+                font-size: 13px;
+            }
+
+            .conversion-item {
+                flex-wrap: wrap;
+            }
+
+            .item-status {
+                width: 100%;
+                margin-top: 10px;
+                justify-content: space-between;
+                min-width: auto;
+            }
+
+            .progress-bar {
+                flex: 1;
+                min-width: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Image Format Converter</h1>
+
+        <div class="format-selector">
+            <div class="selector-row">
+                <div class="selector-group">
+                    <label class="selector-label">From</label>
+                    <select id="fromFormat">
+                        <option value="jpg">JPG</option>
+                        <option value="png">PNG</option>
+                        <option value="webp">WebP</option>
+                        <option value="gif">GIF</option>
+                        <option value="bmp">BMP</option>
+                    </select>
+                </div>
+                <div class="arrow-icon">→</div>
+                <div class="selector-group">
+                    <label class="selector-label">To</label>
+                    <select id="toFormat">
+                        <option value="webp">WebP</option>
+                        <option value="jpg">JPG</option>
+                        <option value="png">PNG</option>
+                        <option value="gif">GIF</option>
+                        <option value="bmp">BMP</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="upload-area">
+            <label for="fileInput" class="upload-label" id="uploadLabel">
+                Choose Files
+            </label>
+            <input type="file" id="fileInput" multiple>
+            <div class="file-info" id="fileInfo">No files selected</div>
+        </div>
+
+        <button class="convert-btn" id="convertBtn" disabled>Convert Images</button>
+
+        <div class="conversion-list" id="conversionList" style="display: none;">
+            <div id="itemsContainer"></div>
+            <button class="download-all-btn" id="downloadAllBtn" style="display: none;">Download All as ZIP</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const convertBtn = document.getElementById('convertBtn');
+        const fileInfo = document.getElementById('fileInfo');
+        const conversionList = document.getElementById('conversionList');
+        const itemsContainer = document.getElementById('itemsContainer');
+        const downloadAllBtn = document.getElementById('downloadAllBtn');
+        const fromFormat = document.getElementById('fromFormat');
+        const toFormat = document.getElementById('toFormat');
+        const uploadLabel = document.getElementById('uploadLabel');
+
+        let selectedFiles = [];
+        let convertedBlobs = [];
+
+        // Format configuration
+        const formatConfig = {
+            jpg: { mime: ['image/jpeg', 'image/jpg'], accept: 'image/jpeg,image/jpg', name: 'JPG' },
+            png: { mime: ['image/png'], accept: 'image/png', name: 'PNG' },
+            webp: { mime: ['image/webp'], accept: 'image/webp', name: 'WebP' },
+            gif: { mime: ['image/gif'], accept: 'image/gif', name: 'GIF' },
+            bmp: { mime: ['image/bmp'], accept: 'image/bmp', name: 'BMP' }
+        };
+
+        // Check URL parameters for auto-selection
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlFrom = urlParams.get('from');
+        const urlTo = urlParams.get('to');
+
+        if (urlFrom && formatConfig[urlFrom]) {
+            fromFormat.value = urlFrom;
+        }
+        if (urlTo && formatConfig[urlTo]) {
+            toFormat.value = urlTo;
+        }
+
+        // Update file input accept attribute and label
+        function updateFileInput() {
+            const from = fromFormat.value;
+            const to = toFormat.value;
+            fileInput.setAttribute('accept', formatConfig[from].accept);
+            uploadLabel.textContent = `Choose ${formatConfig[from].name} Files`;
+            convertBtn.textContent = `Convert to ${formatConfig[to].name}`;
+
+            // Reset selection when format changes
+            selectedFiles = [];
+            convertedBlobs = [];
+            fileInfo.textContent = 'No files selected';
+            convertBtn.disabled = true;
+            conversionList.style.display = 'none';
+            fileInput.value = '';
+        }
+
+        fromFormat.addEventListener('change', updateFileInput);
+        toFormat.addEventListener('change', updateFileInput);
+
+        // Initialize
+        updateFileInput();
+
+        fileInput.addEventListener('change', (e) => {
+            const allFiles = Array.from(e.target.files);
+            const from = fromFormat.value;
+            const acceptedMimes = formatConfig[from].mime;
+
+            selectedFiles = allFiles.filter(file => acceptedMimes.includes(file.type));
+            const rejectedFiles = allFiles.filter(file => !acceptedMimes.includes(file.type));
+
+            if (selectedFiles.length > 0) {
+                let message = `${selectedFiles.length} file(s) selected`;
+                if (rejectedFiles.length > 0) {
+                    message += ` (${rejectedFiles.length} unsupported file(s) rejected)`;
+                }
+                fileInfo.innerHTML = message;
+                if (rejectedFiles.length > 0) {
+                    fileInfo.innerHTML += `<br><span style="color: #ff6b35; font-size: 12px;">Only ${formatConfig[from].name} files are supported</span>`;
+                }
+                convertBtn.disabled = false;
+                conversionList.style.display = 'none';
+                convertedBlobs = [];
+            } else if (rejectedFiles.length > 0) {
+                fileInfo.innerHTML = `<span style="color: #f44336;">No valid ${formatConfig[from].name} files selected</span><br><span style="color: #ff6b35; font-size: 12px;">${rejectedFiles.length} unsupported file(s) rejected</span>`;
+                convertBtn.disabled = true;
+            } else {
+                fileInfo.textContent = 'No files selected';
+                convertBtn.disabled = true;
+            }
+        });
+
+        convertBtn.addEventListener('click', async () => {
+            if (selectedFiles.length === 0) return;
+
+            convertBtn.disabled = true;
+            conversionList.style.display = 'block';
+            itemsContainer.innerHTML = '';
+            convertedBlobs = [];
+
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                const item = createConversionItem(file, i);
+                itemsContainer.appendChild(item);
+            }
+
+            for (let i = 0; i < selectedFiles.length; i++) {
+                try {
+                    await convertFile(selectedFiles[i], i);
+                } catch (error) {
+                    updateItemStatus(i, 'error');
+                    console.error('Conversion error:', error);
+                }
+            }
+
+            if (selectedFiles.length > 1) {
+                downloadAllBtn.style.display = 'block';
+                downloadAllBtn.disabled = false;
+            }
+        });
+
+        function createConversionItem(file, index) {
+            const item = document.createElement('div');
+            item.className = 'conversion-item';
+            item.id = `item-${index}`;
+
+            const thumbnail = document.createElement('img');
+            thumbnail.className = 'item-thumbnail';
+            thumbnail.src = URL.createObjectURL(file);
+
+            const info = document.createElement('div');
+            info.className = 'item-info';
+
+            const name = document.createElement('div');
+            name.className = 'item-name';
+            name.textContent = file.name;
+
+            const size = document.createElement('div');
+            size.className = 'item-size';
+            size.textContent = formatBytes(file.size);
+
+            info.appendChild(name);
+            info.appendChild(size);
+
+            const status = document.createElement('div');
+            status.className = 'item-status';
+            status.innerHTML = `
+        <div class="status-icon">
+          <div class="spinner"></div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%"></div>
+        </div>
+      `;
+
+            item.appendChild(thumbnail);
+            item.appendChild(info);
+            item.appendChild(status);
+
+            return item;
+        }
+
+        async function convertFile(file, index) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+                const to = toFormat.value;
+
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+
+                        // Add white background for formats that don't support transparency
+                        if (to === 'jpg' || to === 'bmp') {
+                            ctx.fillStyle = '#FFFFFF';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        }
+
+                        ctx.drawImage(img, 0, 0);
+                        updateProgress(index, 50);
+
+                        // Determine output format and quality
+                        let mimeType, quality, extension;
+                        switch (to) {
+                            case 'jpg':
+                                mimeType = 'image/jpeg';
+                                quality = 0.92;
+                                extension = '.jpg';
+                                break;
+                            case 'png':
+                                mimeType = 'image/png';
+                                quality = undefined;
+                                extension = '.png';
+                                break;
+                            case 'webp':
+                                mimeType = 'image/webp';
+                                quality = 0.9;
+                                extension = '.webp';
+                                break;
+                            case 'gif':
+                                mimeType = 'image/gif';
+                                quality = undefined;
+                                extension = '.gif';
+                                break;
+                            case 'bmp':
+                                mimeType = 'image/bmp';
+                                quality = undefined;
+                                extension = '.bmp';
+                                break;
+                        }
+
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                convertedBlobs[index] = {
+                                    blob: blob,
+                                    filename: file.name.replace(/\.[^/.]+$/, extension)
+                                };
+                                updateProgress(index, 100);
+                                updateItemStatus(index, 'success');
+                                URL.revokeObjectURL(url);
+                                resolve();
+                            } else {
+                                reject(new Error('Blob creation failed'));
+                            }
+                        }, mimeType, quality);
+                    } catch (error) {
+                        URL.revokeObjectURL(url);
+                        reject(error);
+                    }
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('Image loading failed'));
+                };
+
+                img.src = url;
+            });
+        }
+
+        function updateProgress(index, percent) {
+            const item = document.getElementById(`item-${index}`);
+            const progressFill = item.querySelector('.progress-fill');
+            if (progressFill) {
+                progressFill.style.width = `${percent}%`;
+            }
+        }
+
+        function updateItemStatus(index, status) {
+            const item = document.getElementById(`item-${index}`);
+            const statusElement = item.querySelector('.item-status');
+
+            if (status === 'success') {
+                statusElement.innerHTML = `
+          <div class="status-icon">
+            <span class="checkmark">✓</span>
+          </div>
+          <button class="download-btn" onclick="downloadSingle(${index})">Download</button>
+        `;
+            } else if (status === 'error') {
+                statusElement.innerHTML = `
+          <div class="status-icon">
+            <span class="error-mark">✕</span>
+          </div>
+          <span style="color: #f44336; font-size: 12px;">Failed</span>
+        `;
+            }
+        }
+
+        function downloadSingle(index) {
+            const data = convertedBlobs[index];
+            if (data) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(data.blob);
+                link.download = data.filename;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            }
+        }
+
+        downloadAllBtn.addEventListener('click', async () => {
+            downloadAllBtn.disabled = true;
+            downloadAllBtn.textContent = 'Creating ZIP...';
+
+            const zip = new JSZip();
+            const folder = zip.folder('converted_images');
+
+            convertedBlobs.forEach((data, index) => {
+                if (data && data.blob) {
+                    folder.file(data.filename, data.blob);
+                }
+            });
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'converted_images.zip';
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            downloadAllBtn.textContent = 'Download All as ZIP';
+            downloadAllBtn.disabled = false;
+        });
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+    </script>
+</body>
+
+</html>
