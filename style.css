@@ -323,7 +323,7 @@ Css For Animated Background
 
 /*
 ---------------------
-Css For All Animations
+Css For All Lightbox
 ---------------------
 */
 
@@ -976,17 +976,11 @@ li,
     text-decoration: none;
     border-radius: 6px;
     transition: all 0.3s ease;
-    font-size: 14px;
 }
 
 .dropdown-menu a:hover {
     background: rgba(255, 107, 53, 0.15);
     color: var(--accentColor2);
-}
-
-.dropdown-menu .menu-icon {
-    margin-right: 8px;
-    font-size: 16px;
 }
 
 /*
