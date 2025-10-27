@@ -105,7 +105,6 @@ a {
     border-radius: var(--borderRadius);
 }
 
-button,
 .btn {
     padding: 15px 35px;
     font-size: 18px;
@@ -120,6 +119,7 @@ button,
     align-items: center;
     cursor: pointer;
     position: relative;
+    text-decoration: none;
 
     &::before {
         content: "";
@@ -158,7 +158,7 @@ button,
 }
 
 @media(min-width: 1000px) {
-    button:hover::before {
+    .btn:hover::before {
         height: 4500px;
         width: 4500px;
         border-radius: 50%;
@@ -739,7 +739,7 @@ header {
 
     & .nav {
         height: 55px;
-        width: 150px;
+        width: 120px;
         overflow: hidden;
         position: absolute;
         right: 12px;
@@ -753,7 +753,7 @@ header {
             top: 0;
             right: 0;
             padding: 13px 0;
-            width: 150px;
+            width: 120px;
             font-size: 18px;
             text-align: center;
             background-color: var(--accentColor2);
@@ -916,7 +916,7 @@ li,
 
 .dropdown {
     position: absolute;
-    right: 180px;
+    right: 140px;
     top: 50%;
     transform: translateY(-50%);
     display: inline-block;
@@ -926,6 +926,9 @@ li,
     color: var(--textColor);
     font-size: 18px;
     cursor: pointer;
+    border: 1px solid var(--accentColor2);
+    padding: 13px 20px;
+    border-radius: var(--borderRadius);
 }
 
 .dropdown-trigger {
@@ -1407,19 +1410,37 @@ Css For Responsive Layout
         top: 10px;
         padding: 0;
 
-        & .logo img {
-            width: 150px;
-            margin-left: 10px;
+        & .logo {
+            a {
+                & img {
+                    width: 120px;
+                    margin-left: 10px;
+                }
+            }
+        }
+
+        & .nav {
+            width: 70px;
+            height: 40px;
+            top: 20px;
+
+            & button {
+                width: 70px;
+                font-size: 15px;
+                padding: 9px 0;
+            }
         }
     }
 
-    .nav {
-        width: 80px;
+    .dropdown {
+        right: 90px;
     }
 
-    .nav button {
-        width: 80px;
+    .dropdown-trigger p {
+        font-size: 15px;
+        padding: 8px 15px;
     }
+
 
     .heroContent {
 
