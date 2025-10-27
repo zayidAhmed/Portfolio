@@ -16,7 +16,7 @@ document.addEventListener('mousemove', (e) => {
 });
 
 // Cursor hover effects
-const hoverElements = document.querySelectorAll('a, button, .service-card, .project-card, img');
+const hoverElements = document.querySelectorAll('h1, h2, h3, a, button, .service-card, .project-card, img');
 hoverElements.forEach(el => {
     el.addEventListener('mouseenter', () => {
         gsap.to(cursor, { scale: 3, duration: 0.3 });
