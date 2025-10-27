@@ -28,7 +28,7 @@ hoverElements.forEach(el => {
 
 
 // ---------------------
-// Nav Codes
+// Lightbox Codes
 // ---------------------
 
 function openLightbox(imgElement) {
@@ -121,13 +121,16 @@ window.addEventListener("load", function () {
     const preloader = document.getElementById("preloader");
     const main = document.getElementById("main");
 
-    preloader.style.opacity = "0";
-    main.style.display = "block";
-
-
+    // Keep preloader for at least 2 seconds
     setTimeout(() => {
-        preloader.style.display = "none";
-    }, 500);
+        preloader.style.opacity = "0";
+        main.style.display = "block";
+
+        // Wait for fade-out animation before hiding completely
+        setTimeout(() => {
+            preloader.style.display = "none";
+        }, 500);
+    }, 2000);
 });
 
 
