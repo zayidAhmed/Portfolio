@@ -922,13 +922,14 @@ li,
     display: inline-block;
 }
 
-.dropdown-trigger p {
+.dropdown-trigger a {
     color: var(--textColor);
     font-size: 18px;
     cursor: pointer;
     border: 1px solid var(--accentColor2);
     padding: 13px 20px;
     border-radius: var(--borderRadius);
+    text-decoration: none;
 }
 
 .dropdown-trigger {
