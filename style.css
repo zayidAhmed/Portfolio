@@ -1437,7 +1437,7 @@ Css For Responsive Layout
         right: 90px;
     }
 
-    .dropdown-trigger p {
+    .dropdown-trigger a {
         font-size: 15px;
         padding: 8px 15px;
     }
