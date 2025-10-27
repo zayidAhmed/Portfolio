@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Random Color Genarator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Page Preloader -->
+    <div id="preloader">
+        <div class="loader">
+            <svg viewBox="0 0 80 80">
+                <circle id="test" cx="40" cy="40" r="32"></circle>
+            </svg>
+        </div>
+
+        <div class="loader triangle">
+            <svg viewBox="0 0 86 80">
+                <polygon points="43 8 79 72 7 72"></polygon>
+            </svg>
+        </div>
+
+        <div class="loader">
+            <svg viewBox="0 0 80 80">
+                <rect x="8" y="8" width="64" height="64"></rect>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Color Code Copy Massage -->
+    <div id="message"></div>
+
+    <!-- Navbar -->
+    <nav class="nav">
+        <h1><span>C</span>olor <span>P</span>icker</h1>
+        <p id="palletsSavedBtn"><i class="fa-solid fa-heart"></i>Saved</p>
+    </nav>
+
+    <!-- Saved PAnnel  -->
+    <div id="savedPallets" class="pallet">
+        <div class="header">
+            <h3>Saved Pannels</h3>
+            <i id="palletsCancelBtn" class="fa-solid fa-x"></i>
+        </div>
+        <div class="lists">
+            <ul id="palletList"></ul>
+        </div>
+    </div>
+
+    <!-- Total Section -->
+    <div class="total">
+        <div class="container">
+            <div class="pallets txtOne" id="palletOne">
+                <div class="palletTextBox">
+                    <p class="palletTxt" id="palletTextOneRgb">#000</p>
+                    <p class="tooltip">Copy</p>
+                </div>
+                <div class="palletTextBox">
+                    <p class="palletTxt" id="palletTextOneHex">rgb(0, 0, 0)</p>
+                    <p class="tooltip">Copy</p>
+                </div>
+                <div class="favorite palletTextBox">
+                    <i id="fav1" class="fa-regular fa-heart"></i>
+                    <p class="tooltip">Save Pallet</p>
+                </div>
+                <div class="lock palletTextBox">
+                    <i id="lock1" class="fa-solid fa-lock-open"></i>
+                    <p class="tooltip">Lock Pallet</p>
+                </div>
+            </div>
+            <div class="pallets txtTwo" id="palletTwo">
+                <div class="palletTextBox">
+                    <p class="palletTxt" id="palletTextTwoRgb">#000</p>
+                    <p class="tooltip">Copy</p>
+                </div>
+                <div class="palletTextBox">
+                    <p class="palletTxt" id="palletTextTwoHex">rgb(0, 0, 0)</p>
+                    <p class="tooltip">Copy</p>
+                </div>
+                <div class="favorite palletTextBox">
+                    <i id="fav2" class="fa-regular fa-heart"></i>
+                    <p class="tooltip">Save Pallet</p>
+                </div>
+                <div class="lock palletTextBox">
+                    <i id="lock2" class="fa-solid fa-lock-open"></i>
+                    <p class="tooltip">Lock Pallet</p>
+                </div>
+            </div>
+            <div class="pallets txtThree" id="palletThree">
+                <div class="palletTextBox">
+                    <p class="palletTxt" id="palletTextThreeRgb">#000</p>
+                    <p class="tooltip">Copy</p>
+                </div>
+                <div class="palletTextBox">
+                    <p class="palletTxt" id="palletTextThreeHex">rgb(0, 0, 0)</p>
+                    <p class="tooltip">Copy</p>
+                </div>
+                <div class="favorite palletTextBox">
+                    <i id="fav3" class="fa-regular fa-heart"></i>
+                    <p class="tooltip">Save Pallet</p>
+                </div>
+                <div class="lock palletTextBox">
+                    <i id="lock3" class="fa-solid fa-lock-open"></i>
+                    <p class="tooltip">Lock Pallet</p>
+                </div>
+            </div>
+            <div class="pallets txtFour" id="palletFour">
+                <div class="palletTextBox">
+                    <p class="palletTxt" id="palletTextFourRgb">#000</p>
+                    <p class="tooltip">Copy</p>
+                </div>
+                <div class="palletTextBox">
+                    <p class="palletTxt" id="palletTextFourHex">rgb(0, 0, 0)</p>
+                    <p class="tooltip">Copy</p>
+                </div>
+                <div class="favorite palletTextBox">
+                    <i id="fav4" class="fa-regular fa-heart"></i>
+                    <p class="tooltip">Save Pallet</p>
+                </div>
+                <div class="lock palletTextBox">
+                    <i id="lock4" class="fa-solid fa-lock-open"></i>
+                    <p class="tooltip">Lock Pallet</p>
+                </div>
+            </div>
+            <div class="pallets txtFive" id="palletFive">
+                <div class="palletTextBox">
+                    <p class="palletTxt" id="palletTextFiveRgb">#000</p>
+                    <p class="tooltip">Copy</p>
+                </div>
+                <div class="palletTextBox">
+                    <p class="palletTxt" id="palletTextFiveHex">rgb(0, 0, 0)</p>
+                    <p class="tooltip">Copy</p>
+                </div>
+                <div class="favorite palletTextBox">
+                    <i id="fav5" class="fa-regular fa-heart"></i>
+                    <p class="tooltip">Save Pallet</p>
+                </div>
+                <div class="lock palletTextBox">
+                    <i id="lock5" class="fa-solid fa-lock-open"></i>
+                    <p class="tooltip">Lock Pallet</p>
+                </div>
+            </div>
+        </div>
+
+        <!--Color Generate Button -->
+        <button id="btn" onclick="colorUpdater()">GENERATE</button>
+
+        <p class="credit">Made By <br> <b>Zayid Ahmed.</b></p>
+    </div>
+
+    <script src="https://kit.fontawesome.com/0bf079f869.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
