@@ -264,6 +264,10 @@ Css For Preloader
     transition: opacity 0.5s ease;
 }
 
+.preloader p {
+    text-align: center;
+}
+
 .loader-container {
     display: flex;
     flex-direction: column;
@@ -275,7 +279,8 @@ Css For Preloader
     display: flex;
     gap: 12px;
     align-items: center;
-    height: 80px;
+    height: 6px;
+    margin-bottom: 50px;
 }
 
 .loading span {
@@ -283,7 +288,7 @@ Css For Preloader
     height: 100%;
     border-radius: 3px;
     background: var(--accentColor2);
-    animation: wave 1.2s ease-in-out infinite;
+    animation: wave 1.5s ease-in-out infinite;
     opacity: 0.8;
 }
 
@@ -311,12 +316,12 @@ Css For Preloader
 
     0%,
     100% {
-        transform: scaleY(0.2);
+        height: 5px;
         opacity: 0.3;
     }
 
     50% {
-        transform: scaleY(1);
+        height: 80px;
         opacity: 1;
     }
 }
@@ -327,37 +332,6 @@ Css For Preloader
     color: var(--textColor);
     letter-spacing: 2px;
     text-transform: uppercase;
-}
-
-/* Progress bar */
-.progress-container {
-    width: 200px;
-    height: 2px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    background: #FF6B35;
-    border-radius: 2px;
-    animation: progress 2s ease-in-out infinite;
-}
-
-@keyframes progress {
-    0% {
-        width: 0%;
-        opacity: 0.5;
-    }
-
-    50% {
-        width: 100%;
-        opacity: 1;
-    }
-
-    100% {
-        width: 100%;
-        opacity: 0.5;
-    }
 }
 
 
