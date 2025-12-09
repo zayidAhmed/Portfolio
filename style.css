@@ -252,7 +252,7 @@ Css For Preloader
     max-height: 100vh;
     width: 100vw;
     max-width: 100vw;
-    background-color: var(--textColor);
+    background-color: var(--primaryColor);
     display: flex;
     flex-direction: column;
     justify-content: center;
