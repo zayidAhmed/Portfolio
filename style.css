@@ -289,7 +289,7 @@ Css For Preloader
     border-radius: 3px;
     background: var(--accentColor2);
     animation: wave 1.5s ease-in-out infinite;
-    opacity: 0.8;
+    opacity: 0.3;
 }
 
 .loading span:nth-child(1) {
