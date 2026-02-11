@@ -184,3 +184,11 @@ function moveTooltip(e) {
     tooltip.style.left = e.pageX + 15 + "px";
     tooltip.style.top = e.pageY + 15 + "px";
 }
+
+// ---------------------
+// Footer Year Update
+// ---------------------
+const yearSpan = document.getElementById("year");
+if (yearSpan) {
+    yearSpan.textContent = new Date().getFullYear();
+}
