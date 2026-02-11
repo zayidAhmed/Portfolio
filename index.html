@@ -336,7 +336,7 @@
                             <i class="ri-whatsapp-fill"></i>
                             <div>
                                 <h4>WhatsApp</h4>
-                                <p>+880 1234 567890</p>
+                                <p>+880 1628 722 994</p>
                             </div>
                         </div>
                     </a>
@@ -351,7 +351,7 @@
                     </a>
                 </div>
                 <form action="https://formspree.io/f/mqededak" method="POST"
-                    class="contact-form fade-in-right delay-300">
+                    class="contact-form fade-in-right delay-300" id="contactForm">
 
                     <div class="form-group">
                         <input type="text" name="name" placeholder="Your Name" required>
@@ -375,11 +375,26 @@
 
                 </form>
             </div>
+
         </section>
 
 
     </main>
 
+    <!-- Success Popup -->
+    <div class="popup-overlay" id="successPopup">
+        <div class="popup-box">
+            <div class="popup-icon">
+                <i class="ri-checkbox-circle-fill"></i>
+            </div>
+            <h3>Message Sent Successfully!</h3>
+            <p>Thank you for contacting me. I’ll get back to you soon.</p>
+            <div class="btnWrapper">
+                <button class="btn form-btn" onclick="closePopup()">Close <i
+                        class="ri-arrow-right-up-line"></i></button>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">

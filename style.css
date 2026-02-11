@@ -54,7 +54,8 @@ main {
 }
 
 header,
-section {
+section,
+footer {
     width: calc(100% - 20px);
     max-width: var(--containerWidth);
     margin: 0 auto;
@@ -143,7 +144,7 @@ a {
         background-color: var(--primaryColor) !important;
         color: var(--accentColor2);
         font-size: 35px;
-        margin-left: 10px !important;
+        margin-left: 20px !important;
         opacity: 1 !important;
         transform: rotate(45deg);
     }
@@ -1386,36 +1387,8 @@ Css For Services Section
     }
 }
 
+/* Css For Service Images */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
----------------------
-Css For Service Images
----------------------
-*/
 .service-img {
     width: 100%;
     height: 180px;
@@ -1623,6 +1596,8 @@ Css For Contact Section
     width: 100%;
 }
 
+
+
 /*
 ---------------------
 Css For Footer
@@ -1630,10 +1605,11 @@ Css For Footer
 */
 .footer {
     background: var(--glassColor);
-    border-top: var(--border);
+    border: var(--border);
+    border-radius: var(--containerRadius);
     padding: 50px 0 20px;
+    margin-bottom: 10px;
     text-align: center;
-    width: 100%;
     position: relative;
     z-index: 10;
 }
@@ -1684,6 +1660,82 @@ Css For Footer
 }
 
 
+/* Thank you popup  */
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s ease;
+    z-index: 9999;
+}
+
+.popup-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.popup-box {
+    background: rgba(20, 10, 30, 0.95);
+    backdrop-filter: blur(15px);
+    border: var(--border);
+    padding: 35px;
+    width: 90%;
+    max-width: 420px;
+    border-radius: var(--containerRadius);
+    text-align: center;
+    transform: translateY(40px);
+    transition: 0.3s ease;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.popup-overlay.active .popup-box {
+    transform: translateY(0);
+}
+
+.popup-icon {
+    font-size: 60px;
+    color: var(--accentColor2);
+    margin-bottom: 15px;
+}
+
+.popup-box h3 {
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: var(--textColor);
+}
+
+.popup-box p {
+    font-size: 16px;
+    color: #bbb;
+    margin-bottom: 25px;
+}
+
+/* .popup-box button {
+    background: var(--accentColor2);
+    color: var(--textColor);
+    border: none;
+    padding: 12px 30px;
+    border-radius: var(--borderRadius);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.popup-box button:hover {
+    background: var(--accentColor);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
+} */
 
 
 /*

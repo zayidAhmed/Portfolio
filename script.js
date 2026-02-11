@@ -186,6 +186,50 @@ function moveTooltip(e) {
 }
 
 // ---------------------
+// Contact form Thank you message Popup Codes
+// ---------------------
+
+const form = document.getElementById("contactForm");
+const popup = document.getElementById("successPopup");
+
+form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const button = form.querySelector("button");
+    button.disabled = true;
+    button.innerHTML = "Sending...";
+
+    const data = new FormData(form);
+
+    try {
+        const response = await fetch(form.action, {
+            method: form.method,
+            body: data,
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+            popup.classList.add("active");
+            form.reset();
+        } else {
+            alert("Something went wrong.");
+        }
+
+    } catch (error) {
+        alert("Network error.");
+    }
+
+    button.disabled = false;
+    button.innerHTML = `Send Message <i class="ri-arrow-right-up-line"></i>`;
+});
+
+function closePopup() {
+    popup.classList.remove("active");
+}
+
+
+
+// ---------------------
 // Footer Year Update
 // ---------------------
 const yearSpan = document.getElementById("year");
