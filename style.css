@@ -1350,7 +1350,7 @@ Css For Services Section
         gap: 2rem;
 
         & a {
-            text-decoration: none;
+            text-decoration: none !important;
         }
 
         .service-card {
