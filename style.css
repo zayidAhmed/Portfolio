@@ -100,6 +100,7 @@ h2 {
 p,
 a {
     font-size: var(--textSize);
+    text-decoration: none;
 }
 
 .btnWrapper {
@@ -1348,10 +1349,6 @@ Css For Services Section
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
-
-        & a {
-            text-decoration: none !important;
-        }
 
         .service-card {
             height: 100%;
