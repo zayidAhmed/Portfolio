@@ -1832,7 +1832,7 @@ Css For Responsive Layout
     }
 
     .experience {
-        padding: 4rem 1rem;
+        padding: 4rem 0;
 
         .experience-timeline {
             .timeline-line {
@@ -1858,16 +1858,20 @@ Css For Responsive Layout
     }
 
     .services {
-        padding: 4rem 1rem;
+        padding: 4rem 0;
 
         .services-grid {
             grid-template-columns: 1fr;
             gap: 1.5rem;
-
-            .service-card {
-                padding: 2rem;
-            }
         }
+    }
+
+    .portfolio {
+        padding: 4rem 0;
+    }
+
+    .contact {
+        padding: 4rem 0;
     }
 
     .contact-container {
