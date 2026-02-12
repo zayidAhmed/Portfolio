@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <title>Universal Image Tool</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: saira;
+            src: url(../Saira-VariableFont_wdth,wght.ttf);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: saira, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --primaryColor: #060010;
+            --accentColor2: #ff6b35;
+            --glassColor: rgba(255, 255, 255, 0.05);
+            --textColor: #fff;
+            --border: 1px solid rgba(236, 250, 229, 0.075);
+            --borderRadius: 5px;
+        }
+
+        body {
+            font-family: saira, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--primaryColor);
+            min-height: 100vh;
+            padding: 0;
+            display: flex;
+            color: var(--textColor);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 250px;
+            min-width: 250px;
+            background: var(--glassColor);
+            backdrop-filter: blur(10px);
+            border-right: var(--border);
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 25px 30px;
+            border-bottom: var(--border);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            color: var(--textColor);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 0 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 15px;
+            margin-bottom: 8px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--borderRadius);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            color: inherit;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: var(--accentColor2);
+            color: var(--accentColor2);
+        }
+
+        .nav-item.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 60%;
+            background: var(--accentColor2);
+            border-radius: 0 2px 2px 0;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            color: var(--textColor);
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            width: max-content;
+        }
+
+        .page-title::before {
+            content: "";
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            position: absolute;
+            left: 0;
+            bottom: 0px;
+            background-color: var(--accentColor2);
+        }
+
+        .page-title::after {
+            content: "";
+            height: 2px;
+            width: 40%;
+            position: absolute;
+            left: 0;
+            bottom: 5px;
+            background-color: var(--accentColor2);
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Format Selector */
+        .format-selector {
+            background: var(--glassColor);
+            backdrop-filter: blur(10px);
+            border-radius: var(--borderRadius);
+            border: var(--border);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .selector-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .selector-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .selector-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        select {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: var(--borderRadius);
+            color: var(--textColor);
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        select:hover {
+            border-color: var(--accentColor2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--accentColor2);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+
+        select option {
+            background: var(--primaryColor);
+            color: #fff;
+        }
+
+        .arrow-icon {
+            color: var(--accentColor2);
+            font-size: 24px;
+            margin: 20px 0 0 0;
+        }
+
+        /* Compressor Controls */
+        .compressor-controls {
+            background: var(--glassColor);
+            backdrop-filter: blur(10px);
+            border-radius: var(--borderRadius);
+            border: var(--border);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .quality-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quality-slider {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .quality-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--accentColor2);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quality-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+
+        .quality-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--accentColor2);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .quality-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+
+        .quality-value {
+            color: var(--accentColor2);
+            font-size: 18px;
+            font-weight: 700;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .preset-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 6px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .preset-btn:hover {
+            background: rgba(255, 107, 53, 0.2);
+            border-color: var(--accentColor2);
+            color: #fff;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            background: var(--glassColor);
+            backdrop-filter: blur(10px);
+            border: 2px dashed rgba(255, 107, 53, 0.3);
+            border-radius: var(--borderRadius);
+            padding: 30px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accentColor2);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 50px rgba(255, 107, 53, 0.2);
+        }
+
+        .upload-label {
+            display: inline-block;
+            padding: 15px 40px;
+            background: var(--accentColor2);
+            color: #fff;
+            border-radius: var(--borderRadius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .upload-label:hover {
+            background: #ff7d4d;
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-info {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--accentColor2);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            background: #ff7d4d;
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Results List */
+        .results-list {
+            background: var(--glassColor);
+            backdrop-filter: blur(10px);
+            border-radius: var(--borderRadius);
+            border: var(--border);
+            padding: 15px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.3s ease;
+            gap: 10px;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .item-thumbnail {
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .item-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #fff;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .item-size {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .item-savings {
+            font-size: 12px;
+            color: #4caf50;
+            font-weight: 600;
+        }
+
+        .item-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid var(--accentColor2);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .checkmark {
+            color: #4caf50;
+            font-size: 24px;
+        }
+
+        .error-mark {
+            color: #f44336;
+            font-size: 24px;
+        }
+
+        .progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accentColor2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .download-btn {
+            padding: 8px 16px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .download-btn:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .download-all-btn {
+            width: 100%;
+            padding: 15px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .download-all-btn:hover:not(:disabled) {
+            background: #45a049;
+            transform: scale(1.02);
+        }
+
+        .download-all-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: var(--border);
+                padding: 20px 0;
+                position: relative;
+            }
+
+            .sidebar-header {
+                padding: 0 20px 20px;
+            }
+
+            .sidebar-title {
+                font-size: 20px;
+            }
+
+            .sidebar-nav {
+                padding: 0 10px;
+                display: flex;
+                gap: 8px;
+                overflow-x: auto;
+            }
+
+            .nav-item {
+                white-space: nowrap;
+                margin-bottom: 0;
+                min-width: max-content;
+            }
+
+            .nav-item.active::before {
+                left: 50%;
+                top: auto;
+                bottom: 0;
+                transform: translateX(-50%);
+                width: 60%;
+                height: 3px;
+                border-radius: 2px 2px 0 0;
+            }
+
+            .main-content {
+                padding: 20px;
+                height: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 15px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .page-subtitle {
+                font-size: 12px;
+            }
+
+            .sidebar-nav {
+                gap: 6px;
+            }
+
+            .nav-item {
+                padding: 12px;
+                font-size: 13px;
+            }
+
+            .format-selector,
+            .compressor-controls {
+                padding: 20px 15px;
+            }
+
+            .selector-row {
+                gap: 10px;
+            }
+
+            select {
+                min-width: 120px;
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+
+            .arrow-icon {
+                font-size: 20px;
+                margin: 15px 0 0 0;
+            }
+
+            .upload-area {
+                padding: 25px 15px;
+            }
+
+            .upload-label {
+                padding: 12px 30px;
+                font-size: 14px;
+            }
+
+            .action-btn {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            .results-list {
+                padding: 10px;
+            }
+
+            .result-item {
+                padding: 12px 10px;
+                gap: 8px;
+            }
+
+            .item-thumbnail {
+                width: 45px;
+                height: 45px;
+                min-width: 45px;
+            }
+
+            .item-name {
+                font-size: 13px;
+            }
+
+            .item-size,
+            .item-savings {
+                font-size: 11px;
+            }
+
+            .item-status {
+                min-width: 100px;
+                gap: 8px;
+            }
+
+            .progress-bar {
+                width: 60px;
+            }
+
+            .download-btn {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+
+            .download-all-btn {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 20px;
+            }
+
+            .nav-item {
+                font-size: 12px;
+                padding: 10px;
+            }
+
+            .selector-row {
+                flex-direction: column;
+            }
+
+            select {
+                width: 100%;
+            }
+
+            .arrow-icon {
+                transform: rotate(90deg);
+                margin: 5px 0;
+            }
+
+            .upload-label {
+                padding: 10px 25px;
+                font-size: 13px;
+            }
+
+            .result-item {
+                flex-wrap: wrap;
+            }
+
+            .item-status {
+                width: 100%;
+                margin-top: 10px;
+                justify-content: space-between;
+                min-width: auto;
+            }
+
+            .progress-bar {
+                flex: 1;
+                min-width: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">Image Tools</h2>
+            <p class="sidebar-subtitle">Professional image processing suite</p>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-tab="converter">
+                <i class="ri-refresh-line"></i>
+                <span>Format Converter</span>
+            </button>
+            <button class="nav-item" data-tab="compressor">
+                <i class="ri-file-reduce-line"></i>
+                <span>Image Compressor</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Format Converter Tab -->
+            <div class="tab-content active" id="converter-tab">
+                <div class="page-header">
+                    <h1 class="page-title">Format Converter</h1>
+                    <p class="page-subtitle">Convert images between different formats</p>
+                </div>
+
+                <div class="format-selector">
+                    <div class="selector-row">
+                        <div class="selector-group">
+                            <label class="selector-label">From</label>
+                            <select id="fromFormat">
+                                <option value="jpg">JPG</option>
+                                <option value="png">PNG</option>
+                                <option value="webp">WebP</option>
+                                <option value="gif">GIF</option>
+                                <option value="bmp">BMP</option>
+                            </select>
+                        </div>
+                        <div class="arrow-icon">→</div>
+                        <div class="selector-group">
+                            <label class="selector-label">To</label>
+                            <select id="toFormat">
+                                <option value="webp">WebP</option>
+                                <option value="jpg">JPG</option>
+                                <option value="png">PNG</option>
+                                <option value="gif">GIF</option>
+                                <option value="bmp">BMP</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="upload-area">
+                    <label for="converterFileInput" class="upload-label" id="converterUploadLabel">
+                        Choose Files
+                    </label>
+                    <input type="file" id="converterFileInput" multiple>
+                    <div class="file-info" id="converterFileInfo">No files selected</div>
+                </div>
+
+                <button class="action-btn" id="convertBtn" disabled>Convert Images</button>
+
+                <div class="results-list" id="converterResults" style="display: none;">
+                    <div id="converterItemsContainer"></div>
+                    <button class="download-all-btn" id="converterDownloadAllBtn" style="display: none;">Download All as
+                        ZIP</button>
+                </div>
+            </div>
+
+            <!-- Image Compressor Tab -->
+            <div class="tab-content" id="compressor-tab">
+                <div class="page-header">
+                    <h1 class="page-title">Image Compressor</h1>
+                    <p class="page-subtitle">Reduce file size while maintaining quality</p>
+                </div>
+
+                <div class="compressor-controls">
+                    <div class="control-group">
+                        <label class="control-label">Compression Quality</label>
+                        <div class="quality-slider-container">
+                            <input type="range" class="quality-slider" id="qualitySlider" min="1" max="100" value="80">
+                            <span class="quality-value" id="qualityValue">80%</span>
+                        </div>
+                        <div class="preset-buttons">
+                            <button class="preset-btn" data-quality="30">Low (30%)</button>
+                            <button class="preset-btn" data-quality="60">Medium (60%)</button>
+                            <button class="preset-btn" data-quality="80">High (80%)</button>
+                            <button class="preset-btn" data-quality="95">Maximum (95%)</button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Output Format</label>
+                        <select id="compressFormat">
+                            <option value="jpeg">JPG</option>
+                            <option value="webp">WebP</option>
+                            <option value="png">PNG</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="upload-area">
+                    <label for="compressorFileInput" class="upload-label">
+                        Choose Images
+                    </label>
+                    <input type="file" id="compressorFileInput" accept="image/*" multiple>
+                    <div class="file-info" id="compressorFileInfo">No files selected</div>
+                </div>
+
+                <button class="action-btn" id="compressBtn" disabled>Compress Images</button>
+
+                <div class="results-list" id="compressorResults" style="display: none;">
+                    <div id="compressorItemsContainer"></div>
+                    <button class="download-all-btn" id="compressorDownloadAllBtn" style="display: none;">Download All
+                        as
+                        ZIP</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        // ===== TAB SWITCHING =====
+        const navItems = document.querySelectorAll('.nav-item');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const targetTab = item.dataset.tab;
+
+                // Update active states
+                navItems.forEach(i => i.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                item.classList.add('active');
+                document.getElementById(`${targetTab}-tab`).classList.add('active');
+            });
+        });
+
+        // ===== FORMAT CONVERTER =====
+        const converterFileInput = document.getElementById('converterFileInput');
+        const convertBtn = document.getElementById('convertBtn');
+        const converterFileInfo = document.getElementById('converterFileInfo');
+        const converterResults = document.getElementById('converterResults');
+        const converterItemsContainer = document.getElementById('converterItemsContainer');
+        const converterDownloadAllBtn = document.getElementById('converterDownloadAllBtn');
+        const fromFormat = document.getElementById('fromFormat');
+        const toFormat = document.getElementById('toFormat');
+        const converterUploadLabel = document.getElementById('converterUploadLabel');
+
+        let converterSelectedFiles = [];
+        let converterConvertedBlobs = [];
+
+        const formatConfig = {
+            jpg: { mime: ['image/jpeg', 'image/jpg'], accept: 'image/jpeg,image/jpg', name: 'JPG' },
+            png: { mime: ['image/png'], accept: 'image/png', name: 'PNG' },
+            webp: { mime: ['image/webp'], accept: 'image/webp', name: 'WebP' },
+            gif: { mime: ['image/gif'], accept: 'image/gif', name: 'GIF' },
+            bmp: { mime: ['image/bmp'], accept: 'image/bmp', name: 'BMP' }
+        };
+
+        function updateConverterFileInput() {
+            const from = fromFormat.value;
+            const to = toFormat.value;
+            converterFileInput.setAttribute('accept', formatConfig[from].accept);
+            converterUploadLabel.textContent = `Choose ${formatConfig[from].name} Files`;
+            convertBtn.textContent = `Convert to ${formatConfig[to].name}`;
+
+            converterSelectedFiles = [];
+            converterConvertedBlobs = [];
+            converterFileInfo.textContent = 'No files selected';
+            convertBtn.disabled = true;
+            converterResults.style.display = 'none';
+            converterFileInput.value = '';
+        }
+
+        fromFormat.addEventListener('change', updateConverterFileInput);
+        toFormat.addEventListener('change', updateConverterFileInput);
+        updateConverterFileInput();
+
+        converterFileInput.addEventListener('change', (e) => {
+            const allFiles = Array.from(e.target.files);
+            const from = fromFormat.value;
+            const acceptedMimes = formatConfig[from].mime;
+
+            converterSelectedFiles = allFiles.filter(file => acceptedMimes.includes(file.type));
+            const rejectedFiles = allFiles.filter(file => !acceptedMimes.includes(file.type));
+
+            if (converterSelectedFiles.length > 0) {
+                let message = `${converterSelectedFiles.length} file(s) selected`;
+                if (rejectedFiles.length > 0) {
+                    message += ` (${rejectedFiles.length} unsupported file(s) rejected)`;
+                }
+                converterFileInfo.innerHTML = message;
+                if (rejectedFiles.length > 0) {
+                    converterFileInfo.innerHTML += `<br><span style="color: #ff6b35; font-size: 12px;">Only ${formatConfig[from].name} files are supported</span>`;
+                }
+                convertBtn.disabled = false;
+                converterResults.style.display = 'none';
+                converterConvertedBlobs = [];
+            } else if (rejectedFiles.length > 0) {
+                converterFileInfo.innerHTML = `<span style="color: #f44336;">No valid ${formatConfig[from].name} files selected</span><br><span style="color: #ff6b35; font-size: 12px;">${rejectedFiles.length} unsupported file(s) rejected</span>`;
+                convertBtn.disabled = true;
+            } else {
+                converterFileInfo.textContent = 'No files selected';
+                convertBtn.disabled = true;
+            }
+        });
+
+        convertBtn.addEventListener('click', async () => {
+            if (converterSelectedFiles.length === 0) return;
+
+            convertBtn.disabled = true;
+            converterResults.style.display = 'block';
+            converterItemsContainer.innerHTML = '';
+            converterConvertedBlobs = [];
+
+            for (let i = 0; i < converterSelectedFiles.length; i++) {
+                const file = converterSelectedFiles[i];
+                const item = createResultItem(file, i, 'converter');
+                converterItemsContainer.appendChild(item);
+            }
+
+            for (let i = 0; i < converterSelectedFiles.length; i++) {
+                try {
+                    await convertFile(converterSelectedFiles[i], i);
+                } catch (error) {
+                    updateItemStatus(i, 'error', 'converter');
+                    console.error('Conversion error:', error);
+                }
+            }
+
+            if (converterSelectedFiles.length > 1) {
+                converterDownloadAllBtn.style.display = 'block';
+                converterDownloadAllBtn.disabled = false;
+            }
+        });
+
+        async function convertFile(file, index) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+                const to = toFormat.value;
+
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+
+                        if (to === 'jpg' || to === 'bmp') {
+                            ctx.fillStyle = '#FFFFFF';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        }
+
+                        ctx.drawImage(img, 0, 0);
+                        updateProgress(index, 50, 'converter');
+
+                        let mimeType, quality, extension;
+                        switch (to) {
+                            case 'jpg':
+                                mimeType = 'image/jpeg';
+                                quality = 0.92;
+                                extension = '.jpg';
+                                break;
+                            case 'png':
+                                mimeType = 'image/png';
+                                quality = undefined;
+                                extension = '.png';
+                                break;
+                            case 'webp':
+                                mimeType = 'image/webp';
+                                quality = 0.9;
+                                extension = '.webp';
+                                break;
+                            case 'gif':
+                                mimeType = 'image/gif';
+                                quality = undefined;
+                                extension = '.gif';
+                                break;
+                            case 'bmp':
+                                mimeType = 'image/bmp';
+                                quality = undefined;
+                                extension = '.bmp';
+                                break;
+                        }
+
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                converterConvertedBlobs[index] = {
+                                    blob: blob,
+                                    filename: file.name.replace(/\.[^/.]+$/, extension)
+                                };
+                                updateProgress(index, 100, 'converter');
+                                updateItemStatus(index, 'success', 'converter');
+                                URL.revokeObjectURL(url);
+                                resolve();
+                            } else {
+                                reject(new Error('Blob creation failed'));
+                            }
+                        }, mimeType, quality);
+                    } catch (error) {
+                        URL.revokeObjectURL(url);
+                        reject(error);
+                    }
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('Image loading failed'));
+                };
+
+                img.src = url;
+            });
+        }
+
+        converterDownloadAllBtn.addEventListener('click', async () => {
+            converterDownloadAllBtn.disabled = true;
+            converterDownloadAllBtn.textContent = 'Creating ZIP...';
+
+            const zip = new JSZip();
+            const folder = zip.folder('converted_images');
+
+            converterConvertedBlobs.forEach((data, index) => {
+                if (data && data.blob) {
+                    folder.file(data.filename, data.blob);
+                }
+            });
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'converted_images.zip';
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            converterDownloadAllBtn.textContent = 'Download All as ZIP';
+            converterDownloadAllBtn.disabled = false;
+        });
+
+        // ===== IMAGE COMPRESSOR =====
+        const compressorFileInput = document.getElementById('compressorFileInput');
+        const compressBtn = document.getElementById('compressBtn');
+        const compressorFileInfo = document.getElementById('compressorFileInfo');
+        const compressorResults = document.getElementById('compressorResults');
+        const compressorItemsContainer = document.getElementById('compressorItemsContainer');
+        const compressorDownloadAllBtn = document.getElementById('compressorDownloadAllBtn');
+        const qualitySlider = document.getElementById('qualitySlider');
+        const qualityValue = document.getElementById('qualityValue');
+        const compressFormat = document.getElementById('compressFormat');
+        const presetButtons = document.querySelectorAll('.preset-btn');
+
+        let compressorSelectedFiles = [];
+        let compressorCompressedBlobs = [];
+
+        qualitySlider.addEventListener('input', (e) => {
+            qualityValue.textContent = `${e.target.value}%`;
+        });
+
+        presetButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const quality = btn.dataset.quality;
+                qualitySlider.value = quality;
+                qualityValue.textContent = `${quality}%`;
+            });
+        });
+
+        compressorFileInput.addEventListener('change', (e) => {
+            compressorSelectedFiles = Array.from(e.target.files);
+
+            if (compressorSelectedFiles.length > 0) {
+                compressorFileInfo.textContent = `${compressorSelectedFiles.length} file(s) selected`;
+                compressBtn.disabled = false;
+                compressorResults.style.display = 'none';
+                compressorCompressedBlobs = [];
+            } else {
+                compressorFileInfo.textContent = 'No files selected';
+                compressBtn.disabled = true;
+            }
+        });
+
+        compressBtn.addEventListener('click', async () => {
+            if (compressorSelectedFiles.length === 0) return;
+
+            compressBtn.disabled = true;
+            compressorResults.style.display = 'block';
+            compressorItemsContainer.innerHTML = '';
+            compressorCompressedBlobs = [];
+
+            const quality = qualitySlider.value / 100;
+            const format = compressFormat.value;
+
+            for (let i = 0; i < compressorSelectedFiles.length; i++) {
+                const file = compressorSelectedFiles[i];
+                const item = createResultItem(file, i, 'compressor');
+                compressorItemsContainer.appendChild(item);
+            }
+
+            for (let i = 0; i < compressorSelectedFiles.length; i++) {
+                try {
+                    await compressImage(compressorSelectedFiles[i], i, quality, format);
+                } catch (error) {
+                    updateItemStatus(i, 'error', 'compressor');
+                    console.error('Compression error:', error);
+                }
+            }
+
+            if (compressorSelectedFiles.length > 1) {
+                compressorDownloadAllBtn.style.display = 'block';
+                compressorDownloadAllBtn.disabled = false;
+            }
+        });
+
+        async function compressImage(file, index, quality, format) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+
+                        if (format === 'jpeg') {
+                            ctx.fillStyle = '#FFFFFF';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        }
+
+                        ctx.drawImage(img, 0, 0);
+                        updateProgress(index, 50, 'compressor');
+
+                        const mimeType = format === 'jpeg' ? 'image/jpeg' : `image/${format}`;
+                        const extension = format === 'jpeg' ? '.jpg' : `.${format}`;
+
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                const originalSize = file.size;
+                                const compressedSize = blob.size;
+                                const savings = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
+
+                                compressorCompressedBlobs[index] = {
+                                    blob: blob,
+                                    filename: file.name.replace(/\.[^/.]+$/, extension),
+                                    originalSize: originalSize,
+                                    compressedSize: compressedSize,
+                                    savings: savings
+                                };
+
+                                updateProgress(index, 100, 'compressor');
+                                updateItemStatus(index, 'success', 'compressor', savings);
+                                URL.revokeObjectURL(url);
+                                resolve();
+                            } else {
+                                reject(new Error('Blob creation failed'));
+                            }
+                        }, mimeType, quality);
+                    } catch (error) {
+                        URL.revokeObjectURL(url);
+                        reject(error);
+                    }
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('Image loading failed'));
+                };
+
+                img.src = url;
+            });
+        }
+
+        compressorDownloadAllBtn.addEventListener('click', async () => {
+            compressorDownloadAllBtn.disabled = true;
+            compressorDownloadAllBtn.textContent = 'Creating ZIP...';
+
+            const zip = new JSZip();
+            const folder = zip.folder('compressed_images');
+
+            compressorCompressedBlobs.forEach((data, index) => {
+                if (data && data.blob) {
+                    folder.file(data.filename, data.blob);
+                }
+            });
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'compressed_images.zip';
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            compressorDownloadAllBtn.textContent = 'Download All as ZIP';
+            compressorDownloadAllBtn.disabled = false;
+        });
+
+        // ===== SHARED UTILITIES =====
+        function createResultItem(file, index, type) {
+            const item = document.createElement('div');
+            item.className = 'result-item';
+            item.id = `${type}-item-${index}`;
+
+            const thumbnail = document.createElement('img');
+            thumbnail.className = 'item-thumbnail';
+            thumbnail.src = URL.createObjectURL(file);
+
+            const info = document.createElement('div');
+            info.className = 'item-info';
+
+            const name = document.createElement('div');
+            name.className = 'item-name';
+            name.textContent = file.name;
+
+            const size = document.createElement('div');
+            size.className = 'item-size';
+            size.textContent = formatBytes(file.size);
+
+            info.appendChild(name);
+            info.appendChild(size);
+
+            const status = document.createElement('div');
+            status.className = 'item-status';
+            status.innerHTML = `
+                <div class="status-icon">
+                    <div class="spinner"></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            `;
+
+            item.appendChild(thumbnail);
+            item.appendChild(info);
+            item.appendChild(status);
+
+            return item;
+        }
+
+        function updateProgress(index, percent, type) {
+            const item = document.getElementById(`${type}-item-${index}`);
+            const progressFill = item.querySelector('.progress-fill');
+            if (progressFill) {
+                progressFill.style.width = `${percent}%`;
+            }
+        }
+
+        function updateItemStatus(index, status, type, savings = null) {
+            const item = document.getElementById(`${type}-item-${index}`);
+            const statusElement = item.querySelector('.item-status');
+            const info = item.querySelector('.item-info');
+
+            if (status === 'success') {
+                statusElement.innerHTML = `
+                    <div class="status-icon">
+                        <span class="checkmark">✓</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadSingle(${index}, '${type}')">Download</button>
+                `;
+
+                if (type === 'compressor' && savings !== null) {
+                    const savingsElement = document.createElement('div');
+                    savingsElement.className = 'item-savings';
+                    savingsElement.textContent = `${savings}% smaller`;
+                    info.appendChild(savingsElement);
+                }
+            } else if (status === 'error') {
+                statusElement.innerHTML = `
+                    <div class="status-icon">
+                        <span class="error-mark">✕</span>
+                    </div>
+                    <span style="color: #f44336; font-size: 12px;">Failed</span>
+                `;
+            }
+        }
+
+        function downloadSingle(index, type) {
+            const data = type === 'converter' ? converterConvertedBlobs[index] : compressorCompressedBlobs[index];
+            if (data) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(data.blob);
+                link.download = data.filename;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            }
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+    </script>
+</body>
+
+</html>
+<div class="selector-group">
+    <label class="selector-label">From</label>
+    <select id="fromFormat">
+        <option value="jpg">JPG</option>
+        <option value="png">PNG</option>
+        <option value="webp">WebP</option>
+        <option value="gif">GIF</option>
+        <option value="bmp">BMP</option>
+    </select>
+</div>
+<div class="arrow-icon">→</div>
+<div class="selector-group">
+    <label class="selector-label">To</label>
+    <select id="toFormat">
+        <option value="webp">WebP</option>
+        <option value="jpg">JPG</option>
+        <option value="png">PNG</option>
+        <option value="gif">GIF</option>
+        <option value="bmp">BMP</option>
+    </select>
+</div>
+</div>
+</div>
+
+<div class="upload-area">
+    <label for="converterFileInput" class="upload-label" id="converterUploadLabel">
+        Choose Files
+    </label>
+    <input type="file" id="converterFileInput" multiple>
+    <div class="file-info" id="converterFileInfo">No files selected</div>
+</div>
+
+<button class="action-btn" id="convertBtn" disabled>Convert Images</button>
+
+<div class="results-list" id="converterResults" style="display: none;">
+    <div id="converterItemsContainer"></div>
+    <button class="download-all-btn" id="converterDownloadAllBtn" style="display: none;">Download All as
+        ZIP</button>
+</div>
+</div>
+
+<!-- Image Compressor Tab -->
+<div class="tab-content" id="compressor-tab">
+    <div class="compressor-controls">
+        <div class="control-group">
+            <label class="control-label">Compression Quality</label>
+            <div class="quality-slider-container">
+                <input type="range" class="quality-slider" id="qualitySlider" min="1" max="100" value="80">
+                <span class="quality-value" id="qualityValue">80%</span>
+            </div>
+            <div class="preset-buttons">
+                <button class="preset-btn" data-quality="30">Low (30%)</button>
+                <button class="preset-btn" data-quality="60">Medium (60%)</button>
+                <button class="preset-btn" data-quality="80">High (80%)</button>
+                <button class="preset-btn" data-quality="95">Maximum (95%)</button>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Output Format</label>
+            <select id="compressFormat">
+                <option value="jpeg">JPG</option>
+                <option value="webp">WebP</option>
+                <option value="png">PNG</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="upload-area">
+        <label for="compressorFileInput" class="upload-label">
+            Choose Images
+        </label>
+        <input type="file" id="compressorFileInput" accept="image/*" multiple>
+        <div class="file-info" id="compressorFileInfo">No files selected</div>
+    </div>
+
+    <button class="action-btn" id="compressBtn" disabled>Compress Images</button>
+
+    <div class="results-list" id="compressorResults" style="display: none;">
+        <div id="compressorItemsContainer"></div>
+        <button class="download-all-btn" id="compressorDownloadAllBtn" style="display: none;">Download All as
+            ZIP</button>
+    </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+    // ===== TAB SWITCHING =====
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetTab = btn.dataset.tab;
+
+            // Update active states
+            tabButtons.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+
+            btn.classList.add('active');
+            document.getElementById(`${targetTab}-tab`).classList.add('active');
+        });
+    });
+
+    // ===== FORMAT CONVERTER =====
+    const converterFileInput = document.getElementById('converterFileInput');
+    const convertBtn = document.getElementById('convertBtn');
+    const converterFileInfo = document.getElementById('converterFileInfo');
+    const converterResults = document.getElementById('converterResults');
+    const converterItemsContainer = document.getElementById('converterItemsContainer');
+    const converterDownloadAllBtn = document.getElementById('converterDownloadAllBtn');
+    const fromFormat = document.getElementById('fromFormat');
+    const toFormat = document.getElementById('toFormat');
+    const converterUploadLabel = document.getElementById('converterUploadLabel');
+
+    let converterSelectedFiles = [];
+    let converterConvertedBlobs = [];
+
+    const formatConfig = {
+        jpg: { mime: ['image/jpeg', 'image/jpg'], accept: 'image/jpeg,image/jpg', name: 'JPG' },
+        png: { mime: ['image/png'], accept: 'image/png', name: 'PNG' },
+        webp: { mime: ['image/webp'], accept: 'image/webp', name: 'WebP' },
+        gif: { mime: ['image/gif'], accept: 'image/gif', name: 'GIF' },
+        bmp: { mime: ['image/bmp'], accept: 'image/bmp', name: 'BMP' }
+    };
+
+    function updateConverterFileInput() {
+        const from = fromFormat.value;
+        const to = toFormat.value;
+        converterFileInput.setAttribute('accept', formatConfig[from].accept);
+        converterUploadLabel.textContent = `Choose ${formatConfig[from].name} Files`;
+        convertBtn.textContent = `Convert to ${formatConfig[to].name}`;
+
+        converterSelectedFiles = [];
+        converterConvertedBlobs = [];
+        converterFileInfo.textContent = 'No files selected';
+        convertBtn.disabled = true;
+        converterResults.style.display = 'none';
+        converterFileInput.value = '';
+    }
+
+    fromFormat.addEventListener('change', updateConverterFileInput);
+    toFormat.addEventListener('change', updateConverterFileInput);
+    updateConverterFileInput();
+
+    converterFileInput.addEventListener('change', (e) => {
+        const allFiles = Array.from(e.target.files);
+        const from = fromFormat.value;
+        const acceptedMimes = formatConfig[from].mime;
+
+        converterSelectedFiles = allFiles.filter(file => acceptedMimes.includes(file.type));
+        const rejectedFiles = allFiles.filter(file => !acceptedMimes.includes(file.type));
+
+        if (converterSelectedFiles.length > 0) {
+            let message = `${converterSelectedFiles.length} file(s) selected`;
+            if (rejectedFiles.length > 0) {
+                message += ` (${rejectedFiles.length} unsupported file(s) rejected)`;
+            }
+            converterFileInfo.innerHTML = message;
+            if (rejectedFiles.length > 0) {
+                converterFileInfo.innerHTML += `<br><span style="color: #ff6b35; font-size: 12px;">Only ${formatConfig[from].name} files are supported</span>`;
+            }
+            convertBtn.disabled = false;
+            converterResults.style.display = 'none';
+            converterConvertedBlobs = [];
+        } else if (rejectedFiles.length > 0) {
+            converterFileInfo.innerHTML = `<span style="color: #f44336;">No valid ${formatConfig[from].name} files selected</span><br><span style="color: #ff6b35; font-size: 12px;">${rejectedFiles.length} unsupported file(s) rejected</span>`;
+            convertBtn.disabled = true;
+        } else {
+            converterFileInfo.textContent = 'No files selected';
+            convertBtn.disabled = true;
+        }
+    });
+
+    convertBtn.addEventListener('click', async () => {
+        if (converterSelectedFiles.length === 0) return;
+
+        convertBtn.disabled = true;
+        converterResults.style.display = 'block';
+        converterItemsContainer.innerHTML = '';
+        converterConvertedBlobs = [];
+
+        for (let i = 0; i < converterSelectedFiles.length; i++) {
+            const file = converterSelectedFiles[i];
+            const item = createResultItem(file, i, 'converter');
+            converterItemsContainer.appendChild(item);
+        }
+
+        for (let i = 0; i < converterSelectedFiles.length; i++) {
+            try {
+                await convertFile(converterSelectedFiles[i], i);
+            } catch (error) {
+                updateItemStatus(i, 'error', 'converter');
+                console.error('Conversion error:', error);
+            }
+        }
+
+        if (converterSelectedFiles.length > 1) {
+            converterDownloadAllBtn.style.display = 'block';
+            converterDownloadAllBtn.disabled = false;
+        }
+    });
+
+    async function convertFile(file, index) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            const url = URL.createObjectURL(file);
+            const to = toFormat.value;
+
+            img.onload = () => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+
+                    if (to === 'jpg' || to === 'bmp') {
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    }
+
+                    ctx.drawImage(img, 0, 0);
+                    updateProgress(index, 50, 'converter');
+
+                    let mimeType, quality, extension;
+                    switch (to) {
+                        case 'jpg':
+                            mimeType = 'image/jpeg';
+                            quality = 0.92;
+                            extension = '.jpg';
+                            break;
+                        case 'png':
+                            mimeType = 'image/png';
+                            quality = undefined;
+                            extension = '.png';
+                            break;
+                        case 'webp':
+                            mimeType = 'image/webp';
+                            quality = 0.9;
+                            extension = '.webp';
+                            break;
+                        case 'gif':
+                            mimeType = 'image/gif';
+                            quality = undefined;
+                            extension = '.gif';
+                            break;
+                        case 'bmp':
+                            mimeType = 'image/bmp';
+                            quality = undefined;
+                            extension = '.bmp';
+                            break;
+                    }
+
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            converterConvertedBlobs[index] = {
+                                blob: blob,
+                                filename: file.name.replace(/\.[^/.]+$/, extension)
+                            };
+                            updateProgress(index, 100, 'converter');
+                            updateItemStatus(index, 'success', 'converter');
+                            URL.revokeObjectURL(url);
+                            resolve();
+                        } else {
+                            reject(new Error('Blob creation failed'));
+                        }
+                    }, mimeType, quality);
+                } catch (error) {
+                    URL.revokeObjectURL(url);
+                    reject(error);
+                }
+            };
+
+            img.onerror = () => {
+                URL.revokeObjectURL(url);
+                reject(new Error('Image loading failed'));
+            };
+
+            img.src = url;
+        });
+    }
+
+    converterDownloadAllBtn.addEventListener('click', async () => {
+        converterDownloadAllBtn.disabled = true;
+        converterDownloadAllBtn.textContent = 'Creating ZIP...';
+
+        const zip = new JSZip();
+        const folder = zip.folder('converted_images');
+
+        converterConvertedBlobs.forEach((data, index) => {
+            if (data && data.blob) {
+                folder.file(data.filename, data.blob);
+            }
+        });
+
+        const content = await zip.generateAsync({ type: 'blob' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = 'converted_images.zip';
+        link.click();
+        URL.revokeObjectURL(link.href);
+
+        converterDownloadAllBtn.textContent = 'Download All as ZIP';
+        converterDownloadAllBtn.disabled = false;
+    });
+
+    // ===== IMAGE COMPRESSOR =====
+    const compressorFileInput = document.getElementById('compressorFileInput');
+    const compressBtn = document.getElementById('compressBtn');
+    const compressorFileInfo = document.getElementById('compressorFileInfo');
+    const compressorResults = document.getElementById('compressorResults');
+    const compressorItemsContainer = document.getElementById('compressorItemsContainer');
+    const compressorDownloadAllBtn = document.getElementById('compressorDownloadAllBtn');
+    const qualitySlider = document.getElementById('qualitySlider');
+    const qualityValue = document.getElementById('qualityValue');
+    const compressFormat = document.getElementById('compressFormat');
+    const presetButtons = document.querySelectorAll('.preset-btn');
+
+    let compressorSelectedFiles = [];
+    let compressorCompressedBlobs = [];
+
+    qualitySlider.addEventListener('input', (e) => {
+        qualityValue.textContent = `${e.target.value}%`;
+    });
+
+    presetButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const quality = btn.dataset.quality;
+            qualitySlider.value = quality;
+            qualityValue.textContent = `${quality}%`;
+        });
+    });
+
+    compressorFileInput.addEventListener('change', (e) => {
+        compressorSelectedFiles = Array.from(e.target.files);
+
+        if (compressorSelectedFiles.length > 0) {
+            compressorFileInfo.textContent = `${compressorSelectedFiles.length} file(s) selected`;
+            compressBtn.disabled = false;
+            compressorResults.style.display = 'none';
+            compressorCompressedBlobs = [];
+        } else {
+            compressorFileInfo.textContent = 'No files selected';
+            compressBtn.disabled = true;
+        }
+    });
+
+    compressBtn.addEventListener('click', async () => {
+        if (compressorSelectedFiles.length === 0) return;
+
+        compressBtn.disabled = true;
+        compressorResults.style.display = 'block';
+        compressorItemsContainer.innerHTML = '';
+        compressorCompressedBlobs = [];
+
+        const quality = qualitySlider.value / 100;
+        const format = compressFormat.value;
+
+        for (let i = 0; i < compressorSelectedFiles.length; i++) {
+            const file = compressorSelectedFiles[i];
+            const item = createResultItem(file, i, 'compressor');
+            compressorItemsContainer.appendChild(item);
+        }
+
+        for (let i = 0; i < compressorSelectedFiles.length; i++) {
+            try {
+                await compressImage(compressorSelectedFiles[i], i, quality, format);
+            } catch (error) {
+                updateItemStatus(i, 'error', 'compressor');
+                console.error('Compression error:', error);
+            }
+        }
+
+        if (compressorSelectedFiles.length > 1) {
+            compressorDownloadAllBtn.style.display = 'block';
+            compressorDownloadAllBtn.disabled = false;
+        }
+    });
+
+    async function compressImage(file, index, quality, format) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            const url = URL.createObjectURL(file);
+
+            img.onload = () => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+
+                    if (format === 'jpeg') {
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    }
+
+                    ctx.drawImage(img, 0, 0);
+                    updateProgress(index, 50, 'compressor');
+
+                    const mimeType = format === 'jpeg' ? 'image/jpeg' : `image/${format}`;
+                    const extension = format === 'jpeg' ? '.jpg' : `.${format}`;
+
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            const originalSize = file.size;
+                            const compressedSize = blob.size;
+                            const savings = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
+
+                            compressorCompressedBlobs[index] = {
+                                blob: blob,
+                                filename: file.name.replace(/\.[^/.]+$/, extension),
+                                originalSize: originalSize,
+                                compressedSize: compressedSize,
+                                savings: savings
+                            };
+
+                            updateProgress(index, 100, 'compressor');
+                            updateItemStatus(index, 'success', 'compressor', savings);
+                            URL.revokeObjectURL(url);
+                            resolve();
+                        } else {
+                            reject(new Error('Blob creation failed'));
+                        }
+                    }, mimeType, quality);
+                } catch (error) {
+                    URL.revokeObjectURL(url);
+                    reject(error);
+                }
+            };
+
+            img.onerror = () => {
+                URL.revokeObjectURL(url);
+                reject(new Error('Image loading failed'));
+            };
+
+            img.src = url;
+        });
+    }
+
+    compressorDownloadAllBtn.addEventListener('click', async () => {
+        compressorDownloadAllBtn.disabled = true;
+        compressorDownloadAllBtn.textContent = 'Creating ZIP...';
+
+        const zip = new JSZip();
+        const folder = zip.folder('compressed_images');
+
+        compressorCompressedBlobs.forEach((data, index) => {
+            if (data && data.blob) {
+                folder.file(data.filename, data.blob);
+            }
+        });
+
+        const content = await zip.generateAsync({ type: 'blob' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = 'compressed_images.zip';
+        link.click();
+        URL.revokeObjectURL(link.href);
+
+        compressorDownloadAllBtn.textContent = 'Download All as ZIP';
+        compressorDownloadAllBtn.disabled = false;
+    });
+
+    // ===== SHARED UTILITIES =====
+    function createResultItem(file, index, type) {
+        const item = document.createElement('div');
+        item.className = 'result-item';
+        item.id = `${type}-item-${index}`;
+
+        const thumbnail = document.createElement('img');
+        thumbnail.className = 'item-thumbnail';
+        thumbnail.src = URL.createObjectURL(file);
+
+        const info = document.createElement('div');
+        info.className = 'item-info';
+
+        const name = document.createElement('div');
+        name.className = 'item-name';
+        name.textContent = file.name;
+
+        const size = document.createElement('div');
+        size.className = 'item-size';
+        size.textContent = formatBytes(file.size);
+
+        info.appendChild(name);
+        info.appendChild(size);
+
+        const status = document.createElement('div');
+        status.className = 'item-status';
+        status.innerHTML = `
+                <div class="status-icon">
+                    <div class="spinner"></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            `;
+
+        item.appendChild(thumbnail);
+        item.appendChild(info);
+        item.appendChild(status);
+
+        return item;
+    }
+
+    function updateProgress(index, percent, type) {
+        const item = document.getElementById(`${type}-item-${index}`);
+        const progressFill = item.querySelector('.progress-fill');
+        if (progressFill) {
+            progressFill.style.width = `${percent}%`;
+        }
+    }
+
+    function updateItemStatus(index, status, type, savings = null) {
+        const item = document.getElementById(`${type}-item-${index}`);
+        const statusElement = item.querySelector('.item-status');
+        const info = item.querySelector('.item-info');
+
+        if (status === 'success') {
+            statusElement.innerHTML = `
+                    <div class="status-icon">
+                        <span class="checkmark">✓</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadSingle(${index}, '${type}')">Download</button>
+                `;
+
+            if (type === 'compressor' && savings !== null) {
+                const savingsElement = document.createElement('div');
+                savingsElement.className = 'item-savings';
+                savingsElement.textContent = `${savings}% smaller`;
+                info.appendChild(savingsElement);
+            }
+        } else if (status === 'error') {
+            statusElement.innerHTML = `
+                    <div class="status-icon">
+                        <span class="error-mark">✕</span>
+                    </div>
+                    <span style="color: #f44336; font-size: 12px;">Failed</span>
+                `;
+        }
+    }
+
+    function downloadSingle(index, type) {
+        const data = type === 'converter' ? converterConvertedBlobs[index] : compressorCompressedBlobs[index];
+        if (data) {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(data.blob);
+            link.download = data.filename;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+    }
+
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
+</script>
+</body>
+
+</html>

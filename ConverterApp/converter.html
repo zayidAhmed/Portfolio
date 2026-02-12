@@ -5,41 +5,208 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
-    <title>Image Format Converter</title>
+    <title>Universal Image Tool</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: saira;
+            src: url(../Saira-VariableFont_wdth,wght.ttf);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: saira, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --primaryColor: #060010;
+            --accentColor2: #ff6b35;
+            --glassColor: rgba(255, 255, 255, 0.05);
+            --textColor: #fff;
+            --border: 1px solid rgba(236, 250, 229, 0.075);
+            --borderRadius: 5px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #060010;
+            font-family: saira, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--primaryColor);
             min-height: 100vh;
-            padding: 20px;
+            padding: 0;
+            display: flex;
+            color: var(--textColor);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 250px;
+            min-width: 250px;
+            background: var(--glassColor);
+            backdrop-filter: blur(10px);
+            border-right: var(--border);
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 25px 30px;
+            border-bottom: var(--border);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            color: var(--textColor);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 0 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 15px;
+            margin-bottom: 8px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--borderRadius);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            color: inherit;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: var(--accentColor2);
+            color: var(--accentColor2);
+        }
+
+        .nav-item.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 60%;
+            background: var(--accentColor2);
+            border-radius: 0 2px 2px 0;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            height: 100vh;
         }
 
         .container {
             max-width: 900px;
             margin: 0 auto;
+            width: 100%;
         }
 
-        h1 {
-            color: #fff;
-            text-align: center;
+        .page-header {
             margin-bottom: 30px;
-            font-size: 2em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
+        .page-title {
+            color: var(--textColor);
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            width: max-content;
+        }
+
+        .page-title::before {
+            content: "";
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            position: absolute;
+            left: 0;
+            bottom: 0px;
+            background-color: var(--accentColor2);
+        }
+
+        .page-title::after {
+            content: "";
+            height: 2px;
+            width: 40%;
+            position: absolute;
+            left: 0;
+            bottom: 5px;
+            background-color: var(--accentColor2);
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Format Selector */
         .format-selector {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--glassColor);
             backdrop-filter: blur(10px);
-            border-radius: 16px;
+            border-radius: var(--borderRadius);
+            border: var(--border);
             padding: 25px;
             margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
         .selector-row {
@@ -65,9 +232,9 @@
         select {
             padding: 12px 20px;
             background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 107, 53, 0.3);
-            border-radius: 8px;
-            color: #fff;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: var(--borderRadius);
+            color: var(--textColor);
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -75,41 +242,144 @@
         }
 
         select:hover {
-            border-color: #ff6b35;
+            border-color: var(--accentColor2);
             background: rgba(255, 255, 255, 0.15);
         }
 
         select:focus {
             outline: none;
-            border-color: #ff6b35;
+            border-color: var(--accentColor2);
             box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
         }
 
         select option {
-            background: #060010;
+            background: var(--primaryColor);
             color: #fff;
         }
 
         .arrow-icon {
-            color: #ff6b35;
+            color: var(--accentColor2);
             font-size: 24px;
             margin: 20px 0 0 0;
         }
 
+        /* Compressor Controls */
+        .compressor-controls {
+            background: var(--glassColor);
+            backdrop-filter: blur(10px);
+            border-radius: var(--borderRadius);
+            border: var(--border);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .quality-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quality-slider {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .quality-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--accentColor2);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quality-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+
+        .quality-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--accentColor2);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .quality-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+
+        .quality-value {
+            color: var(--accentColor2);
+            font-size: 18px;
+            font-weight: 700;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .preset-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 6px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .preset-btn:hover {
+            background: rgba(255, 107, 53, 0.2);
+            border-color: var(--accentColor2);
+            color: #fff;
+        }
+
+        /* Upload Area */
         .upload-area {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--glassColor);
             backdrop-filter: blur(10px);
             border: 2px dashed rgba(255, 107, 53, 0.3);
-            border-radius: 16px;
+            border-radius: var(--borderRadius);
             padding: 30px 20px;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             margin-bottom: 20px;
             transition: all 0.3s ease;
         }
 
         .upload-area:hover {
-            border-color: #ff6b35;
+            border-color: var(--accentColor2);
             transform: translateY(-2px);
             box-shadow: 0 15px 50px rgba(255, 107, 53, 0.2);
         }
@@ -117,9 +387,9 @@
         .upload-label {
             display: inline-block;
             padding: 15px 40px;
-            background: #ff6b35;
+            background: var(--accentColor2);
             color: #fff;
-            border-radius: 8px;
+            border-radius: var(--borderRadius);
             cursor: pointer;
             font-size: 16px;
             font-weight: 600;
@@ -142,10 +412,11 @@
             font-size: 14px;
         }
 
-        .convert-btn {
+        /* Action Buttons */
+        .action-btn {
             width: 100%;
             padding: 15px;
-            background: #ff6b35;
+            background: var(--accentColor2);
             color: #fff;
             border: none;
             border-radius: 8px;
@@ -156,26 +427,27 @@
             margin-bottom: 20px;
         }
 
-        .convert-btn:hover:not(:disabled) {
+        .action-btn:hover:not(:disabled) {
             background: #ff7d4d;
             transform: scale(1.02);
             box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
         }
 
-        .convert-btn:disabled {
+        .action-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
 
-        .conversion-list {
-            background: rgba(255, 255, 255, 0.05);
+        /* Results List */
+        .results-list {
+            background: var(--glassColor);
             backdrop-filter: blur(10px);
-            border-radius: 16px;
+            border-radius: var(--borderRadius);
+            border: var(--border);
             padding: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
-        .conversion-item {
+        .result-item {
             display: flex;
             align-items: center;
             padding: 15px;
@@ -184,11 +456,11 @@
             gap: 10px;
         }
 
-        .conversion-item:last-child {
+        .result-item:last-child {
             border-bottom: none;
         }
 
-        .conversion-item:hover {
+        .result-item:hover {
             background: rgba(255, 255, 255, 0.05);
         }
 
@@ -223,6 +495,12 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
+        .item-savings {
+            font-size: 12px;
+            color: #4caf50;
+            font-weight: 600;
+        }
+
         .item-status {
             display: flex;
             align-items: center;
@@ -244,7 +522,7 @@
             width: 20px;
             height: 20px;
             border: 3px solid rgba(255, 255, 255, 0.2);
-            border-top: 3px solid #ff6b35;
+            border-top: 3px solid var(--accentColor2);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -280,7 +558,7 @@
 
         .progress-fill {
             height: 100%;
-            background: #ff6b35;
+            background: var(--accentColor2);
             width: 0%;
             transition: width 0.3s ease;
         }
@@ -328,17 +606,82 @@
         }
 
         /* Mobile Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: var(--border);
+                padding: 20px 0;
+                position: relative;
+            }
+
+            .sidebar-header {
+                padding: 0 20px 20px;
+            }
+
+            .sidebar-title {
+                font-size: 20px;
+            }
+
+            .sidebar-nav {
+                padding: 0 10px;
+                display: flex;
+                gap: 8px;
+                overflow-x: auto;
+            }
+
+            .nav-item {
+                white-space: nowrap;
+                margin-bottom: 0;
+                min-width: max-content;
+            }
+
+            .nav-item.active::before {
+                left: 50%;
+                top: auto;
+                bottom: 0;
+                transform: translateX(-50%);
+                width: 60%;
+                height: 3px;
+                border-radius: 2px 2px 0 0;
+            }
+
+            .main-content {
+                padding: 20px;
+                height: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
                 padding: 15px;
             }
 
-            h1 {
-                font-size: 1.5em;
-                margin-bottom: 20px;
+            .page-title {
+                font-size: 24px;
             }
 
-            .format-selector {
+            .page-subtitle {
+                font-size: 12px;
+            }
+
+            .sidebar-nav {
+                gap: 6px;
+            }
+
+            .nav-item {
+                padding: 12px;
+                font-size: 13px;
+            }
+
+            .format-selector,
+            .compressor-controls {
                 padding: 20px 15px;
             }
 
@@ -366,16 +709,16 @@
                 font-size: 14px;
             }
 
-            .convert-btn {
+            .action-btn {
                 font-size: 16px;
                 padding: 12px;
             }
 
-            .conversion-list {
+            .results-list {
                 padding: 10px;
             }
 
-            .conversion-item {
+            .result-item {
                 padding: 12px 10px;
                 gap: 8px;
             }
@@ -390,7 +733,8 @@
                 font-size: 13px;
             }
 
-            .item-size {
+            .item-size,
+            .item-savings {
                 font-size: 11px;
             }
 
@@ -415,8 +759,13 @@
         }
 
         @media (max-width: 480px) {
-            h1 {
-                font-size: 1.3em;
+            .page-title {
+                font-size: 20px;
+            }
+
+            .nav-item {
+                font-size: 12px;
+                padding: 10px;
             }
 
             .selector-row {
@@ -437,7 +786,7 @@
                 font-size: 13px;
             }
 
-            .conversion-item {
+            .result-item {
                 flex-wrap: wrap;
             }
 
@@ -452,72 +801,534 @@
                 flex: 1;
                 min-width: 80px;
             }
+
+            .preview-wrapper {
+                margin: 20px 0;
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: var(--borderRadius);
+                text-align: center;
+                display: none;
+            }
+
+            .preview-canvas {
+                max-width: 100%;
+                max-height: 400px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Image Format Converter</h1>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">Image Tools</h2>
+            <p class="sidebar-subtitle">Professional image processing suite</p>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-tab="converter">
+                <i class="ri-refresh-line"></i>
+                <span>Format Converter</span>
+            </button>
+            <button class="nav-item" data-tab="compressor">
+                <i class="ri-file-reduce-line"></i>
+                <span>Image Compressor</span>
+            </button>
+            <button class="nav-item" data-tab="resizer">
+                <i class="ri-aspect-ratio-line"></i>
+                <span>Image Resizer</span>
+            </button>
+            <button class="nav-item" data-tab="cropper">
+                <i class="ri-crop-line"></i>
+                <span>Image Cropper</span>
+            </button>
+            <button class="nav-item" data-tab="watermark">
+                <i class="ri-text"></i>
+                <span>Watermark Tool</span>
+            </button>
+            <button class="nav-item" data-tab="filters">
+                <i class="ri-contrast-2-line"></i>
+                <span>Image Filters</span>
+            </button>
+            <button class="nav-item" data-tab="metadata">
+                <i class="ri-file-info-line"></i>
+                <span>Metadata Editor</span>
+            </button>
+            <button class="nav-item" data-tab="renamer">
+                <i class="ri-file-edit-line"></i>
+                <span>Batch Renamer</span>
+            </button>
+        </nav>
+    </aside>
 
-        <div class="format-selector">
-            <div class="selector-row">
-                <div class="selector-group">
-                    <label class="selector-label">From</label>
-                    <select id="fromFormat">
-                        <option value="jpg">JPG</option>
-                        <option value="png">PNG</option>
-                        <option value="webp">WebP</option>
-                        <option value="gif">GIF</option>
-                        <option value="bmp">BMP</option>
-                    </select>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Format Converter Tab -->
+            <div class="tab-content active" id="converter-tab">
+                <div class="page-header">
+                    <h1 class="page-title">Format Converter</h1>
+                    <p class="page-subtitle">Convert images between different formats</p>
                 </div>
-                <div class="arrow-icon">→</div>
-                <div class="selector-group">
-                    <label class="selector-label">To</label>
-                    <select id="toFormat">
-                        <option value="webp">WebP</option>
-                        <option value="jpg">JPG</option>
-                        <option value="png">PNG</option>
-                        <option value="gif">GIF</option>
-                        <option value="bmp">BMP</option>
-                    </select>
+
+                <div class="format-selector">
+                    <div class="selector-row">
+                        <div class="selector-group">
+                            <label class="selector-label">From</label>
+                            <select id="fromFormat">
+                                <option value="jpg">JPG</option>
+                                <option value="png">PNG</option>
+                                <option value="webp">WebP</option>
+                                <option value="gif">GIF</option>
+                                <option value="bmp">BMP</option>
+                            </select>
+                        </div>
+                        <div class="arrow-icon">→</div>
+                        <div class="selector-group">
+                            <label class="selector-label">To</label>
+                            <select id="toFormat">
+                                <option value="webp">WebP</option>
+                                <option value="jpg">JPG</option>
+                                <option value="png">PNG</option>
+                                <option value="gif">GIF</option>
+                                <option value="bmp">BMP</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="upload-area">
+                    <label for="converterFileInput" class="upload-label" id="converterUploadLabel">
+                        Choose Files
+                    </label>
+                    <input type="file" id="converterFileInput" multiple>
+                    <div class="file-info" id="converterFileInfo">No files selected</div>
+                </div>
+
+                <button class="action-btn" id="convertBtn" disabled>Convert Images</button>
+
+                <div class="results-list" id="converterResults" style="display: none;">
+                    <div id="converterItemsContainer"></div>
+                    <button class="download-all-btn" id="converterDownloadAllBtn" style="display: none;">Download All as
+                        ZIP</button>
                 </div>
             </div>
-        </div>
 
-        <div class="upload-area">
-            <label for="fileInput" class="upload-label" id="uploadLabel">
-                Choose Files
-            </label>
-            <input type="file" id="fileInput" multiple>
-            <div class="file-info" id="fileInfo">No files selected</div>
-        </div>
+            <!-- Image Compressor Tab -->
+            <div class="tab-content" id="compressor-tab">
+                <div class="page-header">
+                    <h1 class="page-title">Image Compressor</h1>
+                    <p class="page-subtitle">Reduce file size while maintaining quality</p>
+                </div>
 
-        <button class="convert-btn" id="convertBtn" disabled>Convert Images</button>
+                <div class="compressor-controls">
+                    <div class="control-group">
+                        <label class="control-label">Compression Quality</label>
+                        <div class="quality-slider-container">
+                            <input type="range" class="quality-slider" id="qualitySlider" min="1" max="100" value="80">
+                            <span class="quality-value" id="qualityValue">80%</span>
+                        </div>
+                        <div class="preset-buttons">
+                            <button class="preset-btn" data-quality="30">Low (30%)</button>
+                            <button class="preset-btn" data-quality="60">Medium (60%)</button>
+                            <button class="preset-btn" data-quality="80">High (80%)</button>
+                            <button class="preset-btn" data-quality="95">Maximum (95%)</button>
+                        </div>
+                    </div>
 
-        <div class="conversion-list" id="conversionList" style="display: none;">
-            <div id="itemsContainer"></div>
-            <button class="download-all-btn" id="downloadAllBtn" style="display: none;">Download All as ZIP</button>
+                    <div class="control-group">
+                        <label class="control-label">Output Format</label>
+                        <select id="compressFormat">
+                            <option value="jpeg">JPG</option>
+                            <option value="webp">WebP</option>
+                            <option value="png">PNG</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="upload-area">
+                    <label for="compressorFileInput" class="upload-label">
+                        Choose Images
+                    </label>
+                    <input type="file" id="compressorFileInput" accept="image/*" multiple>
+                    <div class="file-info" id="compressorFileInfo">No files selected</div>
+                </div>
+
+                <button class="action-btn" id="compressBtn" disabled>Compress Images</button>
+
+                <div class="results-list" id="compressorResults" style="display: none;">
+                    <div id="compressorItemsContainer"></div>
+                    <button class="download-all-btn" id="compressorDownloadAllBtn" style="display: none;">Download All
+                        as
+                        ZIP</button>
+                </div>
+            </div>
+
+            <!-- Image Resizer Tab -->
+            <div class="tab-content" id="resizer-tab">
+                <div class="page-header">
+                    <h1 class="page-title">Image Resizer</h1>
+                    <p class="page-subtitle">Resize images by pixels or percentage</p>
+                </div>
+
+                <div class="compressor-controls">
+                    <div class="control-group">
+                        <label class="control-label">Resize Method</label>
+                        <div class="preset-buttons">
+                            <button class="preset-btn active" data-method="pixels" id="pixelsMethodBtn">By
+                                Pixels</button>
+                            <button class="preset-btn" data-method="percent" id="percentMethodBtn">By
+                                Percentage</button>
+                        </div>
+                    </div>
+
+                    <div class="control-group" id="pixelControls">
+                        <label class="control-label">Dimensions</label>
+                        <div class="selector-row" style="gap: 10px;">
+                            <div class="selector-group">
+                                <label class="selector-label">Width (px)</label>
+                                <input type="number" id="resizeWidth" min="1" placeholder="Width"
+                                    style="padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,107,53,0.3); border-radius: 5px; color: #fff; width: 150px;">
+                            </div>
+                            <div class="selector-group">
+                                <label class="selector-label">Height (px)</label>
+                                <input type="number" id="resizeHeight" min="1" placeholder="Height"
+                                    style="padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,107,53,0.3); border-radius: 5px; color: #fff; width: 150px;">
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <label
+                                style="display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.7); cursor: pointer;">
+                                <input type="checkbox" id="lockAspectRatio" checked
+                                    style="width: 18px; height: 18px; cursor: pointer;">
+                                <span>Lock aspect ratio</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="control-group" id="percentControls" style="display: none;">
+                        <label class="control-label">Scale Percentage</label>
+                        <div class="quality-slider-container">
+                            <input type="range" class="quality-slider" id="scaleSlider" min="10" max="200" value="100">
+                            <span class="quality-value" id="scaleValue">100%</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Quick Presets</label>
+                        <div class="preset-buttons">
+                            <button class="preset-btn" data-size="150,150">Thumbnail (150x150)</button>
+                            <button class="preset-btn" data-size="1080,1080">Instagram (1080x1080)</button>
+                            <button class="preset-btn" data-size="820,312">FB Cover (820x312)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="upload-area">
+                    <label for="resizerFileInput" class="upload-label">Choose Images</label>
+                    <input type="file" id="resizerFileInput" accept="image/*" multiple>
+                    <div class="file-info" id="resizerFileInfo">No files selected</div>
+                </div>
+
+                <div class="preview-wrapper" id="resizerPreview">
+                    <h3 style="color: var(--accentColor2); margin-bottom: 15px; font-size: 16px;">Preview</h3>
+                    <canvas id="resizerPreviewCanvas" class="preview-canvas"></canvas>
+                </div>
+
+                <button class="action-btn" id="resizeBtn" disabled>Resize Images</button>
+
+                <div class="results-list" id="resizerResults" style="display: none;">
+                    <div id="resizerItemsContainer"></div>
+                    <button class="download-all-btn" id="resizerDownloadAllBtn" style="display: none;">Download All as
+                        ZIP</button>
+                </div>
+            </div>
+
+            <!-- Image Cropper Tab -->
+            <div class="tab-content" id="cropper-tab">
+                <div class="page-header">
+                    <h1 class="page-title">Image Cropper</h1>
+                    <p class="page-subtitle">Crop images to specific dimensions</p>
+                </div>
+
+                <div class="compressor-controls">
+                    <div class="control-group">
+                        <label class="control-label">Aspect Ratio</label>
+                        <select id="cropAspectRatio">
+                            <option value="free">Free Crop</option>
+                            <option value="1:1">Square (1:1)</option>
+                            <option value="16:9">Widescreen (16:9)</option>
+                            <option value="4:3">Standard (4:3)</option>
+                            <option value="3:2">Classic (3:2)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Crop Dimensions</label>
+                        <div class="selector-row" style="gap: 10px;">
+                            <div class="selector-group">
+                                <label class="selector-label">Width (px)</label>
+                                <input type="number" id="cropWidth" min="1" value="500"
+                                    style="padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,107,53,0.3); border-radius: 5px; color: #fff; width: 150px;">
+                            </div>
+                            <div class="selector-group">
+                                <label class="selector-label">Height (px)</label>
+                                <input type="number" id="cropHeight" min="1" value="500"
+                                    style="padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,107,53,0.3); border-radius: 5px; color: #fff; width: 150px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label
+                            style="display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.7); cursor: pointer;">
+                            <input type="checkbox" id="centerCrop" checked
+                                style="width: 18px; height: 18px; cursor: pointer;">
+                            <span>Center crop</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="upload-area">
+                    <label for="cropperFileInput" class="upload-label">Choose Images</label>
+                    <input type="file" id="cropperFileInput" accept="image/*" multiple>
+                    <div class="file-info" id="cropperFileInfo">No files selected</div>
+                </div>
+
+                <div class="preview-wrapper" id="cropperPreview">
+                    <h3 style="color: var(--accentColor2); margin-bottom: 15px; font-size: 16px;">Preview (First Image)
+                    </h3>
+                    <canvas id="cropperPreviewCanvas" class="preview-canvas"></canvas>
+                    <div style="margin-top: 10px; font-size: 12px; color: rgba(255,255,255,0.5);">Crop area shown in red
+                    </div>
+                </div>
+
+                <button class="action-btn" id="cropBtn" disabled>Crop Images</button>
+
+                <div class="results-list" id="cropperResults" style="display: none;">
+                    <div id="cropperItemsContainer"></div>
+                    <button class="download-all-btn" id="cropperDownloadAllBtn" style="display: none;">Download All as
+                        ZIP</button>
+                </div>
+            </div>
+
+            <!-- Watermark Tool Tab -->
+            <div class="tab-content" id="watermark-tab">
+                <div class="page-header">
+                    <h1 class="page-title">Watermark Tool</h1>
+                    <p class="page-subtitle">Add text watermarks to protect your images</p>
+                </div>
+
+                <div class="compressor-controls">
+                    <div class="control-group">
+                        <label class="control-label">Watermark Text</label>
+                        <input type="text" id="watermarkText" placeholder="© 2026 Your Name" value="© 2026"
+                            style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,107,53,0.3); border-radius: 5px; color: #fff; font-size: 16px;">
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Position</label>
+                        <select id="watermarkPosition">
+                            <option value="bottom-right">Bottom Right</option>
+                            <option value="bottom-left">Bottom Left</option>
+                            <option value="top-right">Top Right</option>
+                            <option value="top-left">Top Left</option>
+                            <option value="center">Center</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Font Size</label>
+                        <div class="quality-slider-container">
+                            <input type="range" class="quality-slider" id="watermarkSize" min="10" max="100" value="30">
+                            <span class="quality-value" id="watermarkSizeValue">30px</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Opacity</label>
+                        <div class="quality-slider-container">
+                            <input type="range" class="quality-slider" id="watermarkOpacity" min="10" max="100"
+                                value="70">
+                            <span class="quality-value" id="watermarkOpacityValue">70%</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Text Color</label>
+                        <input type="color" id="watermarkColor" value="#ffffff"
+                            style="width: 100px; height: 40px; border: 1px solid rgba(255,107,53,0.3); border-radius: 5px; background: transparent; cursor: pointer;">
+                    </div>
+                </div>
+
+                <div class="upload-area">
+                    <label for="watermarkFileInput" class="upload-label">Choose Images</label>
+                    <input type="file" id="watermarkFileInput" accept="image/*" multiple>
+                    <div class="file-info" id="watermarkFileInfo">No files selected</div>
+                </div>
+
+                <div class="preview-wrapper" id="watermarkPreview">
+                    <h3 style="color: var(--accentColor2); margin-bottom: 15px; font-size: 16px;">Preview</h3>
+                    <canvas id="watermarkPreviewCanvas" class="preview-canvas"></canvas>
+                </div>
+
+                <button class="action-btn" id="watermarkBtn" disabled>Add Watermark</button>
+
+                <div class="results-list" id="watermarkResults" style="display: none;">
+                    <div id="watermarkItemsContainer"></div>
+                    <button class="download-all-btn" id="watermarkDownloadAllBtn" style="display: none;">Download All as
+                        ZIP</button>
+                </div>
+            </div>
+
+            <!-- Image Filters Tab -->
+            <div class="tab-content" id="filters-tab">
+                <div class="page-header">
+                    <h1 class="page-title">Image Filters</h1>
+                    <p class="page-subtitle">Apply visual filters and adjustments</p>
+                </div>
+
+                <div class="compressor-controls">
+                    <div class="control-group">
+                        <label class="control-label">Filter Type</label>
+                        <select id="filterType">
+                            <option value="grayscale">Grayscale</option>
+                            <option value="sepia">Sepia</option>
+                            <option value="blur">Blur</option>
+                            <option value="brightness">Brightness</option>
+                            <option value="contrast">Contrast</option>
+                            <option value="saturate">Saturation</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group" id="filterIntensity">
+                        <label class="control-label">Intensity</label>
+                        <div class="quality-slider-container">
+                            <input type="range" class="quality-slider" id="filterSlider" min="0" max="200" value="100">
+                            <span class="quality-value" id="filterValue">100%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="upload-area">
+                    <label for="filtersFileInput" class="upload-label">Choose Images</label>
+                    <input type="file" id="filtersFileInput" accept="image/*" multiple>
+                    <div class="file-info" id="filtersFileInfo">No files selected</div>
+                </div>
+
+                <div class="preview-wrapper" id="filtersPreview">
+                    <h3 style="color: var(--accentColor2); margin-bottom: 15px; font-size: 16px;">Preview</h3>
+                    <canvas id="filtersPreviewCanvas" class="preview-canvas"></canvas>
+                </div>
+
+                <button class="action-btn" id="filtersBtn" disabled>Apply Filter</button>
+
+                <div class="results-list" id="filtersResults" style="display: none;">
+                    <div id="filtersItemsContainer"></div>
+                    <button class="download-all-btn" id="filtersDownloadAllBtn" style="display: none;">Download All as
+                        ZIP</button>
+                </div>
+            </div>
+
+            <!-- Metadata Editor Tab -->
+            <div class="tab-content" id="metadata-tab">
+                <div class="page-header">
+                    <h1 class="page-title">Metadata Editor</h1>
+                    <p class="page-subtitle">View and edit image information</p>
+                </div>
+
+                <div class="upload-area">
+                    <label for="metadataFileInput" class="upload-label">Choose Images</label>
+                    <input type="file" id="metadataFileInput" accept="image/*" multiple>
+                    <div class="file-info" id="metadataFileInfo">No files selected</div>
+                </div>
+
+                <div class="results-list" id="metadataResults" style="display: none;">
+                    <div id="metadataItemsContainer"></div>
+                </div>
+            </div>
+
+            <!-- Batch Renamer Tab -->
+            <div class="tab-content" id="renamer-tab">
+                <div class="page-header">
+                    <h1 class="page-title">Batch Renamer</h1>
+                    <p class="page-subtitle">Rename multiple files with patterns</p>
+                </div>
+
+                <div class="compressor-controls">
+                    <div class="control-group">
+                        <label class="control-label">Naming Pattern</label>
+                        <input type="text" id="renamePattern" placeholder="photo_{n}" value="image_{n}"
+                            style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,107,53,0.3); border-radius: 5px; color: #fff; font-size: 16px;">
+                        <div style="margin-top: 8px; font-size: 12px; color: rgba(255,255,255,0.5);">
+                            Use {n} for number, {date} for date, {original} for original name
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Number Padding</label>
+                        <select id="numberPadding">
+                            <option value="1">No padding (1, 2, 3)</option>
+                            <option value="2">2 digits (01, 02, 03)</option>
+                            <option value="3" selected>3 digits (001, 002, 003)</option>
+                            <option value="4">4 digits (0001, 0002, 0003)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="upload-area">
+                    <label for="renamerFileInput" class="upload-label">Choose Images</label>
+                    <input type="file" id="renamerFileInput" accept="image/*" multiple>
+                    <div class="file-info" id="renamerFileInfo">No files selected</div>
+                </div>
+
+                <div id="renamePreview"
+                    style="display: none; background: var(--glassColor); border: var(--border); border-radius: var(--borderRadius); padding: 20px; margin-bottom: 20px;">
+                    <h3 style="color: var(--accentColor2); margin-bottom: 15px; font-size: 16px;">Preview</h3>
+                    <div id="renamePreviewList" style="max-height: 200px; overflow-y: auto;"></div>
+                </div>
+
+                <button class="action-btn" id="renameBtn" disabled>Download with New Names</button>
+            </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
-        const fileInput = document.getElementById('fileInput');
+        // ===== TAB SWITCHING =====
+        const navItems = document.querySelectorAll('.nav-item');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const targetTab = item.dataset.tab;
+
+                // Update active states
+                navItems.forEach(i => i.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                item.classList.add('active');
+                document.getElementById(`${targetTab}-tab`).classList.add('active');
+            });
+        });
+
+        // ===== FORMAT CONVERTER =====
+        const converterFileInput = document.getElementById('converterFileInput');
         const convertBtn = document.getElementById('convertBtn');
-        const fileInfo = document.getElementById('fileInfo');
-        const conversionList = document.getElementById('conversionList');
-        const itemsContainer = document.getElementById('itemsContainer');
-        const downloadAllBtn = document.getElementById('downloadAllBtn');
+        const converterFileInfo = document.getElementById('converterFileInfo');
+        const converterResults = document.getElementById('converterResults');
+        const converterItemsContainer = document.getElementById('converterItemsContainer');
+        const converterDownloadAllBtn = document.getElementById('converterDownloadAllBtn');
         const fromFormat = document.getElementById('fromFormat');
         const toFormat = document.getElementById('toFormat');
-        const uploadLabel = document.getElementById('uploadLabel');
+        const converterUploadLabel = document.getElementById('converterUploadLabel');
 
-        let selectedFiles = [];
-        let convertedBlobs = [];
+        let converterSelectedFiles = [];
+        let converterConvertedBlobs = [];
 
-        // Format configuration
         const formatConfig = {
             jpg: { mime: ['image/jpeg', 'image/jpg'], accept: 'image/jpeg,image/jpg', name: 'JPG' },
             png: { mime: ['image/png'], accept: 'image/png', name: 'PNG' },
@@ -526,139 +1337,82 @@
             bmp: { mime: ['image/bmp'], accept: 'image/bmp', name: 'BMP' }
         };
 
-        // Check URL parameters for auto-selection
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlFrom = urlParams.get('from');
-        const urlTo = urlParams.get('to');
-
-        if (urlFrom && formatConfig[urlFrom]) {
-            fromFormat.value = urlFrom;
-        }
-        if (urlTo && formatConfig[urlTo]) {
-            toFormat.value = urlTo;
-        }
-
-        // Update file input accept attribute and label
-        function updateFileInput() {
+        function updateConverterFileInput() {
             const from = fromFormat.value;
             const to = toFormat.value;
-            fileInput.setAttribute('accept', formatConfig[from].accept);
-            uploadLabel.textContent = `Choose ${formatConfig[from].name} Files`;
+            converterFileInput.setAttribute('accept', formatConfig[from].accept);
+            converterUploadLabel.textContent = `Choose ${formatConfig[from].name} Files`;
             convertBtn.textContent = `Convert to ${formatConfig[to].name}`;
 
-            // Reset selection when format changes
-            selectedFiles = [];
-            convertedBlobs = [];
-            fileInfo.textContent = 'No files selected';
+            converterSelectedFiles = [];
+            converterConvertedBlobs = [];
+            converterFileInfo.textContent = 'No files selected';
             convertBtn.disabled = true;
-            conversionList.style.display = 'none';
-            fileInput.value = '';
+            converterResults.style.display = 'none';
+            converterFileInput.value = '';
         }
 
-        fromFormat.addEventListener('change', updateFileInput);
-        toFormat.addEventListener('change', updateFileInput);
+        fromFormat.addEventListener('change', updateConverterFileInput);
+        toFormat.addEventListener('change', updateConverterFileInput);
+        updateConverterFileInput();
 
-        // Initialize
-        updateFileInput();
-
-        fileInput.addEventListener('change', (e) => {
+        converterFileInput.addEventListener('change', (e) => {
             const allFiles = Array.from(e.target.files);
             const from = fromFormat.value;
             const acceptedMimes = formatConfig[from].mime;
 
-            selectedFiles = allFiles.filter(file => acceptedMimes.includes(file.type));
+            converterSelectedFiles = allFiles.filter(file => acceptedMimes.includes(file.type));
             const rejectedFiles = allFiles.filter(file => !acceptedMimes.includes(file.type));
 
-            if (selectedFiles.length > 0) {
-                let message = `${selectedFiles.length} file(s) selected`;
+            if (converterSelectedFiles.length > 0) {
+                let message = `${converterSelectedFiles.length} file(s) selected`;
                 if (rejectedFiles.length > 0) {
                     message += ` (${rejectedFiles.length} unsupported file(s) rejected)`;
                 }
-                fileInfo.innerHTML = message;
+                converterFileInfo.innerHTML = message;
                 if (rejectedFiles.length > 0) {
-                    fileInfo.innerHTML += `<br><span style="color: #ff6b35; font-size: 12px;">Only ${formatConfig[from].name} files are supported</span>`;
+                    converterFileInfo.innerHTML += `<br><span style="color: #ff6b35; font-size: 12px;">Only ${formatConfig[from].name} files are supported</span>`;
                 }
                 convertBtn.disabled = false;
-                conversionList.style.display = 'none';
-                convertedBlobs = [];
+                converterResults.style.display = 'none';
+                converterConvertedBlobs = [];
             } else if (rejectedFiles.length > 0) {
-                fileInfo.innerHTML = `<span style="color: #f44336;">No valid ${formatConfig[from].name} files selected</span><br><span style="color: #ff6b35; font-size: 12px;">${rejectedFiles.length} unsupported file(s) rejected</span>`;
+                converterFileInfo.innerHTML = `<span style="color: #f44336;">No valid ${formatConfig[from].name} files selected</span><br><span style="color: #ff6b35; font-size: 12px;">${rejectedFiles.length} unsupported file(s) rejected</span>`;
                 convertBtn.disabled = true;
             } else {
-                fileInfo.textContent = 'No files selected';
+                converterFileInfo.textContent = 'No files selected';
                 convertBtn.disabled = true;
             }
         });
 
         convertBtn.addEventListener('click', async () => {
-            if (selectedFiles.length === 0) return;
+            if (converterSelectedFiles.length === 0) return;
 
             convertBtn.disabled = true;
-            conversionList.style.display = 'block';
-            itemsContainer.innerHTML = '';
-            convertedBlobs = [];
+            converterResults.style.display = 'block';
+            converterItemsContainer.innerHTML = '';
+            converterConvertedBlobs = [];
 
-            for (let i = 0; i < selectedFiles.length; i++) {
-                const file = selectedFiles[i];
-                const item = createConversionItem(file, i);
-                itemsContainer.appendChild(item);
+            for (let i = 0; i < converterSelectedFiles.length; i++) {
+                const file = converterSelectedFiles[i];
+                const item = createResultItem(file, i, 'converter');
+                converterItemsContainer.appendChild(item);
             }
 
-            for (let i = 0; i < selectedFiles.length; i++) {
+            for (let i = 0; i < converterSelectedFiles.length; i++) {
                 try {
-                    await convertFile(selectedFiles[i], i);
+                    await convertFile(converterSelectedFiles[i], i);
                 } catch (error) {
-                    updateItemStatus(i, 'error');
+                    updateItemStatus(i, 'error', 'converter');
                     console.error('Conversion error:', error);
                 }
             }
 
-            if (selectedFiles.length > 1) {
-                downloadAllBtn.style.display = 'block';
-                downloadAllBtn.disabled = false;
+            if (converterSelectedFiles.length > 1) {
+                converterDownloadAllBtn.style.display = 'block';
+                converterDownloadAllBtn.disabled = false;
             }
         });
-
-        function createConversionItem(file, index) {
-            const item = document.createElement('div');
-            item.className = 'conversion-item';
-            item.id = `item-${index}`;
-
-            const thumbnail = document.createElement('img');
-            thumbnail.className = 'item-thumbnail';
-            thumbnail.src = URL.createObjectURL(file);
-
-            const info = document.createElement('div');
-            info.className = 'item-info';
-
-            const name = document.createElement('div');
-            name.className = 'item-name';
-            name.textContent = file.name;
-
-            const size = document.createElement('div');
-            size.className = 'item-size';
-            size.textContent = formatBytes(file.size);
-
-            info.appendChild(name);
-            info.appendChild(size);
-
-            const status = document.createElement('div');
-            status.className = 'item-status';
-            status.innerHTML = `
-        <div class="status-icon">
-          <div class="spinner"></div>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 0%"></div>
-        </div>
-      `;
-
-            item.appendChild(thumbnail);
-            item.appendChild(info);
-            item.appendChild(status);
-
-            return item;
-        }
 
         async function convertFile(file, index) {
             return new Promise((resolve, reject) => {
@@ -673,16 +1427,14 @@
                         canvas.height = img.height;
                         const ctx = canvas.getContext('2d');
 
-                        // Add white background for formats that don't support transparency
                         if (to === 'jpg' || to === 'bmp') {
                             ctx.fillStyle = '#FFFFFF';
                             ctx.fillRect(0, 0, canvas.width, canvas.height);
                         }
 
                         ctx.drawImage(img, 0, 0);
-                        updateProgress(index, 50);
+                        updateProgress(index, 50, 'converter');
 
-                        // Determine output format and quality
                         let mimeType, quality, extension;
                         switch (to) {
                             case 'jpg':
@@ -714,12 +1466,12 @@
 
                         canvas.toBlob((blob) => {
                             if (blob) {
-                                convertedBlobs[index] = {
+                                converterConvertedBlobs[index] = {
                                     blob: blob,
                                     filename: file.name.replace(/\.[^/.]+$/, extension)
                                 };
-                                updateProgress(index, 100);
-                                updateItemStatus(index, 'success');
+                                updateProgress(index, 100, 'converter');
+                                updateItemStatus(index, 'success', 'converter');
                                 URL.revokeObjectURL(url);
                                 resolve();
                             } else {
@@ -741,54 +1493,14 @@
             });
         }
 
-        function updateProgress(index, percent) {
-            const item = document.getElementById(`item-${index}`);
-            const progressFill = item.querySelector('.progress-fill');
-            if (progressFill) {
-                progressFill.style.width = `${percent}%`;
-            }
-        }
-
-        function updateItemStatus(index, status) {
-            const item = document.getElementById(`item-${index}`);
-            const statusElement = item.querySelector('.item-status');
-
-            if (status === 'success') {
-                statusElement.innerHTML = `
-          <div class="status-icon">
-            <span class="checkmark">✓</span>
-          </div>
-          <button class="download-btn" onclick="downloadSingle(${index})">Download</button>
-        `;
-            } else if (status === 'error') {
-                statusElement.innerHTML = `
-          <div class="status-icon">
-            <span class="error-mark">✕</span>
-          </div>
-          <span style="color: #f44336; font-size: 12px;">Failed</span>
-        `;
-            }
-        }
-
-        function downloadSingle(index) {
-            const data = convertedBlobs[index];
-            if (data) {
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(data.blob);
-                link.download = data.filename;
-                link.click();
-                URL.revokeObjectURL(link.href);
-            }
-        }
-
-        downloadAllBtn.addEventListener('click', async () => {
-            downloadAllBtn.disabled = true;
-            downloadAllBtn.textContent = 'Creating ZIP...';
+        converterDownloadAllBtn.addEventListener('click', async () => {
+            converterDownloadAllBtn.disabled = true;
+            converterDownloadAllBtn.textContent = 'Creating ZIP...';
 
             const zip = new JSZip();
             const folder = zip.folder('converted_images');
 
-            convertedBlobs.forEach((data, index) => {
+            converterConvertedBlobs.forEach((data, index) => {
                 if (data && data.blob) {
                     folder.file(data.filename, data.blob);
                 }
@@ -801,9 +1513,247 @@
             link.click();
             URL.revokeObjectURL(link.href);
 
-            downloadAllBtn.textContent = 'Download All as ZIP';
-            downloadAllBtn.disabled = false;
+            converterDownloadAllBtn.textContent = 'Download All as ZIP';
+            converterDownloadAllBtn.disabled = false;
         });
+
+        // ===== IMAGE COMPRESSOR =====
+        const compressorFileInput = document.getElementById('compressorFileInput');
+        const compressBtn = document.getElementById('compressBtn');
+        const compressorFileInfo = document.getElementById('compressorFileInfo');
+        const compressorResults = document.getElementById('compressorResults');
+        const compressorItemsContainer = document.getElementById('compressorItemsContainer');
+        const compressorDownloadAllBtn = document.getElementById('compressorDownloadAllBtn');
+        const qualitySlider = document.getElementById('qualitySlider');
+        const qualityValue = document.getElementById('qualityValue');
+        const compressFormat = document.getElementById('compressFormat');
+        const presetButtons = document.querySelectorAll('.preset-btn');
+
+        let compressorSelectedFiles = [];
+        let compressorCompressedBlobs = [];
+
+        qualitySlider.addEventListener('input', (e) => {
+            qualityValue.textContent = `${e.target.value}%`;
+        });
+
+        presetButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const quality = btn.dataset.quality;
+                qualitySlider.value = quality;
+                qualityValue.textContent = `${quality}%`;
+            });
+        });
+
+        compressorFileInput.addEventListener('change', (e) => {
+            compressorSelectedFiles = Array.from(e.target.files);
+
+            if (compressorSelectedFiles.length > 0) {
+                compressorFileInfo.textContent = `${compressorSelectedFiles.length} file(s) selected`;
+                compressBtn.disabled = false;
+                compressorResults.style.display = 'none';
+                compressorCompressedBlobs = [];
+            } else {
+                compressorFileInfo.textContent = 'No files selected';
+                compressBtn.disabled = true;
+            }
+        });
+
+        compressBtn.addEventListener('click', async () => {
+            if (compressorSelectedFiles.length === 0) return;
+
+            compressBtn.disabled = true;
+            compressorResults.style.display = 'block';
+            compressorItemsContainer.innerHTML = '';
+            compressorCompressedBlobs = [];
+
+            const quality = qualitySlider.value / 100;
+            const format = compressFormat.value;
+
+            for (let i = 0; i < compressorSelectedFiles.length; i++) {
+                const file = compressorSelectedFiles[i];
+                const item = createResultItem(file, i, 'compressor');
+                compressorItemsContainer.appendChild(item);
+            }
+
+            for (let i = 0; i < compressorSelectedFiles.length; i++) {
+                try {
+                    await compressImage(compressorSelectedFiles[i], i, quality, format);
+                } catch (error) {
+                    updateItemStatus(i, 'error', 'compressor');
+                    console.error('Compression error:', error);
+                }
+            }
+
+            if (compressorSelectedFiles.length > 1) {
+                compressorDownloadAllBtn.style.display = 'block';
+                compressorDownloadAllBtn.disabled = false;
+            }
+        });
+
+        async function compressImage(file, index, quality, format) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+
+                        if (format === 'jpeg') {
+                            ctx.fillStyle = '#FFFFFF';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        }
+
+                        ctx.drawImage(img, 0, 0);
+                        updateProgress(index, 50, 'compressor');
+
+                        const mimeType = format === 'jpeg' ? 'image/jpeg' : `image/${format}`;
+                        const extension = format === 'jpeg' ? '.jpg' : `.${format}`;
+
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                const originalSize = file.size;
+                                const compressedSize = blob.size;
+                                const savings = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
+
+                                compressorCompressedBlobs[index] = {
+                                    blob: blob,
+                                    filename: file.name.replace(/\.[^/.]+$/, extension),
+                                    originalSize: originalSize,
+                                    compressedSize: compressedSize,
+                                    savings: savings
+                                };
+
+                                updateProgress(index, 100, 'compressor');
+                                updateItemStatus(index, 'success', 'compressor', savings);
+                                URL.revokeObjectURL(url);
+                                resolve();
+                            } else {
+                                reject(new Error('Blob creation failed'));
+                            }
+                        }, mimeType, quality);
+                    } catch (error) {
+                        URL.revokeObjectURL(url);
+                        reject(error);
+                    }
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('Image loading failed'));
+                };
+
+                img.src = url;
+            });
+        }
+
+        compressorDownloadAllBtn.addEventListener('click', async () => {
+            compressorDownloadAllBtn.disabled = true;
+            compressorDownloadAllBtn.textContent = 'Creating ZIP...';
+
+            const zip = new JSZip();
+            const folder = zip.folder('compressed_images');
+
+            compressorCompressedBlobs.forEach((data, index) => {
+                if (data && data.blob) {
+                    folder.file(data.filename, data.blob);
+                }
+            });
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'compressed_images.zip';
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            compressorDownloadAllBtn.textContent = 'Download All as ZIP';
+            compressorDownloadAllBtn.disabled = false;
+        });
+
+        // ===== SHARED UTILITIES =====
+        function createResultItem(file, index, type) {
+            const item = document.createElement('div');
+            item.className = 'result-item';
+            item.id = `${type}-item-${index}`;
+
+            const thumbnail = document.createElement('img');
+            thumbnail.className = 'item-thumbnail';
+            thumbnail.src = URL.createObjectURL(file);
+
+            const info = document.createElement('div');
+            info.className = 'item-info';
+
+            const name = document.createElement('div');
+            name.className = 'item-name';
+            name.textContent = file.name;
+
+            const size = document.createElement('div');
+            size.className = 'item-size';
+            size.textContent = formatBytes(file.size);
+
+            info.appendChild(name);
+            info.appendChild(size);
+
+            const status = document.createElement('div');
+            status.className = 'item-status';
+            status.innerHTML = `
+                <div class="status-icon">
+                    <div class="spinner"></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            `;
+
+            item.appendChild(thumbnail);
+            item.appendChild(info);
+            item.appendChild(status);
+
+            return item;
+        }
+
+        function updateProgress(index, percent, type) {
+            const item = document.getElementById(`${type}-item-${index}`);
+            const progressFill = item.querySelector('.progress-fill');
+            if (progressFill) {
+                progressFill.style.width = `${percent}%`;
+            }
+        }
+
+        function updateItemStatus(index, status, type, savings = null) {
+            const item = document.getElementById(`${type}-item-${index}`);
+            const statusElement = item.querySelector('.item-status');
+            const info = item.querySelector('.item-info');
+
+            if (status === 'success') {
+                statusElement.innerHTML = `
+                    <div class="status-icon">
+                        <span class="checkmark">✓</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadSingle(${index}, '${type}')">Download</button>
+                `;
+
+                if (type === 'compressor' && savings !== null) {
+                    const savingsElement = document.createElement('div');
+                    savingsElement.className = 'item-savings';
+                    savingsElement.textContent = `${savings}% smaller`;
+                    info.appendChild(savingsElement);
+                }
+            } else if (status === 'error') {
+                statusElement.innerHTML = `
+                    <div class="status-icon">
+                        <span class="error-mark">✕</span>
+                    </div>
+                    <span style="color: #f44336; font-size: 12px;">Failed</span>
+                `;
+            }
+        }
+
+
 
         function formatBytes(bytes) {
             if (bytes === 0) return '0 Bytes';
@@ -812,6 +1762,1096 @@
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
         }
+
+        // ===== IMAGE RESIZER =====
+        const resizerFileInput = document.getElementById('resizerFileInput');
+        const resizeBtn = document.getElementById('resizeBtn');
+        const resizerFileInfo = document.getElementById('resizerFileInfo');
+        const resizerResults = document.getElementById('resizerResults');
+        const resizerItemsContainer = document.getElementById('resizerItemsContainer');
+        const resizerDownloadAllBtn = document.getElementById('resizerDownloadAllBtn');
+        const resizeWidth = document.getElementById('resizeWidth');
+        const resizeHeight = document.getElementById('resizeHeight');
+        const lockAspectRatio = document.getElementById('lockAspectRatio');
+        const scaleSlider = document.getElementById('scaleSlider');
+        const scaleValue = document.getElementById('scaleValue');
+        const pixelsMethodBtn = document.getElementById('pixelsMethodBtn');
+        const percentMethodBtn = document.getElementById('percentMethodBtn');
+        const pixelControls = document.getElementById('pixelControls');
+        const percentControls = document.getElementById('percentControls');
+
+        let resizerSelectedFiles = [];
+        let resizerProcessedBlobs = [];
+        let resizeMethod = 'pixels';
+        let originalAspectRatio = 1;
+
+        pixelsMethodBtn.addEventListener('click', () => {
+            resizeMethod = 'pixels';
+            pixelsMethodBtn.classList.add('active');
+            percentMethodBtn.classList.remove('active');
+            pixelControls.style.display = 'block';
+            percentControls.style.display = 'none';
+        });
+
+        percentMethodBtn.addEventListener('click', () => {
+            resizeMethod = 'percent';
+            percentMethodBtn.classList.add('active');
+            pixelsMethodBtn.classList.remove('active');
+            pixelControls.style.display = 'none';
+            percentControls.style.display = 'block';
+        });
+
+        scaleSlider.addEventListener('input', (e) => {
+            scaleValue.textContent = `${e.target.value}%`;
+        });
+
+        resizeWidth.addEventListener('input', (e) => {
+            if (lockAspectRatio.checked && e.target.value) {
+                resizeHeight.value = Math.round(e.target.value / originalAspectRatio);
+            }
+        });
+
+        resizeHeight.addEventListener('input', (e) => {
+            if (lockAspectRatio.checked && e.target.value) {
+                resizeWidth.value = Math.round(e.target.value * originalAspectRatio);
+            }
+        });
+
+        document.querySelectorAll('[data-size]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const [w, h] = btn.dataset.size.split(',');
+                resizeWidth.value = w;
+                resizeHeight.value = h;
+            });
+        });
+
+        resizerFileInput.addEventListener('change', (e) => {
+            resizerSelectedFiles = Array.from(e.target.files);
+            if (resizerSelectedFiles.length > 0) {
+                resizerFileInfo.textContent = `${resizerSelectedFiles.length} file(s) selected`;
+                resizeBtn.disabled = false;
+                resizerResults.style.display = 'none';
+
+                // Set original aspect ratio from first image
+                const img = new Image();
+                img.onload = () => {
+                    originalAspectRatio = img.width / img.height;
+                    URL.revokeObjectURL(img.src);
+                };
+                img.src = URL.createObjectURL(resizerSelectedFiles[0]);
+            } else {
+                resizerFileInfo.textContent = 'No files selected';
+                resizeBtn.disabled = true;
+            }
+        });
+
+        resizeBtn.addEventListener('click', async () => {
+            resizeBtn.disabled = true;
+            resizerResults.style.display = 'block';
+            resizerItemsContainer.innerHTML = '';
+            resizerProcessedBlobs = [];
+
+            for (let i = 0; i < resizerSelectedFiles.length; i++) {
+                const item = createResultItem(resizerSelectedFiles[i], i, 'resizer');
+                resizerItemsContainer.appendChild(item);
+            }
+
+            for (let i = 0; i < resizerSelectedFiles.length; i++) {
+                try {
+                    await resizeImage(resizerSelectedFiles[i], i);
+                } catch (error) {
+                    updateItemStatus(i, 'error', 'resizer');
+                    console.error('Resize error:', error);
+                }
+            }
+
+            if (resizerSelectedFiles.length > 1) {
+                resizerDownloadAllBtn.style.display = 'block';
+            }
+        });
+
+        async function resizeImage(file, index) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        let newWidth, newHeight;
+
+                        if (resizeMethod === 'pixels') {
+                            newWidth = parseInt(resizeWidth.value) || img.width;
+                            newHeight = parseInt(resizeHeight.value) || img.height;
+                        } else {
+                            const scale = scaleSlider.value / 100;
+                            newWidth = Math.round(img.width * scale);
+                            newHeight = Math.round(img.height * scale);
+                        }
+
+                        canvas.width = newWidth;
+                        canvas.height = newHeight;
+
+                        ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                        updateProgress(index, 50, 'resizer');
+
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                const ext = file.name.split('.').pop();
+                                resizerProcessedBlobs[index] = {
+                                    blob: blob,
+                                    filename: file.name.replace(/\.[^/.]+$/, `_resized.${ext}`)
+                                };
+                                updateProgress(index, 100, 'resizer');
+                                updateItemStatus(index, 'success', 'resizer');
+                                URL.revokeObjectURL(url);
+                                resolve();
+                            } else {
+                                reject(new Error('Blob creation failed'));
+                            }
+                        }, file.type, 0.92);
+                    } catch (error) {
+                        URL.revokeObjectURL(url);
+                        reject(error);
+                    }
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('Image loading failed'));
+                };
+
+                img.src = url;
+            });
+        }
+
+        resizerDownloadAllBtn.addEventListener('click', async () => {
+            resizerDownloadAllBtn.disabled = true;
+            resizerDownloadAllBtn.textContent = 'Creating ZIP...';
+
+            const zip = new JSZip();
+            const folder = zip.folder('resized_images');
+
+            resizerProcessedBlobs.forEach((data, index) => {
+                if (data && data.blob) {
+                    folder.file(data.filename, data.blob);
+                }
+            });
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'resized_images.zip';
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            resizerDownloadAllBtn.textContent = 'Download All as ZIP';
+            resizerDownloadAllBtn.disabled = false;
+        });
+
+        // ===== IMAGE CROPPER =====
+        const cropperFileInput = document.getElementById('cropperFileInput');
+        const cropBtn = document.getElementById('cropBtn');
+        const cropperFileInfo = document.getElementById('cropperFileInfo');
+        const cropperResults = document.getElementById('cropperResults');
+        const cropperItemsContainer = document.getElementById('cropperItemsContainer');
+        const cropperDownloadAllBtn = document.getElementById('cropperDownloadAllBtn');
+        const cropWidth = document.getElementById('cropWidth');
+        const cropHeight = document.getElementById('cropHeight');
+        const cropAspectRatio = document.getElementById('cropAspectRatio');
+        const centerCrop = document.getElementById('centerCrop');
+
+        let cropperSelectedFiles = [];
+        let cropperProcessedBlobs = [];
+
+        cropAspectRatio.addEventListener('change', (e) => {
+            const ratio = e.target.value;
+            if (ratio !== 'free') {
+                const [w, h] = ratio.split(':').map(Number);
+                const currentWidth = parseInt(cropWidth.value) || 500;
+                cropHeight.value = Math.round(currentWidth * (h / w));
+            }
+        });
+
+        cropWidth.addEventListener('input', (e) => {
+            const ratio = cropAspectRatio.value;
+            if (ratio !== 'free' && e.target.value) {
+                const [w, h] = ratio.split(':').map(Number);
+                cropHeight.value = Math.round(e.target.value * (h / w));
+            }
+        });
+
+        cropperFileInput.addEventListener('change', (e) => {
+            cropperSelectedFiles = Array.from(e.target.files);
+            if (cropperSelectedFiles.length > 0) {
+                cropperFileInfo.textContent = `${cropperSelectedFiles.length} file(s) selected`;
+                cropBtn.disabled = false;
+                cropperResults.style.display = 'none';
+            } else {
+                cropperFileInfo.textContent = 'No files selected';
+                cropBtn.disabled = true;
+            }
+        });
+
+        cropBtn.addEventListener('click', async () => {
+            cropBtn.disabled = true;
+            cropperResults.style.display = 'block';
+            cropperItemsContainer.innerHTML = '';
+            cropperProcessedBlobs = [];
+
+            for (let i = 0; i < cropperSelectedFiles.length; i++) {
+                const item = createResultItem(cropperSelectedFiles[i], i, 'cropper');
+                cropperItemsContainer.appendChild(item);
+            }
+
+            for (let i = 0; i < cropperSelectedFiles.length; i++) {
+                try {
+                    await cropImage(cropperSelectedFiles[i], i);
+                } catch (error) {
+                    updateItemStatus(i, 'error', 'cropper');
+                    console.error('Crop error:', error);
+                }
+            }
+
+            if (cropperSelectedFiles.length > 1) {
+                cropperDownloadAllBtn.style.display = 'block';
+            }
+        });
+
+        async function cropImage(file, index) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        const targetWidth = parseInt(cropWidth.value);
+                        const targetHeight = parseInt(cropHeight.value);
+
+                        canvas.width = targetWidth;
+                        canvas.height = targetHeight;
+
+                        let sx, sy;
+                        if (centerCrop.checked) {
+                            sx = (img.width - targetWidth) / 2;
+                            sy = (img.height - targetHeight) / 2;
+                        } else {
+                            sx = 0;
+                            sy = 0;
+                        }
+
+                        // Ensure we don't crop outside image bounds
+                        sx = Math.max(0, Math.min(sx, img.width - targetWidth));
+                        sy = Math.max(0, Math.min(sy, img.height - targetHeight));
+
+                        ctx.drawImage(img, sx, sy, targetWidth, targetHeight, 0, 0, targetWidth, targetHeight);
+                        updateProgress(index, 50, 'cropper');
+
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                const ext = file.name.split('.').pop();
+                                cropperProcessedBlobs[index] = {
+                                    blob: blob,
+                                    filename: file.name.replace(/\.[^/.]+$/, `_cropped.${ext}`)
+                                };
+                                updateProgress(index, 100, 'cropper');
+                                updateItemStatus(index, 'success', 'cropper');
+                                URL.revokeObjectURL(url);
+                                resolve();
+                            } else {
+                                reject(new Error('Blob creation failed'));
+                            }
+                        }, file.type, 0.92);
+                    } catch (error) {
+                        URL.revokeObjectURL(url);
+                        reject(error);
+                    }
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('Image loading failed'));
+                };
+
+                img.src = url;
+            });
+        }
+
+        cropperDownloadAllBtn.addEventListener('click', async () => {
+            cropperDownloadAllBtn.disabled = true;
+            cropperDownloadAllBtn.textContent = 'Creating ZIP...';
+
+            const zip = new JSZip();
+            const folder = zip.folder('cropped_images');
+
+            cropperProcessedBlobs.forEach((data, index) => {
+                if (data && data.blob) {
+                    folder.file(data.filename, data.blob);
+                }
+            });
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'cropped_images.zip';
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            cropperDownloadAllBtn.textContent = 'Download All as ZIP';
+            cropperDownloadAllBtn.disabled = false;
+        });
+
+        // ===== WATERMARK TOOL =====
+        const watermarkFileInput = document.getElementById('watermarkFileInput');
+        const watermarkBtn = document.getElementById('watermarkBtn');
+        const watermarkFileInfo = document.getElementById('watermarkFileInfo');
+        const watermarkResults = document.getElementById('watermarkResults');
+        const watermarkItemsContainer = document.getElementById('watermarkItemsContainer');
+        const watermarkDownloadAllBtn = document.getElementById('watermarkDownloadAllBtn');
+        const watermarkText = document.getElementById('watermarkText');
+        const watermarkPosition = document.getElementById('watermarkPosition');
+        const watermarkSize = document.getElementById('watermarkSize');
+        const watermarkSizeValue = document.getElementById('watermarkSizeValue');
+        const watermarkOpacity = document.getElementById('watermarkOpacity');
+        const watermarkOpacityValue = document.getElementById('watermarkOpacityValue');
+        const watermarkColor = document.getElementById('watermarkColor');
+
+        let watermarkSelectedFiles = [];
+        let watermarkProcessedBlobs = [];
+
+        watermarkSize.addEventListener('input', (e) => {
+            watermarkSizeValue.textContent = `${e.target.value}px`;
+        });
+
+        watermarkOpacity.addEventListener('input', (e) => {
+            watermarkOpacityValue.textContent = `${e.target.value}%`;
+        });
+
+        watermarkFileInput.addEventListener('change', (e) => {
+            watermarkSelectedFiles = Array.from(e.target.files);
+            if (watermarkSelectedFiles.length > 0) {
+                watermarkFileInfo.textContent = `${watermarkSelectedFiles.length} file(s) selected`;
+                watermarkBtn.disabled = false;
+                watermarkResults.style.display = 'none';
+            } else {
+                watermarkFileInfo.textContent = 'No files selected';
+                watermarkBtn.disabled = true;
+            }
+        });
+
+        watermarkBtn.addEventListener('click', async () => {
+            watermarkBtn.disabled = true;
+            watermarkResults.style.display = 'block';
+            watermarkItemsContainer.innerHTML = '';
+            watermarkProcessedBlobs = [];
+
+            for (let i = 0; i < watermarkSelectedFiles.length; i++) {
+                const item = createResultItem(watermarkSelectedFiles[i], i, 'watermark');
+                watermarkItemsContainer.appendChild(item);
+            }
+
+            for (let i = 0; i < watermarkSelectedFiles.length; i++) {
+                try {
+                    await addWatermark(watermarkSelectedFiles[i], i);
+                } catch (error) {
+                    updateItemStatus(i, 'error', 'watermark');
+                    console.error('Watermark error:', error);
+                }
+            }
+
+            if (watermarkSelectedFiles.length > 1) {
+                watermarkDownloadAllBtn.style.display = 'block';
+            }
+        });
+
+        async function addWatermark(file, index) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+
+                        ctx.drawImage(img, 0, 0);
+
+                        // Watermark settings
+                        const text = watermarkText.value;
+                        const fontSize = parseInt(watermarkSize.value);
+                        const opacity = watermarkOpacity.value / 100;
+                        const color = watermarkColor.value;
+                        const position = watermarkPosition.value;
+
+                        ctx.font = `bold ${fontSize}px Arial`;
+                        ctx.fillStyle = color;
+                        ctx.globalAlpha = opacity;
+
+                        const textMetrics = ctx.measureText(text);
+                        const textWidth = textMetrics.width;
+                        const textHeight = fontSize;
+                        const padding = 20;
+
+                        let x, y;
+                        switch (position) {
+                            case 'top-left':
+                                x = padding;
+                                y = padding + textHeight;
+                                break;
+                            case 'top-right':
+                                x = canvas.width - textWidth - padding;
+                                y = padding + textHeight;
+                                break;
+                            case 'bottom-left':
+                                x = padding;
+                                y = canvas.height - padding;
+                                break;
+                            case 'bottom-right':
+                                x = canvas.width - textWidth - padding;
+                                y = canvas.height - padding;
+                                break;
+                            case 'center':
+                                x = (canvas.width - textWidth) / 2;
+                                y = (canvas.height + textHeight) / 2;
+                                break;
+                        }
+
+                        ctx.fillText(text, x, y);
+                        updateProgress(index, 50, 'watermark');
+
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                const ext = file.name.split('.').pop();
+                                watermarkProcessedBlobs[index] = {
+                                    blob: blob,
+                                    filename: file.name.replace(/\.[^/.]+$/, `_watermarked.${ext}`)
+                                };
+                                updateProgress(index, 100, 'watermark');
+                                updateItemStatus(index, 'success', 'watermark');
+                                URL.revokeObjectURL(url);
+                                resolve();
+                            } else {
+                                reject(new Error('Blob creation failed'));
+                            }
+                        }, file.type, 0.92);
+                    } catch (error) {
+                        URL.revokeObjectURL(url);
+                        reject(error);
+                    }
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('Image loading failed'));
+                };
+
+                img.src = url;
+            });
+        }
+
+        watermarkDownloadAllBtn.addEventListener('click', async () => {
+            watermarkDownloadAllBtn.disabled = true;
+            watermarkDownloadAllBtn.textContent = 'Creating ZIP...';
+
+            const zip = new JSZip();
+            const folder = zip.folder('watermarked_images');
+
+            watermarkProcessedBlobs.forEach((data, index) => {
+                if (data && data.blob) {
+                    folder.file(data.filename, data.blob);
+                }
+            });
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'watermarked_images.zip';
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            watermarkDownloadAllBtn.textContent = 'Download All as ZIP';
+            watermarkDownloadAllBtn.disabled = false;
+        });
+
+        // ===== IMAGE FILTERS =====
+        const filtersFileInput = document.getElementById('filtersFileInput');
+        const filtersBtn = document.getElementById('filtersBtn');
+        const filtersFileInfo = document.getElementById('filtersFileInfo');
+        const filtersResults = document.getElementById('filtersResults');
+        const filtersItemsContainer = document.getElementById('filtersItemsContainer');
+        const filtersDownloadAllBtn = document.getElementById('filtersDownloadAllBtn');
+        const filterType = document.getElementById('filterType');
+        const filterSlider = document.getElementById('filterSlider');
+        const filterValue = document.getElementById('filterValue');
+
+        let filtersSelectedFiles = [];
+        let filtersProcessedBlobs = [];
+
+        filterSlider.addEventListener('input', (e) => {
+            filterValue.textContent = `${e.target.value}%`;
+        });
+
+        filtersFileInput.addEventListener('change', (e) => {
+            filtersSelectedFiles = Array.from(e.target.files);
+            if (filtersSelectedFiles.length > 0) {
+                filtersFileInfo.textContent = `${filtersSelectedFiles.length} file(s) selected`;
+                filtersBtn.disabled = false;
+                filtersResults.style.display = 'none';
+            } else {
+                filtersFileInfo.textContent = 'No files selected';
+                filtersBtn.disabled = true;
+            }
+        });
+
+        filtersBtn.addEventListener('click', async () => {
+            filtersBtn.disabled = true;
+            filtersResults.style.display = 'block';
+            filtersItemsContainer.innerHTML = '';
+            filtersProcessedBlobs = [];
+
+            for (let i = 0; i < filtersSelectedFiles.length; i++) {
+                const item = createResultItem(filtersSelectedFiles[i], i, 'filters');
+                filtersItemsContainer.appendChild(item);
+            }
+
+            for (let i = 0; i < filtersSelectedFiles.length; i++) {
+                try {
+                    await applyFilter(filtersSelectedFiles[i], i);
+                } catch (error) {
+                    updateItemStatus(i, 'error', 'filters');
+                    console.error('Filter error:', error);
+                }
+            }
+
+            if (filtersSelectedFiles.length > 1) {
+                filtersDownloadAllBtn.style.display = 'block';
+            }
+        });
+
+        async function applyFilter(file, index) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+
+                        ctx.drawImage(img, 0, 0);
+
+                        const filter = filterType.value;
+                        const intensity = filterSlider.value;
+
+                        // Apply CSS filter
+                        let filterString = '';
+                        switch (filter) {
+                            case 'grayscale':
+                                filterString = `grayscale(${intensity}%)`;
+                                break;
+                            case 'sepia':
+                                filterString = `sepia(${intensity}%)`;
+                                break;
+                            case 'blur':
+                                filterString = `blur(${intensity / 20}px)`;
+                                break;
+                            case 'brightness':
+                                filterString = `brightness(${intensity}%)`;
+                                break;
+                            case 'contrast':
+                                filterString = `contrast(${intensity}%)`;
+                                break;
+                            case 'saturate':
+                                filterString = `saturate(${intensity}%)`;
+                                break;
+                        }
+
+                        ctx.filter = filterString;
+                        ctx.drawImage(img, 0, 0);
+                        updateProgress(index, 50, 'filters');
+
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                const ext = file.name.split('.').pop();
+                                filtersProcessedBlobs[index] = {
+                                    blob: blob,
+                                    filename: file.name.replace(/\.[^/.]+$/, `_${filter}.${ext}`)
+                                };
+                                updateProgress(index, 100, 'filters');
+                                updateItemStatus(index, 'success', 'filters');
+                                URL.revokeObjectURL(url);
+                                resolve();
+                            } else {
+                                reject(new Error('Blob creation failed'));
+                            }
+                        }, file.type, 0.92);
+                    } catch (error) {
+                        URL.revokeObjectURL(url);
+                        reject(error);
+                    }
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('Image loading failed'));
+                };
+
+                img.src = url;
+            });
+        }
+
+        filtersDownloadAllBtn.addEventListener('click', async () => {
+            filtersDownloadAllBtn.disabled = true;
+            filtersDownloadAllBtn.textContent = 'Creating ZIP...';
+
+            const zip = new JSZip();
+            const folder = zip.folder('filtered_images');
+
+            filtersProcessedBlobs.forEach((data, index) => {
+                if (data && data.blob) {
+                    folder.file(data.filename, data.blob);
+                }
+            });
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'filtered_images.zip';
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            filtersDownloadAllBtn.textContent = 'Download All as ZIP';
+            filtersDownloadAllBtn.disabled = false;
+        });
+
+        // ===== METADATA EDITOR =====
+        const metadataFileInput = document.getElementById('metadataFileInput');
+        const metadataFileInfo = document.getElementById('metadataFileInfo');
+        const metadataResults = document.getElementById('metadataResults');
+        const metadataItemsContainer = document.getElementById('metadataItemsContainer');
+
+        metadataFileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length > 0) {
+                metadataFileInfo.textContent = `${files.length} file(s) selected`;
+                metadataResults.style.display = 'block';
+                metadataItemsContainer.innerHTML = '';
+
+                files.forEach((file, index) => {
+                    displayMetadata(file, index);
+                });
+            } else {
+                metadataFileInfo.textContent = 'No files selected';
+                metadataResults.style.display = 'none';
+            }
+        });
+
+        function displayMetadata(file, index) {
+            const img = new Image();
+            const url = URL.createObjectURL(file);
+
+            img.onload = () => {
+                const metadataCard = document.createElement('div');
+                metadataCard.style.cssText = 'background: rgba(255,255,255,0.05); border: 1px solid rgba(236,250,229,0.075); border-radius: 5px; padding: 20px; margin-bottom: 15px;';
+
+                metadataCard.innerHTML = `
+                    <h3 style="color: var(--accentColor2); margin-bottom: 15px; font-size: 16px;">${file.name}</h3>
+                    <div style="display: grid; grid-template-columns: 150px 1fr; gap: 10px; color: rgba(255,255,255,0.7); font-size: 14px;">
+                        <div><strong>File Size:</strong></div>
+                        <div>${formatBytes(file.size)}</div>
+                        
+                        <div><strong>Dimensions:</strong></div>
+                        <div>${img.width} × ${img.height} pixels</div>
+                        
+                        <div><strong>Type:</strong></div>
+                        <div>${file.type}</div>
+                        
+                        <div><strong>Last Modified:</strong></div>
+                        <div>${new Date(file.lastModified).toLocaleString()}</div>
+                        
+                        <div><strong>Aspect Ratio:</strong></div>
+                        <div>${(img.width / img.height).toFixed(2)}:1</div>
+                    </div>
+                `;
+
+                metadataItemsContainer.appendChild(metadataCard);
+                URL.revokeObjectURL(url);
+            };
+
+            img.src = url;
+        }
+
+        // ===== BATCH RENAMER =====
+        const renamerFileInput = document.getElementById('renamerFileInput');
+        const renamerFileInfo = document.getElementById('renamerFileInfo');
+        const renamePattern = document.getElementById('renamePattern');
+        const numberPadding = document.getElementById('numberPadding');
+        const renamePreview = document.getElementById('renamePreview');
+        const renamePreviewList = document.getElementById('renamePreviewList');
+        const renameBtn = document.getElementById('renameBtn');
+
+        let renamerSelectedFiles = [];
+
+        renamerFileInput.addEventListener('change', (e) => {
+            renamerSelectedFiles = Array.from(e.target.files);
+            if (renamerSelectedFiles.length > 0) {
+                renamerFileInfo.textContent = `${renamerSelectedFiles.length} file(s) selected`;
+                renameBtn.disabled = false;
+                updateRenamePreview();
+            } else {
+                renamerFileInfo.textContent = 'No files selected';
+                renameBtn.disabled = true;
+                renamePreview.style.display = 'none';
+            }
+        });
+
+        renamePattern.addEventListener('input', updateRenamePreview);
+        numberPadding.addEventListener('change', updateRenamePreview);
+
+        function updateRenamePreview() {
+            if (renamerSelectedFiles.length === 0) return;
+
+            renamePreview.style.display = 'block';
+            renamePreviewList.innerHTML = '';
+
+            const pattern = renamePattern.value;
+            const padding = parseInt(numberPadding.value);
+            const date = new Date().toISOString().split('T')[0];
+
+            renamerSelectedFiles.forEach((file, index) => {
+                const ext = file.name.split('.').pop();
+                const originalName = file.name.replace(/\.[^/.]+$/, '');
+                const number = String(index + 1).padStart(padding, '0');
+
+                let newName = pattern
+                    .replace(/{n}/g, number)
+                    .replace(/{date}/g, date)
+                    .replace(/{original}/g, originalName);
+
+                newName += `.${ext}`;
+
+                const previewItem = document.createElement('div');
+                previewItem.style.cssText = 'padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 13px;';
+                previewItem.innerHTML = `
+                    <div style="color: rgba(255,255,255,0.5);">${file.name}</div>
+                    <div style="color: var(--accentColor2); margin-top: 4px;">→ ${newName}</div>
+                `;
+                renamePreviewList.appendChild(previewItem);
+            });
+        }
+
+        renameBtn.addEventListener('click', async () => {
+            renameBtn.disabled = true;
+            renameBtn.textContent = 'Creating ZIP...';
+
+            const zip = new JSZip();
+            const folder = zip.folder('renamed_images');
+
+            const pattern = renamePattern.value;
+            const padding = parseInt(numberPadding.value);
+            const date = new Date().toISOString().split('T')[0];
+
+            renamerSelectedFiles.forEach((file, index) => {
+                const ext = file.name.split('.').pop();
+                const originalName = file.name.replace(/\.[^/.]+$/, '');
+                const number = String(index + 1).padStart(padding, '0');
+
+                let newName = pattern
+                    .replace(/{n}/g, number)
+                    .replace(/{date}/g, date)
+                    .replace(/{original}/g, originalName);
+
+                newName += `.${ext}`;
+
+                folder.file(newName, file);
+            });
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'renamed_images.zip';
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            renameBtn.textContent = 'Download with New Names';
+            renameBtn.disabled = false;
+        });
+
+        // Update downloadSingle to support all tools
+        function downloadSingle(index, type) {
+            let data;
+            switch (type) {
+                case 'converter':
+                    data = converterConvertedBlobs[index];
+                    break;
+                case 'compressor':
+                    data = compressorCompressedBlobs[index];
+                    break;
+                case 'resizer':
+                    data = resizerProcessedBlobs[index];
+                    break;
+                case 'cropper':
+                    data = cropperProcessedBlobs[index];
+                    break;
+                case 'watermark':
+                    data = watermarkProcessedBlobs[index];
+                    break;
+                case 'filters':
+                    data = filtersProcessedBlobs[index];
+                    break;
+            }
+
+            if (data) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(data.blob);
+                link.download = data.filename;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            }
+        }
+
+        // ===== LIVE PREVIEW LOGIC =====
+
+        // Resizer Preview
+        function updateResizerPreview() {
+            if (resizerSelectedFiles.length === 0) return;
+            const container = document.getElementById('resizerPreview');
+            const canvas = document.getElementById('resizerPreviewCanvas');
+            const ctx = canvas.getContext('2d');
+            container.style.display = 'block';
+
+            const img = new Image();
+            img.onload = () => {
+                let newWidth, newHeight;
+                if (resizeMethod === 'pixels') {
+                    newWidth = parseInt(resizeWidth.value) || img.width;
+                    newHeight = parseInt(resizeHeight.value) || img.height;
+                } else {
+                    const scale = scaleSlider.value / 100;
+                    newWidth = Math.round(img.width * scale);
+                    newHeight = Math.round(img.height * scale);
+                }
+
+                // Limit preview display size
+                const maxDisplayWidth = 600;
+                const displayScale = Math.min(1, maxDisplayWidth / newWidth);
+
+                canvas.width = newWidth * displayScale;
+                canvas.height = newHeight * displayScale;
+
+                // Draw scaled preview
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                // Show dimensions text
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.fillRect(10, 10, 140, 30);
+                ctx.fillStyle = '#fff';
+                ctx.font = '14px Arial';
+                ctx.fillText(`${newWidth} x ${newHeight} px`, 20, 30);
+
+                URL.revokeObjectURL(img.src);
+            };
+            img.src = URL.createObjectURL(resizerSelectedFiles[0]);
+        }
+
+        // Resizer Listeners
+        resizerFileInput.addEventListener('change', () => setTimeout(updateResizerPreview, 100));
+        resizeWidth.addEventListener('input', updateResizerPreview);
+        resizeHeight.addEventListener('input', updateResizerPreview);
+        scaleSlider.addEventListener('input', updateResizerPreview);
+        document.querySelectorAll('[data-size]').forEach(btn => btn.addEventListener('click', updateResizerPreview));
+        pixelsMethodBtn.addEventListener('click', updateResizerPreview);
+        percentMethodBtn.addEventListener('click', updateResizerPreview);
+
+
+        // Cropper Preview
+        function updateCropperPreview() {
+            if (cropperSelectedFiles.length === 0) return;
+            const container = document.getElementById('cropperPreview');
+            const canvas = document.getElementById('cropperPreviewCanvas');
+            const ctx = canvas.getContext('2d');
+            container.style.display = 'block';
+
+            const img = new Image();
+            img.onload = () => {
+                // Fit image to canvas width
+                const maxCanvasWidth = 600;
+                const scale = Math.min(1, maxCanvasWidth / img.width);
+
+                canvas.width = img.width * scale;
+                canvas.height = img.height * scale;
+
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                // Calculate crop rect in canvas coordinates
+                const targetW = parseInt(cropWidth.value) || 100;
+                const targetH = parseInt(cropHeight.value) || 100;
+
+                const rectW = targetW * scale;
+                const rectH = targetH * scale;
+
+                let sx, sy;
+                if (centerCrop.checked) {
+                    sx = (canvas.width - rectW) / 2;
+                    sy = (canvas.height - rectH) / 2;
+                } else {
+                    sx = 0;
+                    sy = 0;
+                }
+
+                // Draw overlay
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Clear crop area (make it visible)
+                ctx.clearRect(sx, sy, rectW, rectH);
+                ctx.drawImage(img, sx / scale, sy / scale, targetW, targetH, sx, sy, rectW, rectH);
+
+                // Draw red border
+                ctx.strokeStyle = '#ff6b35';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(sx, sy, rectW, rectH);
+
+                URL.revokeObjectURL(img.src);
+            };
+            img.src = URL.createObjectURL(cropperSelectedFiles[0]);
+        }
+
+        // Cropper Listeners
+        cropperFileInput.addEventListener('change', () => setTimeout(updateCropperPreview, 100));
+        cropWidth.addEventListener('input', updateCropperPreview);
+        cropHeight.addEventListener('input', updateCropperPreview);
+        cropAspectRatio.addEventListener('change', () => setTimeout(updateCropperPreview, 50));
+        centerCrop.addEventListener('change', updateCropperPreview);
+
+
+        // Watermark Preview
+        function updateWatermarkPreview() {
+            if (watermarkSelectedFiles.length === 0) return;
+            const container = document.getElementById('watermarkPreview');
+            const canvas = document.getElementById('watermarkPreviewCanvas');
+            const ctx = canvas.getContext('2d');
+            container.style.display = 'block';
+
+            const img = new Image();
+            img.onload = () => {
+                const maxCanvasWidth = 600;
+                const scale = Math.min(1, maxCanvasWidth / img.width);
+
+                canvas.width = img.width * scale;
+                canvas.height = img.height * scale;
+
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                // Draw Watermark
+                const text = watermarkText.value;
+                const fontSize = parseInt(watermarkSize.value) * scale; // Scale font
+                const opacity = watermarkOpacity.value / 100;
+                const color = watermarkColor.value;
+                const position = watermarkPosition.value;
+
+                ctx.font = `bold ${fontSize}px Arial`;
+                ctx.fillStyle = color;
+                ctx.globalAlpha = opacity;
+
+                const textMetrics = ctx.measureText(text);
+                const textWidth = textMetrics.width;
+                const textHeight = fontSize;
+                const padding = 20 * scale;
+
+                let x, y;
+                switch (position) {
+                    case 'top-left':
+                        x = padding;
+                        y = padding + textHeight;
+                        break;
+                    case 'top-right':
+                        x = canvas.width - textWidth - padding;
+                        y = padding + textHeight;
+                        break;
+                    case 'bottom-left':
+                        x = padding;
+                        y = canvas.height - padding;
+                        break;
+                    case 'bottom-right':
+                        x = canvas.width - textWidth - padding;
+                        y = canvas.height - padding;
+                        break;
+                    case 'center':
+                        x = (canvas.width - textWidth) / 2;
+                        y = (canvas.height + textHeight) / 2;
+                        break;
+                }
+
+                ctx.fillText(text, x, y);
+                URL.revokeObjectURL(img.src);
+            };
+            img.src = URL.createObjectURL(watermarkSelectedFiles[0]);
+        }
+
+        // Watermark Listeners
+        watermarkFileInput.addEventListener('change', () => setTimeout(updateWatermarkPreview, 100));
+        watermarkText.addEventListener('input', updateWatermarkPreview);
+        watermarkPosition.addEventListener('change', updateWatermarkPreview);
+        watermarkSize.addEventListener('input', updateWatermarkPreview);
+        watermarkOpacity.addEventListener('input', updateWatermarkPreview);
+        watermarkColor.addEventListener('input', updateWatermarkPreview);
+
+
+        // Filters Preview
+        function updateFiltersPreview() {
+            if (filtersSelectedFiles.length === 0) return;
+            const container = document.getElementById('filtersPreview');
+            const canvas = document.getElementById('filtersPreviewCanvas');
+            const ctx = canvas.getContext('2d');
+            container.style.display = 'block';
+
+            const img = new Image();
+            img.onload = () => {
+                const maxCanvasWidth = 600;
+                const scale = Math.min(1, maxCanvasWidth / img.width);
+
+                canvas.width = img.width * scale;
+                canvas.height = img.height * scale;
+
+                // Apply filter
+                const filter = filterType.value;
+                const intensity = filterSlider.value;
+
+                let filterString = '';
+                switch (filter) {
+                    case 'grayscale': filterString = `grayscale(${intensity}%)`; break;
+                    case 'sepia': filterString = `sepia(${intensity}%)`; break;
+                    case 'blur': filterString = `blur(${intensity / 20}px)`; break;
+                    case 'brightness': filterString = `brightness(${intensity}%)`; break;
+                    case 'contrast': filterString = `contrast(${intensity}%)`; break;
+                    case 'saturate': filterString = `saturate(${intensity}%)`; break;
+                }
+
+                ctx.filter = filterString;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                URL.revokeObjectURL(img.src);
+            };
+            img.src = URL.createObjectURL(filtersSelectedFiles[0]);
+        }
+
+        // Filters Listeners
+        filtersFileInput.addEventListener('change', () => setTimeout(updateFiltersPreview, 100));
+        filterType.addEventListener('change', updateFiltersPreview);
+        filterSlider.addEventListener('input', updateFiltersPreview);
+
+
+
     </script>
 </body>
 
