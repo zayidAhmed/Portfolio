@@ -155,7 +155,7 @@ function animateCounter(id, start, end, duration) {
     }, stepTime);
 }
 //             id,from,to,delay 
-animateCounter("project", 0, 50, 3000);
+animateCounter("project", 0, 100, 3000);
 animateCounter("experience", 0, 2, 2000);
 
 // ---------------------
