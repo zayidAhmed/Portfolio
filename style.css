@@ -1364,6 +1364,8 @@ Css For Services Section
             will-change: transform, opacity;
 
             &:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
                 border-color: var(--accentColor2);
             }
 
@@ -1381,15 +1383,19 @@ Css For Services Section
                 margin-bottom: 1.5rem;
             }
 
-            h3 {
+            .service-info {
+                padding: 20px;
+            }
+
+            .service-info h3 {
                 font-size: 1.5rem;
                 margin-bottom: 1rem;
                 color: var(--textColor);
-                padding: 0 20px;
             }
 
-            p {
-                padding: 0 20px 20px;
+            .service-info p {
+                color: #bbb;
+                font-size: 0.9rem;
             }
         }
     }
@@ -1403,7 +1409,6 @@ Css For Services Section
     height: 220px;
     overflow: hidden;
     border-radius: var(--borderRadius);
-    margin-bottom: 20px;
     -webkit-mask-image: -webkit-radial-gradient(white, black);
     /* Fixes border-radius overflow in some browsers */
     mask-image: radial-gradient(white, black);
