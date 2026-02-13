@@ -48,7 +48,7 @@ body {
 
 main {
     display: none;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
     z-index: 1;
 }
@@ -161,13 +161,13 @@ a {
     }
 }
 
-@media(min-width: 1000px) {
+/* @media(min-width: 1000px) {
     .btn:hover::before {
         height: 4500px;
         width: 4500px;
         border-radius: 50%;
     }
-}
+} */
 
 /*
 ---------------------
@@ -1556,6 +1556,7 @@ Css For Contact Section
 */
 .contact {
     padding: 8rem 0;
+    overflow: hidden;
 }
 
 .contact-container {
@@ -1978,4 +1979,88 @@ Css For Responsive Layout
     .timeline-dot {
         left: 0.75rem;
     }
+}
+
+/*
+---------------------
+Css For Work Process
+---------------------
+*/
+
+.work-process {
+    padding: 4rem 0;
+}
+
+.process-grid {
+    margin-top: 50px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.process-card {
+    background-color: var(--glassColor);
+    backdrop-filter: blur(20px);
+    border: var(--border);
+    border-color: var(--accentColor2);
+    border-radius: var(--containerRadius);
+    padding: 50px;
+    position: sticky;
+    top: 50px;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Stacking Logic */
+.process-card:nth-child(1) {
+    top: 15vh;
+    z-index: 1;
+}
+
+.process-card:nth-child(2) {
+    top: 18vh;
+    z-index: 2;
+}
+
+.process-card:nth-child(3) {
+    top: 21vh;
+    z-index: 3;
+}
+
+.process-card:nth-child(4) {
+    top: 24vh;
+    z-index: 4;
+}
+
+.process-number {
+    font-size: 60px;
+    font-weight: 700;
+    color: var(--accentColor2);
+    opacity: 0.5;
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    line-height: 1;
+    transition: all 0.3s ease;
+}
+
+
+.process-card:hover .process-number {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.process-content h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: var(--textColor);
+}
+
+.process-content p {
+    color: #ccc;
+    font-size: 16px;
+    line-height: 1.6;
 }
