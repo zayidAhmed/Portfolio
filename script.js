@@ -45,6 +45,7 @@ function closeLightbox() {
     document.getElementById("lightbox").style.display = "none";
 }
 
+// For using lightbox use [onclick="openLightbox(this)"] in img tag
 
 
 // ---------------------
