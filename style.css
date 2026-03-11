@@ -2000,7 +2000,7 @@ Css For Work Process
 }
 
 .process-card {
-    background-color: var(--glassColor);
+    /* background-color: var(--glassColor); */
     backdrop-filter: blur(20px);
     border: var(--border);
     border-color: var(--accentColor2);
