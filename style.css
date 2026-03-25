@@ -169,6 +169,19 @@ a {
     }
 } */
 
+.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+mark {
+    color: var(--accentColor2);
+    font-size: 14px;
+    font-weight: 500;
+    background-color: transparent;
+    margin-left: 10px;
+}
+
 /*
 ---------------------
 Css For Cursor
