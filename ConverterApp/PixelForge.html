@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
   <title>PixelForge — Professional Image Tools</title>
+  <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
@@ -19,7 +19,6 @@
     /* ============================================================
    DESIGN TOKENS
    ============================================================ */
-
     @font-face {
       font-family: saira;
       src: url(Saira-VariableFont_wdth\,wght.ttf);
@@ -1179,6 +1178,84 @@
     .compare-label.right {
       right: 8px;
     }
+
+    /* ============================================================
+   BG REMOVER — PROVIDER ROWS
+   ============================================================ */
+    .bgr-provider-row {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      transition: var(--trans);
+    }
+
+    .bgr-provider-row:hover {
+      border-color: var(--border2);
+    }
+
+    .bgr-provider-row.selected {
+      border-color: var(--border-accent);
+      background: var(--accent-glow2);
+    }
+
+    .bgr-prov-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .bgr-prov-radio {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--border2);
+      flex-shrink: 0;
+      margin-top: 3px;
+      transition: var(--trans);
+    }
+
+    .bgr-provider-row.selected .bgr-prov-radio {
+      border-color: var(--accent);
+      background: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .bgr-prov-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .bgr-prov-desc {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    .bgr-prov-tag {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    /* ============================================================
+   CROPPER HANDLES
+   ============================================================ */
+    .crp-handle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border: 2px solid #fff;
+      border-radius: 2px;
+      pointer-events: all;
+      z-index: 10;
+    }
   </style>
 </head>
 
@@ -1230,7 +1307,7 @@
         <div class="nav-item" data-tool="bg-remover" onclick="switchTool(this, 'bg-remover')">
           <span class="nav-icon">✦</span>
           <span class="nav-label">BG Remover</span>
-          <span class="nav-badge">soon</span>
+          <span class="nav-badge new">live</span>
         </div>
         <div class="nav-item" data-tool="resizer" onclick="switchTool(this, 'resizer')">
           <span class="nav-icon">⤢</span>
@@ -1240,12 +1317,12 @@
         <div class="nav-item" data-tool="cropper" onclick="switchTool(this, 'cropper')">
           <span class="nav-icon">⊡</span>
           <span class="nav-label">Cropper</span>
-          <span class="nav-badge">soon</span>
+          <span class="nav-badge new">live</span>
         </div>
         <div class="nav-item" data-tool="watermark" onclick="switchTool(this, 'watermark')">
           <span class="nav-icon">⊕</span>
           <span class="nav-label">Watermark</span>
-          <span class="nav-badge">soon</span>
+          <span class="nav-badge new">live</span>
         </div>
         <div class="nav-item" data-tool="palette" onclick="switchTool(this, 'palette')">
           <span class="nav-icon">◑</span>
@@ -1542,8 +1619,7 @@
                     oninput="document.getElementById('comp-quality-val').textContent=this.value;">
                   <div
                     style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px;">
-                    <span>1 — Max compression</span><span>100 — Best quality</span>
-                  </div>
+                    <span>1 — Max compression</span><span>100 — Best quality</span></div>
                 </div>
                 <div class="control-group">
                   <div class="control-label">Target Max Size <span
@@ -1605,13 +1681,224 @@
             </div>
           </div>
         </div>
+        <!-- TOOL 03: BACKGROUND REMOVER -->
         <div class="tool-panel" id="panel-bg-remover">
-          <div class="coming-soon-panel">
-            <div class="coming-soon-icon">✦</div>
-            <div class="coming-soon-title">Background Remover</div>
-            <div class="coming-soon-sub">AI-powered background removal using remove.bg API. Outputs clean transparent
-              PNG.</div>
-            <div class="coming-soon-badge">Phase 4 — Coming soon</div>
+          <div class="tool-grid-layout">
+
+            <!-- LEFT: upload + before/after compare -->
+            <div>
+              <div class="upload-zone" id="bgr-dropzone">
+                <input type="file" id="bgr-file-input" accept="image/jpeg,image/png,image/webp">
+                <span class="upload-icon">✦</span>
+                <div class="upload-title">Drop an image to remove background</div>
+                <div class="upload-sub">Supports <strong>JPG, PNG, WebP</strong> · Max <strong>25 MB</strong> · Output:
+                  transparent PNG</div>
+                <div class="upload-btn-row"><button class="btn-upload-trigger"
+                    onclick="document.getElementById('bgr-file-input').click()">Browse File</button></div>
+              </div>
+
+              <div id="bgr-file-info-wrap" style="display:none;margin-top:14px;">
+                <div class="file-info">
+                  <span class="file-info-name" id="bgr-fname">—</span>
+                  <span class="file-info-type" id="bgr-ftype">—</span>
+                  <span class="file-info-size" id="bgr-fsize">—</span>
+                  <button class="btn-ghost" onclick="resetBgr()"
+                    style="font-size:18px;padding:2px 6px;color:var(--text3)">×</button>
+                </div>
+              </div>
+
+              <!-- Progress -->
+              <div class="progress-wrap" id="bgr-progress" style="margin-top:12px;">
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" id="bgr-progress-fill"></div>
+                </div>
+                <div class="progress-label" id="bgr-progress-label">Processing…</div>
+              </div>
+
+              <!-- Before / After compare -->
+              <div style="margin-top:16px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                  <div class="tool-card-title" style="margin-bottom:0;">Before / After</div>
+                  <div id="bgr-compare-hint" style="font-size:11px;color:var(--text3);display:none;">← drag to compare →
+                  </div>
+                </div>
+                <div id="bgr-compare-wrap" class="compare-wrap" style="display:none;">
+                  <canvas id="bgr-canvas"></canvas>
+                  <div class="compare-slider-line" id="bgr-line"></div>
+                  <div class="compare-slider-handle" id="bgr-handle">⇔</div>
+                  <div class="compare-label left">Original</div>
+                  <div class="compare-label right">No BG</div>
+                </div>
+                <div class="preview-container" id="bgr-empty-box" style="min-height:300px;">
+                  <div class="preview-empty">Upload an image to start</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT: controls -->
+            <div style="display:flex;flex-direction:column;gap:16px;min-width:0;overflow:hidden;">
+
+              <!-- Provider card -->
+              <div class="tool-card">
+                <div class="tool-card-title">Engine / Provider</div>
+                <div style="display:flex;flex-direction:column;gap:6px;" id="bgr-provider-list">
+
+                  <!-- remove.bg -->
+                  <div class="bgr-provider-row" id="bgr-prov-removebg" onclick="setBgrProvider('removebg')"
+                    style="cursor:pointer;">
+                    <div class="bgr-prov-header">
+                      <div class="bgr-prov-radio" id="bgr-radio-removebg"></div>
+                      <div>
+                        <div class="bgr-prov-name">remove.bg <span class="bgr-prov-tag"
+                            style="background:rgba(61,219,164,0.12);color:var(--green);">Best quality</span></div>
+                        <div class="bgr-prov-desc">50 free API calls/month · Requires API key</div>
+                      </div>
+                    </div>
+                    <div class="bgr-prov-key" id="bgr-key-removebg" style="display:none;">
+                      <input type="password" id="bgr-apikey-removebg" placeholder="Paste remove.bg API key…"
+                        style="width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;margin-top:8px;"
+                        oninput="saveBgrSettings()">
+                      <a href="https://www.remove.bg/api" target="_blank"
+                        style="font-size:10px;color:var(--accent);margin-top:4px;display:inline-block;">Get free API key
+                        →</a>
+                    </div>
+                  </div>
+
+                  <!-- Clipdrop -->
+                  <div class="bgr-provider-row" id="bgr-prov-clipdrop" onclick="setBgrProvider('clipdrop')"
+                    style="cursor:pointer;">
+                    <div class="bgr-prov-header">
+                      <div class="bgr-prov-radio" id="bgr-radio-clipdrop"></div>
+                      <div>
+                        <div class="bgr-prov-name">ClipDrop <span class="bgr-prov-tag"
+                            style="background:rgba(91,163,245,0.12);color:var(--blue);">100/day free</span></div>
+                        <div class="bgr-prov-desc">100 free calls/day · Requires API key</div>
+                      </div>
+                    </div>
+                    <div class="bgr-prov-key" id="bgr-key-clipdrop" style="display:none;">
+                      <input type="password" id="bgr-apikey-clipdrop" placeholder="Paste ClipDrop API key…"
+                        style="width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;margin-top:8px;"
+                        oninput="saveBgrSettings()">
+                      <a href="https://clipdrop.co/apis" target="_blank"
+                        style="font-size:10px;color:var(--accent);margin-top:4px;display:inline-block;">Get free API key
+                        →</a>
+                    </div>
+                  </div>
+
+                  <!-- PhotoRoom -->
+                  <div class="bgr-provider-row" id="bgr-prov-photoroom" onclick="setBgrProvider('photoroom')"
+                    style="cursor:pointer;">
+                    <div class="bgr-prov-header">
+                      <div class="bgr-prov-radio" id="bgr-radio-photoroom"></div>
+                      <div>
+                        <div class="bgr-prov-name">PhotoRoom <span class="bgr-prov-tag"
+                            style="background:rgba(245,166,35,0.12);color:var(--amber);">10/day free</span></div>
+                        <div class="bgr-prov-desc">10 free calls/day · Requires API key</div>
+                      </div>
+                    </div>
+                    <div class="bgr-prov-key" id="bgr-key-photoroom" style="display:none;">
+                      <input type="password" id="bgr-apikey-photoroom" placeholder="Paste PhotoRoom API key…"
+                        style="width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;margin-top:8px;"
+                        oninput="saveBgrSettings()">
+                      <a href="https://www.photoroom.com/api" target="_blank"
+                        style="font-size:10px;color:var(--accent);margin-top:4px;display:inline-block;">Get free API key
+                        →</a>
+                    </div>
+                  </div>
+
+                  <!-- Vanilla JS fallback -->
+                  <div class="bgr-provider-row" id="bgr-prov-vanilla" onclick="setBgrProvider('vanilla')"
+                    style="cursor:pointer;">
+                    <div class="bgr-prov-header">
+                      <div class="bgr-prov-radio" id="bgr-radio-vanilla"></div>
+                      <div>
+                        <div class="bgr-prov-name">Vanilla JS <span class="bgr-prov-tag"
+                            style="background:rgba(255,107,53,0.12);color:var(--accent);">No API · Offline</span></div>
+                        <div class="bgr-prov-desc">Edge-detection + flood-fill · Works when APIs run out</div>
+                      </div>
+                    </div>
+                    <!-- Vanilla settings shown when selected -->
+                    <div id="bgr-vanilla-settings" style="display:none;margin-top:10px;">
+                      <div class="control-label" style="margin-bottom:6px;">Tolerance <span id="bgr-tol-val">30</span>
+                      </div>
+                      <input type="range" id="bgr-tolerance" min="1" max="120" value="30"
+                        oninput="document.getElementById('bgr-tol-val').textContent=this.value;saveBgrSettings();">
+                      <div
+                        style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:3px;">
+                        <span>Precise</span><span>Aggressive</span></div>
+                      <div class="control-label" style="margin-top:10px;margin-bottom:6px;">Smoothing <span
+                          id="bgr-smooth-val">2</span>px</div>
+                      <input type="range" id="bgr-smooth" min="0" max="8" value="2"
+                        oninput="document.getElementById('bgr-smooth-val').textContent=this.value;saveBgrSettings();">
+                      <div
+                        style="margin-top:8px;padding:8px 10px;background:var(--amber-bg);border:1px solid rgba(245,166,35,0.2);border-radius:var(--radius);font-size:11px;color:var(--amber);line-height:1.5;">
+                        Vanilla mode works best on images with clear contrast between subject and background. Complex
+                        scenes may need API providers for professional results.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- API status indicator -->
+                <div id="bgr-api-status"
+                  style="display:none;margin-top:10px;padding:8px 10px;border-radius:var(--radius);font-size:11px;line-height:1.5;">
+                </div>
+              </div>
+
+              <!-- Output settings -->
+              <div class="tool-card">
+                <div class="tool-card-title">Output Settings</div>
+
+                <div class="control-group">
+                  <div class="control-label">Background</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;" id="bgr-bg-grid">
+                    <button class="format-btn active" onclick="setBgrBg('transparent',this)">Transparent</button>
+                    <button class="format-btn" onclick="setBgrBg('white',this)">White</button>
+                    <button class="format-btn" onclick="setBgrBg('black',this)">Black</button>
+                    <button class="format-btn" onclick="setBgrBg('custom',this)">Custom</button>
+                  </div>
+                  <div id="bgr-custom-bg-wrap"
+                    style="display:none;margin-top:8px;display:none;align-items:center;gap:8px;">
+                    <input type="color" id="bgr-custom-color" value="#00ff00"
+                      style="width:40px;height:36px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);cursor:pointer;padding:2px;"
+                      oninput="saveBgrSettings()">
+                    <span style="font-size:12px;color:var(--text2);">Custom background color</span>
+                  </div>
+                </div>
+
+                <div class="control-group">
+                  <div class="control-label">Output Format</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                    <button class="format-btn active" id="bgr-fmt-png" onclick="setBgrFmt('png',this)">PNG
+                      (transparent)</button>
+                    <button class="format-btn" id="bgr-fmt-jpg" onclick="setBgrFmt('jpg',this)">JPG (flat bg)</button>
+                  </div>
+                </div>
+
+                <!-- Output info -->
+                <div id="bgr-output-empty" style="color:var(--text3);font-size:12px;text-align:center;padding:14px 0;">
+                  Result will appear here after processing</div>
+                <div id="bgr-output-info" style="display:none;">
+                  <div class="output-meta" style="margin-bottom:10px;">
+                    <span class="output-meta-badge" id="bgr-out-badge">PNG</span>
+                    <span id="bgr-out-dims" style="font-size:12px;color:var(--text3);">—</span>
+                    <span id="bgr-out-size" style="font-size:12px;color:var(--text3);">—</span>
+                  </div>
+                  <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">
+                    Processed by: <span id="bgr-used-provider" style="color:var(--accent);font-weight:500;">—</span>
+                  </div>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+                  <button class="btn btn-primary" id="bgr-btn-remove" onclick="runBgRemoval()" disabled>✦ Remove
+                    Background</button>
+                  <button class="btn btn-secondary" id="bgr-btn-download" onclick="downloadBgr()"
+                    style="display:none;">↓ Download PNG</button>
+                  <button class="btn btn-ghost" onclick="resetBgr()" style="margin-top:2px;">Reset</button>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
         <!-- TOOL 04: IMAGE RESIZER -->
@@ -1701,8 +1988,7 @@
                     oninput="document.getElementById('rsz-pct-val').textContent=this.value; updateRszFromPct();">
                   <div
                     style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px;">
-                    <span>1%</span><span>200%</span>
-                  </div>
+                    <span>1%</span><span>200%</span></div>
                   <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;">
                     <button class="format-btn"
                       onclick="document.getElementById('rsz-pct-slider').value=25;document.getElementById('rsz-pct-val').textContent=25;updateRszFromPct();">25%</button>
@@ -1770,20 +2056,387 @@
             </div>
           </div>
         </div>
+        <!-- TOOL 05: IMAGE CROPPER -->
         <div class="tool-panel" id="panel-cropper">
-          <div class="coming-soon-panel">
-            <div class="coming-soon-icon">⊡</div>
-            <div class="coming-soon-title">Image Cropper</div>
-            <div class="coming-soon-sub">Interactive drag-to-crop with preset ratios (1:1, 16:9, 4:3, freeform).</div>
-            <div class="coming-soon-badge">Phase 3 — Coming soon</div>
+          <div class="tool-grid-layout">
+            <!-- LEFT: canvas crop area -->
+            <div>
+              <div class="upload-zone" id="crp-dropzone">
+                <input type="file" id="crp-file-input" accept="image/*">
+                <span class="upload-icon">⊡</span>
+                <div class="upload-title">Drop an image to crop</div>
+                <div class="upload-sub">Supports <strong>PNG, JPG, WebP, BMP, GIF</strong> · Max <strong>50 MB</strong>
+                </div>
+                <div class="upload-btn-row"><button class="btn-upload-trigger"
+                    onclick="document.getElementById('crp-file-input').click()">Browse File</button></div>
+              </div>
+              <div id="crp-file-info-wrap" style="display:none;margin-top:14px;">
+                <div class="file-info">
+                  <span class="file-info-name" id="crp-fname">—</span>
+                  <span class="file-info-type" id="crp-ftype">—</span>
+                  <span class="file-info-size" id="crp-fsize">—</span>
+                  <button class="btn-ghost" onclick="resetCropper()"
+                    style="font-size:18px;padding:2px 6px;color:var(--text3)">×</button>
+                </div>
+              </div>
+              <!-- Live crop dimension display -->
+              <div id="crp-dim-bar"
+                style="display:none;margin-top:6px;padding:8px 14px;background:var(--bg3);border-radius:var(--radius);font-size:12px;color:var(--text2);display:flex;gap:16px;align-items:center;">
+                <span>Crop: <strong id="crp-live-w" style="color:var(--text);">—</strong> × <strong id="crp-live-h"
+                    style="color:var(--text);">—</strong> px</span>
+                <span style="color:var(--text3);">|</span>
+                <span>Source: <span id="crp-src-dims" style="color:var(--text3);">—</span></span>
+              </div>
+              <!-- Crop canvas wrapper -->
+              <div style="margin-top:14px;position:relative;">
+                <div class="preview-container" id="crp-empty-box" style="min-height:320px;">
+                  <div class="preview-empty">Upload an image to start cropping</div>
+                </div>
+                <div id="crp-canvas-wrap"
+                  style="display:none;position:relative;background:repeating-conic-gradient(#0e0020 0% 25%,#16002e 0% 50%) 0 0/16px 16px;border-radius:var(--radius);overflow:hidden;cursor:crosshair;user-select:none;">
+                  <canvas id="crp-canvas"></canvas>
+                  <!-- Crop overlay -->
+                  <div id="crp-overlay" style="position:absolute;inset:0;pointer-events:none;">
+                    <!-- dark masks -->
+                    <div id="crp-mask-top" style="position:absolute;left:0;right:0;top:0;background:rgba(0,0,0,0.55);">
+                    </div>
+                    <div id="crp-mask-bottom"
+                      style="position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);"></div>
+                    <div id="crp-mask-left"
+                      style="position:absolute;top:0;bottom:0;left:0;background:rgba(0,0,0,0.55);"></div>
+                    <div id="crp-mask-right"
+                      style="position:absolute;top:0;bottom:0;right:0;background:rgba(0,0,0,0.55);"></div>
+                    <!-- crop box border -->
+                    <div id="crp-box"
+                      style="position:absolute;border:2px solid var(--accent);box-sizing:border-box;pointer-events:all;cursor:move;">
+                      <!-- rule-of-thirds grid -->
+                      <div
+                        style="position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr;pointer-events:none;">
+                        <div
+                          style="border-right:1px solid rgba(255,107,53,0.3);border-bottom:1px solid rgba(255,107,53,0.3);">
+                        </div>
+                        <div
+                          style="border-right:1px solid rgba(255,107,53,0.3);border-bottom:1px solid rgba(255,107,53,0.3);">
+                        </div>
+                        <div style="border-bottom:1px solid rgba(255,107,53,0.3);"></div>
+                        <div
+                          style="border-right:1px solid rgba(255,107,53,0.3);border-bottom:1px solid rgba(255,107,53,0.3);">
+                        </div>
+                        <div
+                          style="border-right:1px solid rgba(255,107,53,0.3);border-bottom:1px solid rgba(255,107,53,0.3);">
+                        </div>
+                        <div style="border-bottom:1px solid rgba(255,107,53,0.3);"></div>
+                        <div style="border-right:1px solid rgba(255,107,53,0.3);"></div>
+                        <div style="border-right:1px solid rgba(255,107,53,0.3);"></div>
+                        <div></div>
+                      </div>
+                      <!-- corner handles -->
+                      <div class="crp-handle" data-dir="nw" style="top:-5px;left:-5px;cursor:nw-resize;"></div>
+                      <div class="crp-handle" data-dir="ne" style="top:-5px;right:-5px;cursor:ne-resize;"></div>
+                      <div class="crp-handle" data-dir="sw" style="bottom:-5px;left:-5px;cursor:sw-resize;"></div>
+                      <div class="crp-handle" data-dir="se" style="bottom:-5px;right:-5px;cursor:se-resize;"></div>
+                      <!-- edge handles -->
+                      <div class="crp-handle" data-dir="n"
+                        style="top:-4px;left:50%;transform:translateX(-50%);cursor:n-resize;width:18px;height:8px;border-radius:3px;">
+                      </div>
+                      <div class="crp-handle" data-dir="s"
+                        style="bottom:-4px;left:50%;transform:translateX(-50%);cursor:s-resize;width:18px;height:8px;border-radius:3px;">
+                      </div>
+                      <div class="crp-handle" data-dir="w"
+                        style="left:-4px;top:50%;transform:translateY(-50%);cursor:w-resize;width:8px;height:18px;border-radius:3px;">
+                      </div>
+                      <div class="crp-handle" data-dir="e"
+                        style="right:-4px;top:50%;transform:translateY(-50%);cursor:e-resize;width:8px;height:18px;border-radius:3px;">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT: controls -->
+            <div style="display:flex;flex-direction:column;gap:16px;min-width:0;overflow:hidden;">
+              <div class="tool-card">
+                <div class="tool-card-title">Aspect Ratio</div>
+                <div class="control-group">
+                  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;" id="crp-ratio-grid">
+                    <button class="format-btn active" onclick="setCropRatio('free',this)">Free</button>
+                    <button class="format-btn" onclick="setCropRatio('1:1',this)">1:1</button>
+                    <button class="format-btn" onclick="setCropRatio('4:3',this)">4:3</button>
+                    <button class="format-btn" onclick="setCropRatio('16:9',this)">16:9</button>
+                    <button class="format-btn" onclick="setCropRatio('3:2',this)">3:2</button>
+                    <button class="format-btn" onclick="setCropRatio('2:3',this)">2:3</button>
+                  </div>
+                </div>
+
+                <div class="control-group">
+                  <div class="control-label">Manual W × H (px)</div>
+                  <div style="display:flex;gap:8px;align-items:center;min-width:0;">
+                    <input type="number" id="crp-input-w" placeholder="W" min="1"
+                      style="flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;"
+                      oninput="applyCropFromInputs('w')">
+                    <span style="color:var(--text3);flex-shrink:0;">×</span>
+                    <input type="number" id="crp-input-h" placeholder="H" min="1"
+                      style="flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;"
+                      oninput="applyCropFromInputs('h')">
+                  </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <div class="control-group">
+                  <div class="control-label">Output Format</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+                    <button class="format-btn active" id="crp-fmt-same" onclick="setCrpFmt('same',this)">Same</button>
+                    <button class="format-btn" id="crp-fmt-png" onclick="setCrpFmt('png',this)">PNG</button>
+                    <button class="format-btn" id="crp-fmt-jpg" onclick="setCrpFmt('jpg',this)">JPG</button>
+                    <button class="format-btn" id="crp-fmt-webp" onclick="setCrpFmt('webp',this)">WebP</button>
+                  </div>
+                </div>
+
+                <div class="control-group" id="crp-quality-wrap">
+                  <div class="control-label">Output Quality <span id="crp-quality-val">95</span></div>
+                  <input type="range" id="crp-quality" min="1" max="100" value="95"
+                    oninput="document.getElementById('crp-quality-val').textContent=this.value;">
+                </div>
+              </div>
+
+              <div class="tool-card">
+                <div class="tool-card-title">Actions</div>
+                <div style="display:flex;gap:6px;margin-bottom:14px;">
+                  <button class="btn btn-secondary" style="flex:1;font-size:12px;" onclick="rotateCrop(-90)">↺
+                    90°</button>
+                  <button class="btn btn-secondary" style="flex:1;font-size:12px;" onclick="rotateCrop(90)">↻
+                    90°</button>
+                  <button class="btn btn-secondary" style="flex:1;font-size:12px;" onclick="flipCrop('h')">⇔ Flip
+                    H</button>
+                  <button class="btn btn-secondary" style="flex:1;font-size:12px;" onclick="flipCrop('v')">⇕ Flip
+                    V</button>
+                </div>
+                <button class="btn btn-secondary" style="width:100%;margin-bottom:8px;font-size:12px;"
+                  onclick="selectAllCrop()">Select All</button>
+
+                <div class="section-divider"></div>
+
+                <div id="crp-output-empty" style="color:var(--text3);font-size:12px;text-align:center;padding:12px 0;">
+                  Crop output will appear here</div>
+                <div id="crp-output-info" style="display:none;">
+                  <div class="output-meta" style="margin-bottom:12px;">
+                    <span class="output-meta-badge" id="crp-out-badge">—</span>
+                    <span id="crp-out-dims-label" style="font-size:12px;color:var(--text3);">—</span>
+                    <span id="crp-out-size-label" style="font-size:12px;color:var(--text3);">—</span>
+                  </div>
+                  <div class="output-img-box" style="min-height:80px;max-height:140px;">
+                    <img id="crp-out-preview" src="" alt="" style="max-height:140px;object-fit:contain;">
+                  </div>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
+                  <button class="btn btn-primary" id="crp-btn-crop" onclick="runCrop()" disabled>⊡ Crop Image</button>
+                  <button class="btn btn-secondary" id="crp-btn-download" onclick="downloadCrop()"
+                    style="display:none;">↓ Download</button>
+                  <button class="btn btn-ghost" onclick="resetCropper()" style="margin-top:2px;">Reset</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+        <!-- TOOL 06: WATERMARK -->
         <div class="tool-panel" id="panel-watermark">
-          <div class="coming-soon-panel">
-            <div class="coming-soon-icon">⊕</div>
-            <div class="coming-soon-title">Watermark Tool</div>
-            <div class="coming-soon-sub">Add text or image watermark with position, opacity, and font controls.</div>
-            <div class="coming-soon-badge">Phase 3 — Coming soon</div>
+          <div class="tool-grid-layout">
+            <!-- LEFT: live canvas preview -->
+            <div>
+              <div class="upload-zone" id="wm-dropzone">
+                <input type="file" id="wm-file-input" accept="image/*">
+                <span class="upload-icon">⊕</span>
+                <div class="upload-title">Drop an image to watermark</div>
+                <div class="upload-sub">Supports <strong>PNG, JPG, WebP, BMP</strong> · Max <strong>50 MB</strong></div>
+                <div class="upload-btn-row"><button class="btn-upload-trigger"
+                    onclick="document.getElementById('wm-file-input').click()">Browse File</button></div>
+              </div>
+              <div id="wm-file-info-wrap" style="display:none;margin-top:14px;">
+                <div class="file-info">
+                  <span class="file-info-name" id="wm-fname">—</span>
+                  <span class="file-info-type" id="wm-ftype">—</span>
+                  <span class="file-info-size" id="wm-fsize">—</span>
+                  <button class="btn-ghost" onclick="resetWatermark()"
+                    style="font-size:18px;padding:2px 6px;color:var(--text3)">×</button>
+                </div>
+              </div>
+              <!-- Live preview canvas -->
+              <div style="margin-top:14px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                  <div class="tool-card-title" style="margin-bottom:0;">Live Preview</div>
+                  <div style="font-size:11px;color:var(--text3);" id="wm-preview-hint" style="display:none;">Drag
+                    watermark to reposition</div>
+                </div>
+                <div class="preview-container" id="wm-empty-box" style="min-height:300px;">
+                  <div class="preview-empty">Upload an image to preview watermark</div>
+                </div>
+                <div id="wm-canvas-wrap"
+                  style="display:none;position:relative;border-radius:var(--radius);overflow:hidden;cursor:default;">
+                  <canvas id="wm-canvas" style="display:block;width:100%;cursor:move;"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT: controls -->
+            <div style="display:flex;flex-direction:column;gap:16px;min-width:0;overflow:hidden;">
+              <!-- Type toggle -->
+              <div class="tool-card">
+                <div class="tool-card-title">Watermark Type</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px;">
+                  <button class="format-btn active" id="wm-type-text" onclick="setWmType('text',this)">Text</button>
+                  <button class="format-btn" id="wm-type-image" onclick="setWmType('image',this)">Image</button>
+                </div>
+
+                <!-- TEXT controls -->
+                <div id="wm-text-controls">
+                  <div class="control-group">
+                    <div class="control-label">Watermark Text</div>
+                    <input type="text" id="wm-text" value="© PixelForge"
+                      style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:8px;font-size:13px;"
+                      oninput="renderWatermark()">
+                  </div>
+                  <div class="control-group">
+                    <div class="control-label">Font Size <span id="wm-fontsize-val">36</span>px</div>
+                    <input type="range" id="wm-fontsize" min="8" max="200" value="36"
+                      oninput="document.getElementById('wm-fontsize-val').textContent=this.value;renderWatermark();">
+                  </div>
+                  <div class="control-group">
+                    <div class="control-label">Font</div>
+                    <select id="wm-font"
+                      style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:8px;font-size:12px;"
+                      onchange="renderWatermark()">
+                      <option value="sans-serif">Sans-serif</option>
+                      <option value="serif">Serif</option>
+                      <option value="monospace">Monospace</option>
+                      <option value="Arial">Arial</option>
+                      <option value="Georgia">Georgia</option>
+                      <option value="Impact">Impact</option>
+                    </select>
+                  </div>
+                  <div class="control-group">
+                    <div class="control-label">Text Color</div>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                      <input type="color" id="wm-color" value="#ffffff"
+                        style="width:40px;height:36px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);cursor:pointer;padding:2px;"
+                        oninput="renderWatermark()">
+                      <div style="display:flex;gap:5px;">
+                        <button class="format-btn" style="padding:5px 8px;font-size:11px;"
+                          onclick="document.getElementById('wm-color').value='#ffffff';renderWatermark()">White</button>
+                        <button class="format-btn" style="padding:5px 8px;font-size:11px;"
+                          onclick="document.getElementById('wm-color').value='#000000';renderWatermark()">Black</button>
+                        <button class="format-btn" style="padding:5px 8px;font-size:11px;"
+                          onclick="document.getElementById('wm-color').value='#ff6b35';renderWatermark()">Orange</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <div style="display:flex;gap:6px;">
+                      <label
+                        style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer;">
+                        <input type="checkbox" id="wm-bold" style="accent-color:var(--accent);"
+                          onchange="renderWatermark()"> Bold
+                      </label>
+                      <label
+                        style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer;">
+                        <input type="checkbox" id="wm-italic" style="accent-color:var(--accent);"
+                          onchange="renderWatermark()"> Italic
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- IMAGE watermark controls -->
+                <div id="wm-image-controls" style="display:none;">
+                  <div class="control-group">
+                    <div class="control-label">Watermark Image</div>
+                    <div class="upload-zone" id="wm-logo-dropzone" style="padding:20px 16px;">
+                      <input type="file" id="wm-logo-input" accept="image/*">
+                      <div style="font-size:12px;color:var(--text3);">Drop logo / PNG here</div>
+                      <div class="upload-btn-row" style="margin-top:8px;">
+                        <button class="btn-upload-trigger" style="font-size:11px;padding:5px 14px;"
+                          onclick="document.getElementById('wm-logo-input').click()">Browse</button>
+                      </div>
+                    </div>
+                    <div id="wm-logo-name" style="display:none;font-size:11px;color:var(--green);margin-top:6px;"></div>
+                  </div>
+                  <div class="control-group">
+                    <div class="control-label">Logo Size <span id="wm-logo-size-val">20</span>%</div>
+                    <input type="range" id="wm-logo-size" min="2" max="80" value="20"
+                      oninput="document.getElementById('wm-logo-size-val').textContent=this.value;renderWatermark();">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Shared controls -->
+              <div class="tool-card">
+                <div class="tool-card-title">Position & Style</div>
+                <div class="control-group">
+                  <div class="control-label">Position</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;" id="wm-pos-grid">
+                    <button class="format-btn" onclick="setWmPos('top-left',this)" style="font-size:11px;">↖ Top
+                      Left</button>
+                    <button class="format-btn" onclick="setWmPos('top-center',this)" style="font-size:11px;">↑
+                      Top</button>
+                    <button class="format-btn" onclick="setWmPos('top-right',this)" style="font-size:11px;">↗ Top
+                      Right</button>
+                    <button class="format-btn" onclick="setWmPos('mid-left',this)" style="font-size:11px;">← Mid
+                      Left</button>
+                    <button class="format-btn active" onclick="setWmPos('center',this)" style="font-size:11px;">●
+                      Center</button>
+                    <button class="format-btn" onclick="setWmPos('mid-right',this)" style="font-size:11px;">→ Mid
+                      Right</button>
+                    <button class="format-btn" onclick="setWmPos('bottom-left',this)" style="font-size:11px;">↙ Bot
+                      Left</button>
+                    <button class="format-btn" onclick="setWmPos('bottom-center',this)" style="font-size:11px;">↓
+                      Bottom</button>
+                    <button class="format-btn" onclick="setWmPos('bottom-right',this)" style="font-size:11px;">↘ Bot
+                      Right</button>
+                  </div>
+                  <label
+                    style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);margin-top:8px;cursor:pointer;">
+                    <input type="checkbox" id="wm-tile" style="accent-color:var(--accent);"
+                      onchange="renderWatermark()"> Tile (repeat across image)
+                  </label>
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Opacity <span id="wm-opacity-val">60</span>%</div>
+                  <input type="range" id="wm-opacity" min="1" max="100" value="60"
+                    oninput="document.getElementById('wm-opacity-val').textContent=this.value;renderWatermark();">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Rotation <span id="wm-rotate-val">0</span>°</div>
+                  <input type="range" id="wm-rotate" min="-180" max="180" value="0"
+                    oninput="document.getElementById('wm-rotate-val').textContent=this.value;renderWatermark();">
+                  <div style="display:flex;gap:6px;margin-top:6px;">
+                    <button class="format-btn" style="font-size:11px;"
+                      onclick="document.getElementById('wm-rotate').value=0;document.getElementById('wm-rotate-val').textContent=0;renderWatermark();">0°</button>
+                    <button class="format-btn" style="font-size:11px;"
+                      onclick="document.getElementById('wm-rotate').value=-45;document.getElementById('wm-rotate-val').textContent=-45;renderWatermark();">-45°</button>
+                    <button class="format-btn" style="font-size:11px;"
+                      onclick="document.getElementById('wm-rotate').value=45;document.getElementById('wm-rotate-val').textContent=45;renderWatermark();">45°</button>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Output Format</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+                    <button class="format-btn active" id="wm-fmt-same" onclick="setWmFmt('same',this)">Same</button>
+                    <button class="format-btn" id="wm-fmt-png" onclick="setWmFmt('png',this)">PNG</button>
+                    <button class="format-btn" id="wm-fmt-jpg" onclick="setWmFmt('jpg',this)">JPG</button>
+                  </div>
+                </div>
+                <div class="section-divider"></div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <button class="btn btn-primary" id="wm-btn-apply" onclick="applyWatermark()" disabled>⊕ Apply
+                    Watermark</button>
+                  <button class="btn btn-secondary" id="wm-btn-download" onclick="downloadWatermark()"
+                    style="display:none;">↓ Download</button>
+                  <button class="btn btn-ghost" onclick="resetWatermark()" style="margin-top:2px;">Reset</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="tool-panel" id="panel-palette">
@@ -2925,6 +3578,1389 @@
       document.getElementById('rsz-width').value = '';
       document.getElementById('rsz-height').value = '';
     }
+
+
+    /* ============================================================
+       TOOL 05 — IMAGE CROPPER
+       ============================================================ */
+    const crpState = {
+      file: null, img: null,
+      canvasW: 0, canvasH: 0,       // display canvas size
+      scaleX: 1, scaleY: 1,         // canvas px → original px ratio
+      box: { x: 0, y: 0, w: 0, h: 0 },  // in canvas coords
+      ratio: 'free',                  // 'free' | '1:1' | '16:9' etc.
+      fmt: 'same',
+      rotation: 0, flipH: false, flipV: false,
+      outBlob: null, outUrl: null,
+      drag: null,   // { type:'move'|'resize', dir, sx, sy, bx,by,bw,bh }
+    };
+
+    /* ---- drag & drop ---- */
+    const crpDropzone = document.getElementById('crp-dropzone');
+    crpDropzone.addEventListener('dragover', e => { e.preventDefault(); crpDropzone.classList.add('dragover'); });
+    crpDropzone.addEventListener('dragleave', () => crpDropzone.classList.remove('dragover'));
+    crpDropzone.addEventListener('drop', e => { e.preventDefault(); crpDropzone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) handleCrpFile(f); });
+    crpDropzone.addEventListener('click', e => { if (!e.target.classList.contains('btn-upload-trigger')) document.getElementById('crp-file-input').click(); });
+    document.getElementById('crp-file-input').addEventListener('change', e => { if (e.target.files[0]) handleCrpFile(e.target.files[0]); });
+
+    function handleCrpFile(file) {
+      if (!validateFile(file)) return;
+      crpState.file = file;
+      crpState.rotation = 0; crpState.flipH = false; crpState.flipV = false;
+      crpState.outBlob = null;
+      if (crpState.outUrl) { URL.revokeObjectURL(crpState.outUrl); crpState.outUrl = null; }
+
+      document.getElementById('crp-fname').textContent = file.name;
+      document.getElementById('crp-ftype').textContent = (file.type.split('/')[1] || 'image').toUpperCase();
+      document.getElementById('crp-fsize').textContent = formatBytes(file.size);
+      document.getElementById('crp-file-info-wrap').style.display = 'block';
+      document.getElementById('crp-btn-crop').disabled = false;
+      document.getElementById('crp-btn-download').style.display = 'none';
+      document.getElementById('crp-output-empty').style.display = 'block';
+      document.getElementById('crp-output-info').style.display = 'none';
+
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          crpState.img = img;
+          document.getElementById('crp-src-dims').textContent = `${img.naturalWidth} × ${img.naturalHeight}`;
+          document.getElementById('crp-dim-bar').style.display = 'flex';
+          buildCropCanvas();
+        };
+        img.onerror = () => ErrorSystem.log('PROCESSING', `Could not decode "${file.name}"`, '');
+        img.src = ev.target.result;
+      };
+      reader.onerror = () => ErrorSystem.log('PROCESSING', `FileReader failed for "${file.name}"`, reader.error?.message || '');
+      reader.readAsDataURL(file);
+    }
+
+    function buildCropCanvas() {
+      const img = crpState.img;
+      const wrap = document.getElementById('crp-canvas-wrap');
+      const canvas = document.getElementById('crp-canvas');
+      const maxW = wrap.parentElement.offsetWidth || 700;
+      const maxH = 500;
+
+      // Respect rotation for display dimensions
+      const rotated = crpState.rotation % 180 !== 0;
+      const srcW = rotated ? img.naturalHeight : img.naturalWidth;
+      const srcH = rotated ? img.naturalWidth : img.naturalHeight;
+
+      const scale = Math.min(1, maxW / srcW, maxH / srcH);
+      crpState.canvasW = Math.round(srcW * scale);
+      crpState.canvasH = Math.round(srcH * scale);
+      crpState.scaleX = img.naturalWidth / crpState.canvasW * (rotated ? srcH / srcW : 1);
+      crpState.scaleY = img.naturalHeight / crpState.canvasH * (rotated ? srcW / srcH : 1);
+
+      canvas.width = crpState.canvasW;
+      canvas.height = crpState.canvasH;
+      canvas.style.width = crpState.canvasW + 'px';
+      canvas.style.height = crpState.canvasH + 'px';
+      wrap.style.width = crpState.canvasW + 'px';
+      wrap.style.height = crpState.canvasH + 'px';
+
+      drawCropImage();
+      selectAllCrop();
+
+      document.getElementById('crp-empty-box').style.display = 'none';
+      wrap.style.display = 'block';
+
+      initCropInteraction();
+    }
+
+    function drawCropImage() {
+      const canvas = document.getElementById('crp-canvas');
+      const ctx = canvas.getContext('2d');
+      const img = crpState.img;
+      const W = crpState.canvasW, H = crpState.canvasH;
+      ctx.clearRect(0, 0, W, H);
+      ctx.save();
+      ctx.translate(W / 2, H / 2);
+      ctx.rotate(crpState.rotation * Math.PI / 180);
+      ctx.scale(crpState.flipH ? -1 : 1, crpState.flipV ? -1 : 1);
+      ctx.drawImage(img, -W / 2, -H / 2, W, H);
+      ctx.restore();
+    }
+
+    function updateCropOverlay() {
+      const b = crpState.box;
+      const W = crpState.canvasW, H = crpState.canvasH;
+      const top = document.getElementById('crp-mask-top');
+      const bottom = document.getElementById('crp-mask-bottom');
+      const left = document.getElementById('crp-mask-left');
+      const right = document.getElementById('crp-mask-right');
+      const box = document.getElementById('crp-box');
+
+      top.style.height = b.y + 'px';
+      bottom.style.height = (H - b.y - b.h) + 'px';
+      left.style.top = b.y + 'px';
+      left.style.height = b.h + 'px';
+      left.style.width = b.x + 'px';
+      right.style.top = b.y + 'px';
+      right.style.height = b.h + 'px';
+      right.style.width = (W - b.x - b.w) + 'px';
+      box.style.left = b.x + 'px';
+      box.style.top = b.y + 'px';
+      box.style.width = b.w + 'px';
+      box.style.height = b.h + 'px';
+
+      // Update live dimension display
+      const pw = Math.round(b.w * (crpState.img.naturalWidth / crpState.canvasW));
+      const ph = Math.round(b.h * (crpState.img.naturalHeight / crpState.canvasH));
+      document.getElementById('crp-live-w').textContent = pw;
+      document.getElementById('crp-live-h').textContent = ph;
+      document.getElementById('crp-input-w').value = pw;
+      document.getElementById('crp-input-h').value = ph;
+    }
+
+    function selectAllCrop() {
+      const pad = 4;
+      crpState.box = { x: pad, y: pad, w: crpState.canvasW - pad * 2, h: crpState.canvasH - pad * 2 };
+      applyRatioClamped();
+      updateCropOverlay();
+    }
+
+    function setCropRatio(ratio, btn) {
+      crpState.ratio = ratio;
+      document.querySelectorAll('#crp-ratio-grid .format-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyRatioClamped();
+      updateCropOverlay();
+    }
+
+    function applyRatioClamped() {
+      if (crpState.ratio === 'free') return;
+      const [rw, rh] = crpState.ratio.split(':').map(Number);
+      const b = crpState.box;
+      const targetH = Math.round(b.w * rh / rw);
+      if (b.y + targetH <= crpState.canvasH) {
+        b.h = targetH;
+      } else {
+        b.h = crpState.canvasH - b.y;
+        b.w = Math.round(b.h * rw / rh);
+      }
+    }
+
+    function applyCropFromInputs(changed) {
+      if (!crpState.img) return;
+      const scaleX = crpState.canvasW / crpState.img.naturalWidth;
+      const scaleY = crpState.canvasH / crpState.img.naturalHeight;
+      const pw = parseInt(document.getElementById('crp-input-w').value) || 0;
+      const ph = parseInt(document.getElementById('crp-input-h').value) || 0;
+      if (changed === 'w' && pw > 0) {
+        crpState.box.w = Math.min(Math.round(pw * scaleX), crpState.canvasW - crpState.box.x);
+        if (crpState.ratio !== 'free') {
+          const [rw, rh] = crpState.ratio.split(':').map(Number);
+          crpState.box.h = Math.round(crpState.box.w * rh / rw);
+        }
+      }
+      if (changed === 'h' && ph > 0) {
+        crpState.box.h = Math.min(Math.round(ph * scaleY), crpState.canvasH - crpState.box.y);
+        if (crpState.ratio !== 'free') {
+          const [rw, rh] = crpState.ratio.split(':').map(Number);
+          crpState.box.w = Math.round(crpState.box.h * rw / rh);
+        }
+      }
+      updateCropOverlay();
+    }
+
+    function setCrpFmt(fmt, btn) {
+      crpState.fmt = fmt;
+      ['same', 'png', 'jpg', 'webp'].forEach(f => {
+        const el = document.getElementById(`crp-fmt-${f}`);
+        if (el) el.classList.toggle('active', f === fmt);
+      });
+    }
+
+    function initCropInteraction() {
+      const wrap = document.getElementById('crp-canvas-wrap');
+      const box = document.getElementById('crp-box');
+      let activeHandle = null;
+
+      function getPos(e) {
+        const rect = wrap.getBoundingClientRect();
+        const cx = e.touches ? e.touches[0].clientX : e.clientX;
+        const cy = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: cx - rect.left, y: cy - rect.top };
+      }
+
+      function clamp(val, min, max) { return Math.max(min, Math.min(max, val)); }
+
+      function startDrag(dir, e) {
+        e.preventDefault(); e.stopPropagation();
+        const pos = getPos(e);
+        activeHandle = { dir, sx: pos.x, sy: pos.y, ...JSON.parse(JSON.stringify(crpState.box)) };
+      }
+
+      // Box move
+      box.addEventListener('mousedown', e => { if (e.target.classList.contains('crp-handle')) return; startDrag('move', e); });
+      box.addEventListener('touchstart', e => { if (e.target.classList.contains('crp-handle')) return; startDrag('move', e); }, { passive: false });
+
+      // Handle resize
+      document.querySelectorAll('.crp-handle').forEach(h => {
+        h.addEventListener('mousedown', e => { e.stopPropagation(); startDrag(h.dataset.dir, e); });
+        h.addEventListener('touchstart', e => { e.stopPropagation(); startDrag(h.dataset.dir, e); }, { passive: false });
+      });
+
+      function onMove(e) {
+        if (!activeHandle) return;
+        e.preventDefault();
+        const pos = getPos(e);
+        const dx = pos.x - activeHandle.sx;
+        const dy = pos.y - activeHandle.sy;
+        const b = crpState.box;
+        const W = crpState.canvasW, H = crpState.canvasH;
+        const MIN = 20;
+        const dir = activeHandle.dir;
+
+        if (dir === 'move') {
+          b.x = clamp(activeHandle.x + dx, 0, W - activeHandle.w);
+          b.y = clamp(activeHandle.y + dy, 0, H - activeHandle.h);
+          b.w = activeHandle.w; b.h = activeHandle.h;
+        } else {
+          let nx = activeHandle.x, ny = activeHandle.y, nw = activeHandle.w, nh = activeHandle.h;
+          if (dir.includes('w')) { nx = clamp(activeHandle.x + dx, 0, activeHandle.x + activeHandle.w - MIN); nw = activeHandle.x + activeHandle.w - nx; }
+          if (dir.includes('e')) { nw = clamp(activeHandle.w + dx, MIN, W - activeHandle.x); }
+          if (dir.includes('n')) { ny = clamp(activeHandle.y + dy, 0, activeHandle.y + activeHandle.h - MIN); nh = activeHandle.y + activeHandle.h - ny; }
+          if (dir.includes('s')) { nh = clamp(activeHandle.h + dy, MIN, H - activeHandle.y); }
+          // Enforce ratio if locked
+          if (crpState.ratio !== 'free') {
+            const [rw, rh] = crpState.ratio.split(':').map(Number);
+            if (dir.includes('e') || dir.includes('w')) nh = Math.round(nw * rh / rw);
+            else nw = Math.round(nh * rw / rh);
+          }
+          b.x = nx; b.y = ny;
+          b.w = Math.max(MIN, nw); b.h = Math.max(MIN, nh);
+        }
+        updateCropOverlay();
+      }
+
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('touchmove', onMove, { passive: false });
+      window.addEventListener('mouseup', () => { activeHandle = null; });
+      window.addEventListener('touchend', () => { activeHandle = null; });
+    }
+
+    function rotateCrop(deg) {
+      crpState.rotation = (crpState.rotation + deg + 360) % 360;
+      buildCropCanvas();
+    }
+
+    function flipCrop(dir) {
+      if (dir === 'h') crpState.flipH = !crpState.flipH;
+      else crpState.flipV = !crpState.flipV;
+      drawCropImage();
+    }
+
+    async function runCrop() {
+      if (!crpState.img || !crpState.file) return;
+      const btn = document.getElementById('crp-btn-crop');
+      btn.disabled = true; btn.textContent = 'Cropping…';
+
+      try {
+        const b = crpState.box;
+        const img = crpState.img;
+        const sX = img.naturalWidth / crpState.canvasW;
+        const sY = img.naturalHeight / crpState.canvasH;
+        const srcX = Math.round(b.x * sX);
+        const srcY = Math.round(b.y * sY);
+        const srcW = Math.round(b.w * sX);
+        const srcH = Math.round(b.h * sY);
+
+        if (srcW < 1 || srcH < 1) throw new Error('Crop area is too small (< 1px).');
+        if (srcX + srcW > img.naturalWidth || srcY + srcH > img.naturalHeight)
+          throw new Error('Crop region exceeds image bounds.');
+
+        const outCanvas = document.createElement('canvas');
+        outCanvas.width = srcW;
+        outCanvas.height = srcH;
+        const ctx = outCanvas.getContext('2d');
+        if (!ctx) throw new Error('Could not get 2D canvas context.');
+
+        // Apply rotation and flip to offscreen canvas, then crop
+        const tmpCanvas = document.createElement('canvas');
+        const rot = crpState.rotation;
+        const swapped = rot % 180 !== 0;
+        tmpCanvas.width = swapped ? img.naturalHeight : img.naturalWidth;
+        tmpCanvas.height = swapped ? img.naturalWidth : img.naturalHeight;
+        const tCtx = tmpCanvas.getContext('2d');
+        tCtx.translate(tmpCanvas.width / 2, tmpCanvas.height / 2);
+        tCtx.rotate(rot * Math.PI / 180);
+        tCtx.scale(crpState.flipH ? -1 : 1, crpState.flipV ? -1 : 1);
+        tCtx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+
+        const fmt = getCrpMime();
+        if (fmt === 'image/jpeg') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, srcW, srcH); }
+        ctx.drawImage(tmpCanvas, srcX, srcY, srcW, srcH, 0, 0, srcW, srcH);
+
+        const quality = parseInt(document.getElementById('crp-quality').value) / 100;
+        const qualityVal = fmt === 'image/png' ? undefined : quality;
+
+        const blob = await new Promise((res, rej) => {
+          outCanvas.toBlob(b => {
+            if (!b) { rej(new Error('canvas.toBlob returned null')); return; }
+            res(b);
+          }, fmt, qualityVal);
+        });
+
+        if (crpState.outUrl) URL.revokeObjectURL(crpState.outUrl);
+        crpState.outBlob = blob;
+        crpState.outUrl = URL.createObjectURL(blob);
+
+        const ext = fmt.split('/')[1].replace('jpeg', 'jpg');
+        document.getElementById('crp-out-badge').textContent = ext.toUpperCase();
+        document.getElementById('crp-out-dims-label').textContent = `${srcW} × ${srcH}`;
+        document.getElementById('crp-out-size-label').textContent = formatBytes(blob.size);
+        document.getElementById('crp-out-preview').src = crpState.outUrl;
+        document.getElementById('crp-output-empty').style.display = 'none';
+        document.getElementById('crp-output-info').style.display = 'block';
+        document.getElementById('crp-btn-download').style.display = 'flex';
+
+        ErrorSystem.success('Crop complete', `${srcW} × ${srcH} · ${formatBytes(blob.size)}`);
+      } catch (err) {
+        ErrorSystem.log('PROCESSING', `Crop failed for "${crpState.file?.name}"`, err.message);
+      }
+      btn.disabled = false; btn.textContent = '⊡ Crop Image';
+    }
+
+    function getCrpMime() {
+      if (crpState.fmt === 'png') return 'image/png';
+      if (crpState.fmt === 'jpg') return 'image/jpeg';
+      if (crpState.fmt === 'webp') return 'image/webp';
+      return crpState.file?.type || 'image/png';
+    }
+
+    function downloadCrop() {
+      if (!crpState.outBlob || !crpState.outUrl) return;
+      const ext = getCrpMime().split('/')[1].replace('jpeg', 'jpg');
+      const base = crpState.file.name.replace(/\.[^.]+$/, '');
+      const a = document.createElement('a');
+      a.href = crpState.outUrl; a.download = `${base}-cropped.${ext}`; a.click();
+      ErrorSystem.success('Download started', `${base}-cropped.${ext}`);
+    }
+
+    function resetCropper() {
+      crpState.file = null; crpState.img = null;
+      crpState.rotation = 0; crpState.flipH = false; crpState.flipV = false;
+      if (crpState.outUrl) { URL.revokeObjectURL(crpState.outUrl); crpState.outUrl = null; }
+      crpState.outBlob = null;
+      document.getElementById('crp-file-info-wrap').style.display = 'none';
+      document.getElementById('crp-dim-bar').style.display = 'none';
+      document.getElementById('crp-empty-box').style.display = 'flex';
+      document.getElementById('crp-canvas-wrap').style.display = 'none';
+      document.getElementById('crp-output-empty').style.display = 'block';
+      document.getElementById('crp-output-info').style.display = 'none';
+      document.getElementById('crp-btn-crop').disabled = true;
+      document.getElementById('crp-btn-download').style.display = 'none';
+      document.getElementById('crp-file-input').value = '';
+      document.getElementById('crp-input-w').value = '';
+      document.getElementById('crp-input-h').value = '';
+    }
+
+
+    /* ============================================================
+       TOOL 06 — WATERMARK
+       ============================================================ */
+    const wmState = {
+      file: null, img: null,
+      logoFile: null, logoImg: null,
+      type: 'text',
+      position: 'center',
+      fmt: 'same',
+      outBlob: null, outUrl: null,
+      canvasW: 0, canvasH: 0,
+      // drag
+      dragging: false, dragSX: 0, dragSY: 0,
+      wmX: 0.5, wmY: 0.5,   // relative 0-1 position (overrides preset when dragged)
+      customPos: false,
+    };
+
+    /* ---- drag & drop main image ---- */
+    const wmDropzone = document.getElementById('wm-dropzone');
+    wmDropzone.addEventListener('dragover', e => { e.preventDefault(); wmDropzone.classList.add('dragover'); });
+    wmDropzone.addEventListener('dragleave', () => wmDropzone.classList.remove('dragover'));
+    wmDropzone.addEventListener('drop', e => { e.preventDefault(); wmDropzone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) handleWmFile(f); });
+    wmDropzone.addEventListener('click', e => { if (!e.target.classList.contains('btn-upload-trigger')) document.getElementById('wm-file-input').click(); });
+    document.getElementById('wm-file-input').addEventListener('change', e => { if (e.target.files[0]) handleWmFile(e.target.files[0]); });
+
+    /* ---- logo image drag & drop ---- */
+    const wmLogoDropzone = document.getElementById('wm-logo-dropzone');
+    wmLogoDropzone.addEventListener('dragover', e => { e.preventDefault(); wmLogoDropzone.classList.add('dragover'); });
+    wmLogoDropzone.addEventListener('dragleave', () => wmLogoDropzone.classList.remove('dragover'));
+    wmLogoDropzone.addEventListener('drop', e => { e.preventDefault(); wmLogoDropzone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) handleWmLogo(f); });
+    wmLogoDropzone.addEventListener('click', e => { if (!e.target.classList.contains('btn-upload-trigger')) document.getElementById('wm-logo-input').click(); });
+    document.getElementById('wm-logo-input').addEventListener('change', e => { if (e.target.files[0]) handleWmLogo(e.target.files[0]); });
+
+    function handleWmFile(file) {
+      if (!validateFile(file)) return;
+      wmState.file = file;
+      wmState.outBlob = null;
+      wmState.customPos = false;
+      wmState.wmX = 0.5; wmState.wmY = 0.5;
+      if (wmState.outUrl) { URL.revokeObjectURL(wmState.outUrl); wmState.outUrl = null; }
+
+      document.getElementById('wm-fname').textContent = file.name;
+      document.getElementById('wm-ftype').textContent = (file.type.split('/')[1] || 'image').toUpperCase();
+      document.getElementById('wm-fsize').textContent = formatBytes(file.size);
+      document.getElementById('wm-file-info-wrap').style.display = 'block';
+      document.getElementById('wm-btn-apply').disabled = false;
+      document.getElementById('wm-btn-download').style.display = 'none';
+
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        wmState.img = img;
+        URL.revokeObjectURL(url);
+        buildWmCanvas();
+        renderWatermark();
+      };
+      img.onerror = () => ErrorSystem.log('PROCESSING', `Could not load "${file.name}"`, '');
+      img.src = url;
+    }
+
+    function handleWmLogo(file) {
+      if (!file.type.startsWith('image/')) { ErrorSystem.log('FILE_TYPE', 'Logo must be an image file.', ''); return; }
+      wmState.logoFile = file;
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        wmState.logoImg = img;
+        URL.revokeObjectURL(url);
+        document.getElementById('wm-logo-name').style.display = 'block';
+        document.getElementById('wm-logo-name').textContent = `✓ ${file.name}`;
+        renderWatermark();
+      };
+      img.onerror = () => ErrorSystem.log('PROCESSING', 'Could not load logo image.', '');
+      img.src = url;
+    }
+
+    function setWmType(type, btn) {
+      wmState.type = type;
+      document.getElementById('wm-type-text').classList.toggle('active', type === 'text');
+      document.getElementById('wm-type-image').classList.toggle('active', type === 'image');
+      document.getElementById('wm-text-controls').style.display = type === 'text' ? 'block' : 'none';
+      document.getElementById('wm-image-controls').style.display = type === 'image' ? 'block' : 'none';
+      renderWatermark();
+    }
+
+    function setWmPos(pos, btn) {
+      wmState.position = pos;
+      wmState.customPos = false;
+      document.querySelectorAll('#wm-pos-grid .format-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderWatermark();
+    }
+
+    function setWmFmt(fmt, btn) {
+      wmState.fmt = fmt;
+      ['same', 'png', 'jpg'].forEach(f => {
+        const el = document.getElementById(`wm-fmt-${f}`);
+        if (el) el.classList.toggle('active', f === fmt);
+      });
+    }
+
+    function buildWmCanvas() {
+      const img = wmState.img;
+      const wrap = document.getElementById('wm-canvas-wrap');
+      const maxW = wrap.parentElement.offsetWidth || 700;
+      const maxH = 480;
+      const scale = Math.min(1, maxW / img.naturalWidth, maxH / img.naturalHeight);
+      wmState.canvasW = Math.round(img.naturalWidth * scale);
+      wmState.canvasH = Math.round(img.naturalHeight * scale);
+      const canvas = document.getElementById('wm-canvas');
+      canvas.width = wmState.canvasW;
+      canvas.height = wmState.canvasH;
+      canvas.style.width = wmState.canvasW + 'px';
+      canvas.style.height = wmState.canvasH + 'px';
+      document.getElementById('wm-empty-box').style.display = 'none';
+      wrap.style.display = 'block';
+      document.getElementById('wm-preview-hint').style.display = 'block';
+      initWmDrag(canvas);
+    }
+
+    function getWmAnchor(W, H, wmW, wmH) {
+      // If user dragged, use custom position
+      if (wmState.customPos) return { x: wmState.wmX * W - wmW / 2, y: wmState.wmY * H - wmH / 2 };
+      const pad = 16;
+      const pos = wmState.position;
+      let x = W / 2 - wmW / 2, y = H / 2 - wmH / 2;
+      if (pos.includes('left')) x = pad;
+      if (pos.includes('right')) x = W - wmW - pad;
+      if (pos.includes('top')) y = pad;
+      if (pos.includes('bottom')) y = H - wmH - pad;
+      if (pos.includes('mid-left')) { x = pad; y = H / 2 - wmH / 2; }
+      if (pos.includes('mid-right')) { x = W - wmW - pad; y = H / 2 - wmH / 2; }
+      return { x, y };
+    }
+
+    function renderWatermark() {
+      if (!wmState.img) return;
+      const canvas = document.getElementById('wm-canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      const W = wmState.canvasW, H = wmState.canvasH;
+      const opacity = parseInt(document.getElementById('wm-opacity').value) / 100;
+      const rotation = parseInt(document.getElementById('wm-rotate').value) * Math.PI / 180;
+      const tiled = document.getElementById('wm-tile').checked;
+
+      // Draw base image
+      ctx.clearRect(0, 0, W, H);
+      ctx.drawImage(wmState.img, 0, 0, W, H);
+
+      ctx.save();
+      ctx.globalAlpha = opacity;
+
+      if (wmState.type === 'text') {
+        const text = document.getElementById('wm-text').value || ' ';
+        const fontSize = Math.round(parseInt(document.getElementById('wm-fontsize').value) * (W / wmState.img.naturalWidth));
+        const fontFace = document.getElementById('wm-font').value;
+        const bold = document.getElementById('wm-bold').checked ? 'bold ' : '';
+        const italic = document.getElementById('wm-italic').checked ? 'italic ' : '';
+        ctx.font = `${bold}${italic}${fontSize}px ${fontFace}`;
+        ctx.fillStyle = document.getElementById('wm-color').value;
+        ctx.textBaseline = 'middle';
+        const metrics = ctx.measureText(text);
+        const tw = metrics.width, th = fontSize;
+
+        if (tiled) {
+          const stepX = tw * 1.8, stepY = th * 3.5;
+          for (let y = -stepY; y < H + stepY; y += stepY) {
+            for (let x = -stepX; x < W + stepX; x += stepX) {
+              ctx.save();
+              ctx.translate(x + tw / 2, y + th / 2);
+              ctx.rotate(rotation);
+              ctx.fillText(text, -tw / 2, 0);
+              ctx.restore();
+            }
+          }
+        } else {
+          const anchor = getWmAnchor(W, H, tw, th);
+          ctx.save();
+          ctx.translate(anchor.x + tw / 2, anchor.y + th / 2);
+          ctx.rotate(rotation);
+          ctx.fillText(text, -tw / 2, 0);
+          ctx.restore();
+        }
+
+      } else if (wmState.type === 'image' && wmState.logoImg) {
+        const pct = parseInt(document.getElementById('wm-logo-size').value) / 100;
+        const lw = Math.round(W * pct);
+        const lh = Math.round(lw * (wmState.logoImg.naturalHeight / wmState.logoImg.naturalWidth));
+
+        if (tiled) {
+          const stepX = lw * 1.8, stepY = lh * 2.5;
+          for (let y = -stepY; y < H + stepY; y += stepY) {
+            for (let x = -stepX; x < W + stepX; x += stepX) {
+              ctx.save();
+              ctx.translate(x + lw / 2, y + lh / 2);
+              ctx.rotate(rotation);
+              ctx.drawImage(wmState.logoImg, -lw / 2, -lh / 2, lw, lh);
+              ctx.restore();
+            }
+          }
+        } else {
+          const anchor = getWmAnchor(W, H, lw, lh);
+          ctx.save();
+          ctx.translate(anchor.x + lw / 2, anchor.y + lh / 2);
+          ctx.rotate(rotation);
+          ctx.drawImage(wmState.logoImg, -lw / 2, -lh / 2, lw, lh);
+          ctx.restore();
+        }
+      }
+      ctx.restore();
+    }
+
+    function initWmDrag(canvas) {
+      canvas.style.cursor = 'crosshair';
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const cx = e.touches ? e.touches[0].clientX : e.clientX;
+        const cy = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: (cx - rect.left) / wmState.canvasW, y: (cy - rect.top) / wmState.canvasH };
+      }
+      canvas.addEventListener('mousedown', e => {
+        wmState.dragging = true;
+        const p = getPos(e);
+        wmState.wmX = Math.max(0, Math.min(1, p.x));
+        wmState.wmY = Math.max(0, Math.min(1, p.y));
+        wmState.customPos = true;
+        renderWatermark();
+      });
+      canvas.addEventListener('touchstart', e => {
+        wmState.dragging = true;
+        const p = getPos(e);
+        wmState.wmX = Math.max(0, Math.min(1, p.x));
+        wmState.wmY = Math.max(0, Math.min(1, p.y));
+        wmState.customPos = true;
+        renderWatermark();
+      }, { passive: false });
+      window.addEventListener('mousemove', e => {
+        if (!wmState.dragging) return;
+        const rect = canvas.getBoundingClientRect();
+        wmState.wmX = Math.max(0, Math.min(1, (e.clientX - rect.left) / wmState.canvasW));
+        wmState.wmY = Math.max(0, Math.min(1, (e.clientY - rect.top) / wmState.canvasH));
+        renderWatermark();
+      });
+      window.addEventListener('touchmove', e => {
+        if (!wmState.dragging) return;
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        wmState.wmX = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / wmState.canvasW));
+        wmState.wmY = Math.max(0, Math.min(1, (e.touches[0].clientY - rect.top) / wmState.canvasH));
+        renderWatermark();
+      }, { passive: false });
+      window.addEventListener('mouseup', () => { wmState.dragging = false; });
+      window.addEventListener('touchend', () => { wmState.dragging = false; });
+    }
+
+    async function applyWatermark() {
+      if (!wmState.img || !wmState.file) return;
+      const btn = document.getElementById('wm-btn-apply');
+      btn.disabled = true; btn.textContent = 'Applying…';
+
+      try {
+        const img = wmState.img;
+        const W = img.naturalWidth, H = img.naturalHeight;
+        const opacity = parseInt(document.getElementById('wm-opacity').value) / 100;
+        const rotation = parseInt(document.getElementById('wm-rotate').value) * Math.PI / 180;
+        const tiled = document.getElementById('wm-tile').checked;
+
+        const outCanvas = document.createElement('canvas');
+        outCanvas.width = W; outCanvas.height = H;
+        const ctx = outCanvas.getContext('2d');
+        if (!ctx) throw new Error('Could not get 2D canvas context.');
+
+        const fmt = getWmMime();
+        if (fmt === 'image/jpeg') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H); }
+        ctx.drawImage(img, 0, 0, W, H);
+
+        ctx.save();
+        ctx.globalAlpha = opacity;
+
+        if (wmState.type === 'text') {
+          const text = document.getElementById('wm-text').value || ' ';
+          const fontSize = parseInt(document.getElementById('wm-fontsize').value);
+          const fontFace = document.getElementById('wm-font').value;
+          const bold = document.getElementById('wm-bold').checked ? 'bold ' : '';
+          const italic = document.getElementById('wm-italic').checked ? 'italic ' : '';
+          ctx.font = `${bold}${italic}${fontSize}px ${fontFace}`;
+          ctx.fillStyle = document.getElementById('wm-color').value;
+          ctx.textBaseline = 'middle';
+          const tw = ctx.measureText(text).width, th = fontSize;
+
+          if (tiled) {
+            const stepX = tw * 1.8, stepY = th * 3.5;
+            for (let y = -stepY; y < H + stepY; y += stepY)
+              for (let x = -stepX; x < W + stepX; x += stepX) {
+                ctx.save(); ctx.translate(x + tw / 2, y + th / 2); ctx.rotate(rotation); ctx.fillText(text, -tw / 2, 0); ctx.restore();
+              }
+          } else {
+            // Map canvas relative pos back to full-res
+            const ax = wmState.customPos ? wmState.wmX * W - tw / 2 : getWmAnchorFull(W, H, tw, th).x;
+            const ay = wmState.customPos ? wmState.wmY * H - th / 2 : getWmAnchorFull(W, H, tw, th).y;
+            ctx.save(); ctx.translate(ax + tw / 2, ay + th / 2); ctx.rotate(rotation); ctx.fillText(text, -tw / 2, 0); ctx.restore();
+          }
+
+        } else if (wmState.type === 'image' && wmState.logoImg) {
+          const pct = parseInt(document.getElementById('wm-logo-size').value) / 100;
+          const lw = Math.round(W * pct);
+          const lh = Math.round(lw * (wmState.logoImg.naturalHeight / wmState.logoImg.naturalWidth));
+
+          if (tiled) {
+            const stepX = lw * 1.8, stepY = lh * 2.5;
+            for (let y = -stepY; y < H + stepY; y += stepY)
+              for (let x = -stepX; x < W + stepX; x += stepX) {
+                ctx.save(); ctx.translate(x + lw / 2, y + lh / 2); ctx.rotate(rotation); ctx.drawImage(wmState.logoImg, -lw / 2, -lh / 2, lw, lh); ctx.restore();
+              }
+          } else {
+            const ax = wmState.customPos ? wmState.wmX * W - lw / 2 : getWmAnchorFull(W, H, lw, lh).x;
+            const ay = wmState.customPos ? wmState.wmY * H - lh / 2 : getWmAnchorFull(W, H, lw, lh).y;
+            ctx.save(); ctx.translate(ax + lw / 2, ay + lh / 2); ctx.rotate(rotation); ctx.drawImage(wmState.logoImg, -lw / 2, -lh / 2, lw, lh); ctx.restore();
+          }
+        } else if (wmState.type === 'image' && !wmState.logoImg) {
+          throw new Error('Please upload a logo image first.');
+        }
+        ctx.restore();
+
+        const quality = 0.92;
+        const blob = await new Promise((res, rej) => {
+          outCanvas.toBlob(b => { if (!b) { rej(new Error('canvas.toBlob returned null')); return; } res(b); }, fmt, quality);
+        });
+
+        if (wmState.outUrl) URL.revokeObjectURL(wmState.outUrl);
+        wmState.outBlob = blob;
+        wmState.outUrl = URL.createObjectURL(blob);
+        document.getElementById('wm-btn-download').style.display = 'flex';
+        ErrorSystem.success('Watermark applied', `${W}×${H} · ${formatBytes(blob.size)}`);
+
+      } catch (err) {
+        ErrorSystem.log('PROCESSING', `Watermark failed for "${wmState.file?.name}"`, err.message);
+      }
+      btn.disabled = false; btn.textContent = '⊕ Apply Watermark';
+    }
+
+    function getWmAnchorFull(W, H, wmW, wmH) {
+      const pad = 20;
+      const pos = wmState.position;
+      let x = W / 2 - wmW / 2, y = H / 2 - wmH / 2;
+      if (pos.includes('left')) x = pad;
+      if (pos.includes('right')) x = W - wmW - pad;
+      if (pos.includes('top')) y = pad;
+      if (pos.includes('bottom')) y = H - wmH - pad;
+      if (pos === 'mid-left') { x = pad; y = H / 2 - wmH / 2; }
+      if (pos === 'mid-right') { x = W - wmW - pad; y = H / 2 - wmH / 2; }
+      return { x, y };
+    }
+
+    function getWmMime() {
+      if (wmState.fmt === 'png') return 'image/png';
+      if (wmState.fmt === 'jpg') return 'image/jpeg';
+      return wmState.file?.type || 'image/png';
+    }
+
+    function downloadWatermark() {
+      if (!wmState.outBlob || !wmState.outUrl) return;
+      const ext = getWmMime().split('/')[1].replace('jpeg', 'jpg');
+      const base = wmState.file.name.replace(/\.[^.]+$/, '');
+      const a = document.createElement('a');
+      a.href = wmState.outUrl; a.download = `${base}-watermarked.${ext}`; a.click();
+      ErrorSystem.success('Download started', `${base}-watermarked.${ext}`);
+    }
+
+    function resetWatermark() {
+      wmState.file = null; wmState.img = null;
+      wmState.logoFile = null; wmState.logoImg = null;
+      wmState.customPos = false; wmState.dragging = false;
+      if (wmState.outUrl) { URL.revokeObjectURL(wmState.outUrl); wmState.outUrl = null; }
+      wmState.outBlob = null;
+      document.getElementById('wm-file-info-wrap').style.display = 'none';
+      document.getElementById('wm-empty-box').style.display = 'flex';
+      document.getElementById('wm-canvas-wrap').style.display = 'none';
+      document.getElementById('wm-preview-hint').style.display = 'none';
+      document.getElementById('wm-btn-apply').disabled = true;
+      document.getElementById('wm-btn-download').style.display = 'none';
+      document.getElementById('wm-logo-name').style.display = 'none';
+      document.getElementById('wm-file-input').value = '';
+      document.getElementById('wm-logo-input').value = '';
+    }
+
+
+    /* ============================================================
+       PIXELFORGE SETTINGS — localStorage PERSISTENCE
+       Saves/loads ALL tool settings across sessions
+       ============================================================ */
+    const PFSettings = (() => {
+      const KEY = 'pixelforge_settings_v1';
+
+      function load() {
+        try {
+          const raw = localStorage.getItem(KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch (e) { return {}; }
+      }
+
+      function save(patch) {
+        try {
+          const current = load();
+          localStorage.setItem(KEY, JSON.stringify({ ...current, ...patch }));
+        } catch (e) { /* localStorage unavailable */ }
+      }
+
+      function get(key, fallback = null) {
+        const data = load();
+        return key in data ? data[key] : fallback;
+      }
+
+      function set(key, value) { save({ [key]: value }); }
+
+      return { get, set, save, load };
+    })();
+
+    /* ---- Restore all settings on page load ---- */
+    function restoreAllSettings() {
+      /* BG Remover */
+      const bgrProvider = PFSettings.get('bgr_provider', 'removebg');
+      setBgrProvider(bgrProvider, true); // silent restore
+      ['removebg', 'clipdrop', 'photoroom'].forEach(p => {
+        const saved = PFSettings.get(`bgr_key_${p}`, '');
+        const el = document.getElementById(`bgr-apikey-${p}`);
+        if (el && saved) el.value = saved;
+      });
+      const bgrTol = PFSettings.get('bgr_tolerance', 30);
+      const bgrSmooth = PFSettings.get('bgr_smooth', 2);
+      document.getElementById('bgr-tolerance').value = bgrTol;
+      document.getElementById('bgr-tol-val').textContent = bgrTol;
+      document.getElementById('bgr-smooth').value = bgrSmooth;
+      document.getElementById('bgr-smooth-val').textContent = bgrSmooth;
+      const bgrFmt = PFSettings.get('bgr_fmt', 'png');
+      setBgrFmt(bgrFmt, document.getElementById(`bgr-fmt-${bgrFmt}`));
+
+      /* Converter defaults */
+      const convFmt = PFSettings.get('conv_format', 'webp');
+      const convFmtBtn = document.querySelector(`#conv-format-grid [data-fmt="${convFmt}"]`);
+      if (convFmtBtn) selectFormat(convFmtBtn, convFmt);
+      const convQ = PFSettings.get('conv_quality', 100);
+      document.getElementById('conv-quality').value = convQ;
+      document.getElementById('conv-quality-val').textContent = convQ;
+
+      /* Compressor defaults */
+      const compQ = PFSettings.get('comp_quality', 80);
+      document.getElementById('comp-quality').value = compQ;
+      document.getElementById('comp-quality-val').textContent = compQ;
+      const compMode = PFSettings.get('comp_mode', 'lossy');
+      if (compMode === 'lossless') setCompMode('lossless', document.getElementById('comp-mode-lossless'));
+
+      /* Resizer defaults */
+      const rszQ = PFSettings.get('rsz_quality', 92);
+      document.getElementById('rsz-quality').value = rszQ;
+      document.getElementById('rsz-quality-val').textContent = rszQ;
+
+      /* Watermark defaults */
+      const wmText = PFSettings.get('wm_text', '© PixelForge');
+      document.getElementById('wm-text').value = wmText;
+      const wmColor = PFSettings.get('wm_color', '#ffffff');
+      document.getElementById('wm-color').value = wmColor;
+      const wmFontSize = PFSettings.get('wm_fontsize', 36);
+      document.getElementById('wm-fontsize').value = wmFontSize;
+      document.getElementById('wm-fontsize-val').textContent = wmFontSize;
+      const wmOpacity = PFSettings.get('wm_opacity', 60);
+      document.getElementById('wm-opacity').value = wmOpacity;
+      document.getElementById('wm-opacity-val').textContent = wmOpacity;
+      const wmRotate = PFSettings.get('wm_rotate', 0);
+      document.getElementById('wm-rotate').value = wmRotate;
+      document.getElementById('wm-rotate-val').textContent = wmRotate;
+    }
+
+    /* Hook into existing controls to auto-save on change */
+    function hookSettingsSave() {
+      /* Converter */
+      document.getElementById('conv-quality').addEventListener('input', () =>
+        PFSettings.set('conv_quality', document.getElementById('conv-quality').value));
+      /* Compressor */
+      document.getElementById('comp-quality').addEventListener('input', () =>
+        PFSettings.set('comp_quality', document.getElementById('comp-quality').value));
+      /* Resizer */
+      document.getElementById('rsz-quality').addEventListener('input', () =>
+        PFSettings.set('rsz_quality', document.getElementById('rsz-quality').value));
+      /* Watermark */
+      ['wm-text', 'wm-color', 'wm-fontsize', 'wm-opacity', 'wm-rotate'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', () => PFSettings.set(id.replace('wm-', 'wm_').replace('-', '_'), el.value));
+        el.addEventListener('change', () => PFSettings.set(id.replace('wm-', 'wm_').replace('-', '_'), el.value));
+      });
+    }
+
+    /* ============================================================
+       TOOL 03 — BACKGROUND REMOVER
+       ============================================================ */
+    const bgrState = {
+      file: null,
+      origImg: null,
+      outImg: null,
+      outBlob: null,
+      outUrl: null,
+      provider: 'removebg',
+      bgMode: 'transparent',
+      fmt: 'png',
+      comparing: false,
+      compareX: 0.5,
+      animFrame: null,
+    };
+
+    /* ---- Drag & Drop ---- */
+    const bgrDropzone = document.getElementById('bgr-dropzone');
+    bgrDropzone.addEventListener('dragover', e => { e.preventDefault(); bgrDropzone.classList.add('dragover'); });
+    bgrDropzone.addEventListener('dragleave', () => bgrDropzone.classList.remove('dragover'));
+    bgrDropzone.addEventListener('drop', e => { e.preventDefault(); bgrDropzone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) handleBgrFile(f); });
+    bgrDropzone.addEventListener('click', e => { if (!e.target.classList.contains('btn-upload-trigger')) document.getElementById('bgr-file-input').click(); });
+    document.getElementById('bgr-file-input').addEventListener('change', e => { if (e.target.files[0]) handleBgrFile(e.target.files[0]); });
+
+    function handleBgrFile(file) {
+      const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!ALLOWED.includes(file.type)) {
+        ErrorSystem.log('FILE_TYPE', `"${file.name}" not supported.`, 'Use JPG, PNG, or WebP.');
+        return;
+      }
+      if (file.size > 25 * 1024 * 1024) {
+        ErrorSystem.log('FILE_SIZE', `"${file.name}" exceeds 25 MB.`, formatBytes(file.size));
+        return;
+      }
+      bgrState.file = file;
+      bgrState.outBlob = null;
+      bgrState.outImg = null;
+      if (bgrState.outUrl) { URL.revokeObjectURL(bgrState.outUrl); bgrState.outUrl = null; }
+
+      document.getElementById('bgr-fname').textContent = file.name;
+      document.getElementById('bgr-ftype').textContent = file.type.split('/')[1].toUpperCase();
+      document.getElementById('bgr-fsize').textContent = formatBytes(file.size);
+      document.getElementById('bgr-file-info-wrap').style.display = 'block';
+      document.getElementById('bgr-btn-remove').disabled = false;
+      document.getElementById('bgr-btn-download').style.display = 'none';
+      document.getElementById('bgr-output-empty').style.display = 'block';
+      document.getElementById('bgr-output-info').style.display = 'none';
+      document.getElementById('bgr-compare-wrap').style.display = 'none';
+      document.getElementById('bgr-empty-box').style.display = 'flex';
+      document.getElementById('bgr-compare-hint').style.display = 'none';
+
+      // Load original image for preview + compare
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => { bgrState.origImg = img; URL.revokeObjectURL(url); };
+      img.onerror = () => ErrorSystem.log('PROCESSING', `Could not load "${file.name}"`, '');
+      img.src = url;
+    }
+
+    function setBgrProvider(provider, silent = false) {
+      bgrState.provider = provider;
+      // Update UI
+      ['removebg', 'clipdrop', 'photoroom', 'vanilla'].forEach(p => {
+        const row = document.getElementById(`bgr-prov-${p}`);
+        row.classList.toggle('selected', p === provider);
+        const keyDiv = document.getElementById(`bgr-key-${p}`);
+        if (keyDiv) keyDiv.style.display = p === provider ? 'block' : 'none';
+      });
+      const vanSettings = document.getElementById('bgr-vanilla-settings');
+      vanSettings.style.display = provider === 'vanilla' ? 'block' : 'none';
+      setBgrApiStatus('');
+      if (!silent) PFSettings.set('bgr_provider', provider);
+    }
+
+    function setBgrBg(mode, btn) {
+      bgrState.bgMode = mode;
+      document.querySelectorAll('#bgr-bg-grid .format-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const customWrap = document.getElementById('bgr-custom-bg-wrap');
+      customWrap.style.display = mode === 'custom' ? 'flex' : 'none';
+      PFSettings.set('bgr_bg_mode', mode);
+    }
+
+    function setBgrFmt(fmt, btn) {
+      bgrState.fmt = fmt;
+      document.getElementById('bgr-fmt-png').classList.toggle('active', fmt === 'png');
+      document.getElementById('bgr-fmt-jpg').classList.toggle('active', fmt === 'jpg');
+      PFSettings.set('bgr_fmt', fmt);
+    }
+
+    function saveBgrSettings() {
+      ['removebg', 'clipdrop', 'photoroom'].forEach(p => {
+        const el = document.getElementById(`bgr-apikey-${p}`);
+        if (el) PFSettings.set(`bgr_key_${p}`, el.value);
+      });
+      PFSettings.set('bgr_tolerance', document.getElementById('bgr-tolerance').value);
+      PFSettings.set('bgr_smooth', document.getElementById('bgr-smooth').value);
+    }
+
+    function setBgrApiStatus(msg, type = 'info') {
+      const el = document.getElementById('bgr-api-status');
+      if (!msg) { el.style.display = 'none'; return; }
+      const colors = {
+        info: { bg: 'var(--blue-bg)', border: 'rgba(91,163,245,0.2)', color: 'var(--blue)' },
+        success: { bg: 'var(--green-bg)', border: 'rgba(45,212,160,0.2)', color: 'var(--green)' },
+        error: { bg: 'var(--red-bg)', border: 'rgba(242,99,95,0.2)', color: 'var(--red)' },
+        warning: { bg: 'var(--amber-bg)', border: 'rgba(245,166,35,0.2)', color: 'var(--amber)' },
+      };
+      const c = colors[type] || colors.info;
+      el.style.cssText = `display:block;background:${c.bg};border:1px solid ${c.border};color:${c.color};padding:8px 10px;border-radius:var(--radius);font-size:11px;line-height:1.5;margin-top:10px;`;
+      el.textContent = msg;
+    }
+
+    function setBgrProgress(pct, label) {
+      const wrap = document.getElementById('bgr-progress');
+      wrap.classList.toggle('visible', pct > 0 && pct < 100);
+      document.getElementById('bgr-progress-fill').style.width = pct + '%';
+      document.getElementById('bgr-progress-label').textContent = label || pct + '%';
+      if (pct >= 100) setTimeout(() => wrap.classList.remove('visible'), 600);
+    }
+
+    /* ====================================================
+       PROVIDER ENGINES
+       ==================================================== */
+
+    /* --- remove.bg --- */
+    async function removeBgViaRemoveBg(file) {
+      const apiKey = document.getElementById('bgr-apikey-removebg').value.trim();
+      if (!apiKey) throw new Error('remove.bg API key is missing. Paste your key in the field above.');
+      setBgrApiStatus('Sending to remove.bg…', 'info');
+      const form = new FormData();
+      form.append('image_file', file);
+      form.append('size', 'auto');
+      const res = await fetch('https://api.remove.bg/v1.0/removebg', {
+        method: 'POST',
+        headers: { 'X-Api-Key': apiKey },
+        body: form,
+      });
+      if (res.status === 402) throw new Error('remove.bg: Credit limit reached. Switch to another provider.');
+      if (res.status === 403) throw new Error('remove.bg: Invalid API key. Check your key and try again.');
+      if (res.status === 429) throw new Error('remove.bg: Rate limit hit. Wait a moment and retry.');
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(`remove.bg error ${res.status}: ${err?.errors?.[0]?.title || res.statusText}`);
+      }
+      setBgrApiStatus('Processing complete ✓', 'success');
+      return await res.blob();
+    }
+
+    /* --- ClipDrop --- */
+    async function removeBgViaClipdrop(file) {
+      const apiKey = document.getElementById('bgr-apikey-clipdrop').value.trim();
+      if (!apiKey) throw new Error('ClipDrop API key is missing. Paste your key in the field above.');
+      setBgrApiStatus('Sending to ClipDrop…', 'info');
+      const form = new FormData();
+      form.append('image_file', file, file.name);
+      const res = await fetch('https://clipdrop-api.co/remove-background/v1', {
+        method: 'POST',
+        headers: { 'x-api-key': apiKey },
+        body: form,
+      });
+      if (res.status === 402) throw new Error('ClipDrop: Daily credit limit reached. Switch to another provider.');
+      if (res.status === 401) throw new Error('ClipDrop: Invalid API key. Check your key and try again.');
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(`ClipDrop error ${res.status}: ${err?.error || res.statusText}`);
+      }
+      setBgrApiStatus('Processing complete ✓', 'success');
+      return await res.blob();
+    }
+
+    /* --- PhotoRoom --- */
+    async function removeBgViaPhotoRoom(file) {
+      const apiKey = document.getElementById('bgr-apikey-photoroom').value.trim();
+      if (!apiKey) throw new Error('PhotoRoom API key is missing. Paste your key in the field above.');
+      setBgrApiStatus('Sending to PhotoRoom…', 'info');
+      const form = new FormData();
+      form.append('image_file', file, file.name);
+      const res = await fetch('https://sdk.photoroom.com/v1/segment', {
+        method: 'POST',
+        headers: { 'x-api-key': apiKey },
+        body: form,
+      });
+      if (res.status === 429) throw new Error('PhotoRoom: Daily limit reached. Switch to another provider.');
+      if (res.status === 401) throw new Error('PhotoRoom: Invalid API key. Check your key and try again.');
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(`PhotoRoom error ${res.status}: ${err?.message || res.statusText}`);
+      }
+      setBgrApiStatus('Processing complete ✓', 'success');
+      return await res.blob();
+    }
+
+    /* --- Vanilla JS (edge-detect + flood-fill) --- */
+    async function removeBgVanilla(file) {
+      setBgrApiStatus('Running local edge detection…', 'info');
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const img = new Image();
+          img.onload = () => {
+            try {
+              const W = img.naturalWidth, H = img.naturalHeight;
+              const srcCanvas = document.createElement('canvas');
+              srcCanvas.width = W; srcCanvas.height = H;
+              const sCtx = srcCanvas.getContext('2d');
+              sCtx.drawImage(img, 0, 0);
+              const srcData = sCtx.getImageData(0, 0, W, H);
+              const src = srcData.data;
+
+              const tolerance = parseInt(document.getElementById('bgr-tolerance').value);
+              const smoothPx = parseInt(document.getElementById('bgr-smooth').value);
+
+              // Sample corner colours as background candidates
+              function getPixel(x, y) {
+                const i = (y * W + x) * 4;
+                return [src[i], src[i + 1], src[i + 2], src[i + 3]];
+              }
+              function colorDist(a, b) {
+                return Math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2);
+              }
+
+              // Collect corner/edge samples for bg color estimation
+              const samples = [];
+              const edgePts = [];
+              for (let x = 0; x < W; x += Math.max(1, Math.floor(W / 30))) { edgePts.push([x, 0]); edgePts.push([x, H - 1]); }
+              for (let y = 0; y < H; y += Math.max(1, Math.floor(H / 30))) { edgePts.push([0, y]); edgePts.push([W - 1, y]); }
+              edgePts.forEach(([x, y]) => samples.push(getPixel(x, y)));
+
+              // BFS flood-fill from edges to find background mask
+              const mask = new Uint8Array(W * H); // 1 = background
+              const queue = [];
+              const visited = new Uint8Array(W * H);
+
+              // Seed: all edge pixels
+              edgePts.forEach(([x, y]) => {
+                const idx = y * W + x;
+                if (!visited[idx]) { visited[idx] = 1; queue.push([x, y, getPixel(x, y)]); }
+              });
+
+              let qi = 0;
+              while (qi < queue.length) {
+                const [cx, cy, seedColor] = queue[qi++];
+                const cidx = cy * W + cx;
+                mask[cidx] = 1;
+                const neighbors = [[cx - 1, cy], [cx + 1, cy], [cx, cy - 1], [cx, cy + 1]];
+                for (const [nx, ny] of neighbors) {
+                  if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+                  const nidx = ny * W + nx;
+                  if (visited[nidx]) continue;
+                  const npx = getPixel(nx, ny);
+                  // Check distance against seed color AND against the closest sample
+                  const d = colorDist(npx, seedColor);
+                  if (d <= tolerance) {
+                    visited[nidx] = 1;
+                    queue.push([nx, ny, npx]);
+                  }
+                }
+              }
+
+              // Optional: simple smoothing pass (erode mask edges)
+              let finalMask = mask;
+              if (smoothPx > 0) {
+                const smoothed = new Uint8Array(W * H);
+                for (let y = 0; y < H; y++) {
+                  for (let x = 0; x < W; x++) {
+                    let bgCount = 0, total = 0;
+                    for (let dy = -smoothPx; dy <= smoothPx; dy++) {
+                      for (let dx = -smoothPx; dx <= smoothPx; dx++) {
+                        const nx = x + dx, ny = y + dy;
+                        if (nx >= 0 && ny >= 0 && nx < W && ny < H) { bgCount += mask[ny * W + nx]; total++; }
+                      }
+                    }
+                    smoothed[y * W + x] = bgCount / total > 0.5 ? 1 : 0;
+                  }
+                }
+                finalMask = smoothed;
+              }
+
+              // Build output with transparency
+              const outCanvas = document.createElement('canvas');
+              outCanvas.width = W; outCanvas.height = H;
+              const oCtx = outCanvas.getContext('2d');
+              const outData = oCtx.createImageData(W, H);
+              const out = outData.data;
+              for (let i = 0; i < W * H; i++) {
+                const si = i * 4;
+                out[si] = src[si];
+                out[si + 1] = src[si + 1];
+                out[si + 2] = src[si + 2];
+                out[si + 3] = finalMask[i] ? 0 : src[si + 3]; // transparent bg
+              }
+              oCtx.putImageData(outData, 0, 0);
+              setBgrApiStatus(`Vanilla complete — flood-fill with tolerance ${tolerance}`, 'success');
+              outCanvas.toBlob(blob => {
+                if (!blob) { reject(new Error('canvas.toBlob returned null')); return; }
+                resolve(blob);
+              }, 'image/png');
+            } catch (err) { reject(err); }
+          };
+          img.onerror = () => reject(new Error('Could not decode image for vanilla processing.'));
+          img.src = ev.target.result;
+        };
+        reader.onerror = () => reject(new Error(`FileReader failed: ${reader.error?.message}`));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    /* ====================================================
+       MAIN REMOVAL ORCHESTRATOR
+       ==================================================== */
+    async function runBgRemoval() {
+      if (!bgrState.file) return;
+      const btn = document.getElementById('bgr-btn-remove');
+      btn.disabled = true; btn.textContent = 'Processing…';
+      setBgrProgress(15, 'Initializing…');
+
+      try {
+        let resultBlob;
+        const provider = bgrState.provider;
+        setBgrProgress(30, `Using ${provider}…`);
+
+        if (provider === 'removebg') resultBlob = await removeBgViaRemoveBg(bgrState.file);
+        else if (provider === 'clipdrop') resultBlob = await removeBgViaClipdrop(bgrState.file);
+        else if (provider === 'photoroom') resultBlob = await removeBgViaPhotoRoom(bgrState.file);
+        else if (provider === 'vanilla') resultBlob = await removeBgVanilla(bgrState.file);
+        else throw new Error('Unknown provider selected.');
+
+        setBgrProgress(80, 'Compositing output…');
+
+        // If user wants a background fill or JPG output, composite onto color
+        let finalBlob = resultBlob;
+        if (bgrState.bgMode !== 'transparent' || bgrState.fmt === 'jpg') {
+          finalBlob = await compositeBackground(resultBlob);
+        }
+
+        setBgrProgress(95, 'Finalizing…');
+
+        // Load result image for compare
+        if (bgrState.outUrl) URL.revokeObjectURL(bgrState.outUrl);
+        bgrState.outBlob = finalBlob;
+        bgrState.outUrl = URL.createObjectURL(finalBlob);
+
+        const outImg = new Image();
+        outImg.onload = () => {
+          bgrState.outImg = outImg;
+          buildBgrCompare();
+        };
+        outImg.src = bgrState.outUrl;
+
+        const providerNames = { removebg: 'remove.bg', clipdrop: 'ClipDrop', photoroom: 'PhotoRoom', vanilla: 'Vanilla JS' };
+        document.getElementById('bgr-output-empty').style.display = 'none';
+        document.getElementById('bgr-output-info').style.display = 'block';
+        document.getElementById('bgr-out-badge').textContent = bgrState.fmt.toUpperCase();
+        document.getElementById('bgr-used-provider').textContent = providerNames[provider] || provider;
+        document.getElementById('bgr-out-size').textContent = formatBytes(finalBlob.size);
+
+        // Dims from original
+        if (bgrState.origImg) {
+          document.getElementById('bgr-out-dims').textContent =
+            `${bgrState.origImg.naturalWidth} × ${bgrState.origImg.naturalHeight}`;
+        }
+
+        document.getElementById('bgr-btn-download').style.display = 'flex';
+        document.getElementById('bgr-btn-download').textContent = bgrState.fmt === 'jpg' ? '↓ Download JPG' : '↓ Download PNG';
+        setBgrProgress(100);
+        ErrorSystem.success('Background removed', `${providerNames[provider]} · ${formatBytes(finalBlob.size)}`);
+
+      } catch (err) {
+        setBgrApiStatus(`✕ ${err.message}`, 'error');
+        ErrorSystem.log('API_FAILURE', `BG removal failed (${bgrState.provider})`, err.message);
+        setBgrProgress(0);
+      }
+
+      btn.disabled = false; btn.textContent = '✦ Remove Background';
+    }
+
+    async function compositeBackground(pngBlob) {
+      return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(pngBlob);
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const W = img.naturalWidth, H = img.naturalHeight;
+            const canvas = document.createElement('canvas');
+            canvas.width = W; canvas.height = H;
+            const ctx = canvas.getContext('2d');
+            const bgMode = bgrState.bgMode;
+            const customColor = document.getElementById('bgr-custom-color').value;
+            const bgColor = bgMode === 'white' ? '#ffffff' : bgMode === 'black' ? '#000000' : customColor;
+            if (bgMode !== 'transparent') { ctx.fillStyle = bgColor; ctx.fillRect(0, 0, W, H); }
+            ctx.drawImage(img, 0, 0);
+            URL.revokeObjectURL(url);
+            const mime = bgrState.fmt === 'jpg' ? 'image/jpeg' : 'image/png';
+            canvas.toBlob(blob => {
+              if (!blob) { reject(new Error('Composite canvas.toBlob returned null')); return; }
+              resolve(blob);
+            }, mime, 0.93);
+          } catch (e) { URL.revokeObjectURL(url); reject(e); }
+        };
+        img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not load result PNG for compositing.')); };
+        img.src = url;
+      });
+    }
+
+    /* ---- Before/After compare for BG remover ---- */
+    function buildBgrCompare() {
+      if (!bgrState.origImg || !bgrState.outImg) return;
+      const wrap = document.getElementById('bgr-compare-wrap');
+      const canvas = document.getElementById('bgr-canvas');
+      const origImg = bgrState.origImg;
+      const maxW = wrap.parentElement.offsetWidth || 600;
+      const scale = Math.min(1, maxW / origImg.naturalWidth);
+      const W = Math.round(origImg.naturalWidth * scale);
+      const H = Math.round(origImg.naturalHeight * scale);
+      canvas.width = W; canvas.height = H;
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      bgrState.compareX = 0.5;
+      drawBgrCompare(W, H);
+      document.getElementById('bgr-empty-box').style.display = 'none';
+      wrap.style.display = 'block';
+      document.getElementById('bgr-compare-hint').style.display = 'block';
+      initBgrCompare(canvas, W, H);
+    }
+
+    function drawBgrCompare(W, H) {
+      const canvas = document.getElementById('bgr-canvas');
+      const ctx = canvas.getContext('2d');
+      const splitX = Math.round(bgrState.compareX * W);
+      ctx.clearRect(0, 0, W, H);
+      // Checkerboard only on right (transparent) side
+      ctx.save();
+      ctx.beginPath(); ctx.rect(splitX, 0, W - splitX, H); ctx.clip();
+      for (let y = 0; y < H; y += 12) for (let x = splitX; x < W; x += 12) {
+        ctx.fillStyle = ((Math.floor(x / 12) + Math.floor(y / 12)) % 2 === 0) ? '#2a2a3a' : '#1a1a28';
+        ctx.fillRect(x, y, 12, 12);
+      }
+      ctx.restore();
+      // Left: original
+      ctx.save();
+      ctx.beginPath(); ctx.rect(0, 0, splitX, H); ctx.clip();
+      ctx.drawImage(bgrState.origImg, 0, 0, W, H);
+      ctx.restore();
+      // Right: result
+      ctx.save();
+      ctx.beginPath(); ctx.rect(splitX, 0, W - splitX, H); ctx.clip();
+      ctx.drawImage(bgrState.outImg, 0, 0, W, H);
+      ctx.restore();
+      document.getElementById('bgr-line').style.left = splitX + 'px';
+      document.getElementById('bgr-handle').style.left = splitX + 'px';
+    }
+
+    function initBgrCompare(canvas, W, H) {
+      function getX(e) {
+        const rect = canvas.getBoundingClientRect();
+        const cx = e.touches ? e.touches[0].clientX : e.clientX;
+        return Math.max(0, Math.min(1, (cx - rect.left) / rect.width));
+      }
+      function onMove(e) {
+        if (!bgrState.comparing) return;
+        e.preventDefault();
+        bgrState.compareX = getX(e);
+        if (bgrState.animFrame) cancelAnimationFrame(bgrState.animFrame);
+        bgrState.animFrame = requestAnimationFrame(() => drawBgrCompare(W, H));
+      }
+      canvas.addEventListener('mousedown', e => { bgrState.comparing = true; bgrState.compareX = getX(e); drawBgrCompare(W, H); });
+      canvas.addEventListener('touchstart', e => { bgrState.comparing = true; bgrState.compareX = getX(e); drawBgrCompare(W, H); }, { passive: false });
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('touchmove', onMove, { passive: false });
+      window.addEventListener('mouseup', () => { bgrState.comparing = false; });
+      window.addEventListener('touchend', () => { bgrState.comparing = false; });
+    }
+
+    function downloadBgr() {
+      if (!bgrState.outBlob || !bgrState.outUrl) return;
+      const ext = bgrState.fmt === 'jpg' ? 'jpg' : 'png';
+      const base = bgrState.file.name.replace(/\.[^.]+$/, '');
+      const a = document.createElement('a');
+      a.href = bgrState.outUrl; a.download = `${base}-no-bg.${ext}`; a.click();
+      ErrorSystem.success('Download started', `${base}-no-bg.${ext}`);
+    }
+
+    function resetBgr() {
+      bgrState.file = null; bgrState.origImg = null; bgrState.outImg = null;
+      bgrState.comparing = false;
+      if (bgrState.outUrl) { URL.revokeObjectURL(bgrState.outUrl); bgrState.outUrl = null; }
+      bgrState.outBlob = null;
+      document.getElementById('bgr-file-info-wrap').style.display = 'none';
+      document.getElementById('bgr-progress').classList.remove('visible');
+      document.getElementById('bgr-compare-wrap').style.display = 'none';
+      document.getElementById('bgr-empty-box').style.display = 'flex';
+      document.getElementById('bgr-compare-hint').style.display = 'none';
+      document.getElementById('bgr-output-empty').style.display = 'block';
+      document.getElementById('bgr-output-info').style.display = 'none';
+      document.getElementById('bgr-btn-remove').disabled = true;
+      document.getElementById('bgr-btn-download').style.display = 'none';
+      document.getElementById('bgr-file-input').value = '';
+      setBgrApiStatus('');
+    }
+
+    /* ---- Update TOOL_META ---- */
+    TOOL_META['cropper'] = { title: 'Image Cropper', sub: 'Drag handles · Aspect ratio lock · Rotate & flip · Rule of thirds' };
+    TOOL_META['watermark'] = { title: 'Watermark Tool', sub: 'Text & image watermark · Drag to position · Tile mode · Live preview' };
+    TOOL_META['bg-remover'] = { title: 'Background Remover', sub: 'remove.bg · ClipDrop · PhotoRoom · Vanilla JS fallback · Settings saved locally' };
+
+    /* ---- Init on load ---- */
+    restoreAllSettings();
+    hookSettingsSave();
 
     /* Close modal on backdrop click */
     document.getElementById('error-log-modal').addEventListener('click', function (e) {
