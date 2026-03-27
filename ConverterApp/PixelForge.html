@@ -1244,6 +1244,181 @@
     }
 
     /* ============================================================
+   CONVERTER — MASONRY GRID + TOGGLE SWITCH
+   ============================================================ */
+    .conv-masonry {
+      columns: 2;
+      column-gap: 8px;
+    }
+
+    .conv-masonry-item {
+      break-inside: avoid;
+      margin-bottom: 8px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      cursor: default;
+      transition: var(--trans);
+      position: relative;
+    }
+
+    .conv-masonry-item:hover {
+      border-color: var(--border2);
+    }
+
+    .conv-masonry-item img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .conv-masonry-item .conv-item-meta {
+      padding: 5px 8px 6px;
+      font-size: 10px;
+      color: var(--text3);
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: var(--mono);
+    }
+
+    .conv-masonry-item .conv-item-name {
+      font-size: 11px;
+      color: var(--text2);
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Converted state overlay */
+    .conv-masonry-item.converted .conv-converted-badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: var(--green-bg);
+      border: 1px solid rgba(45, 212, 160, 0.3);
+      color: var(--green);
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-family: var(--mono);
+    }
+
+    .conv-masonry-item.failed .conv-converted-badge {
+      background: var(--red-bg);
+      border-color: rgba(242, 99, 95, 0.3);
+      color: var(--red);
+    }
+
+    /* Per-file output download rows */
+    .conv-output-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 5px;
+      font-size: 12px;
+      transition: var(--trans);
+    }
+
+    .conv-output-row:hover {
+      border-color: var(--border2);
+    }
+
+    .conv-output-row-thumb {
+      width: 32px;
+      height: 32px;
+      border-radius: 5px;
+      object-fit: cover;
+      background: var(--bg4);
+      flex-shrink: 0;
+    }
+
+    .conv-output-row-name {
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .conv-output-row-size {
+      color: var(--text3);
+      font-family: var(--mono);
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .conv-output-row-dl {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: var(--trans);
+    }
+
+    .conv-output-row-dl:hover {
+      background: var(--accent2);
+    }
+
+    /* Toggle switch */
+    .conv-toggle-wrap {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .conv-toggle-wrap input {
+      display: none;
+    }
+
+    .conv-toggle-track {
+      width: 36px;
+      height: 20px;
+      background: var(--bg4);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      position: relative;
+      transition: var(--trans);
+      display: block;
+    }
+
+    .conv-toggle-wrap input:checked+.conv-toggle-track {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .conv-toggle-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      transition: var(--trans);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .conv-toggle-wrap input:checked+.conv-toggle-track .conv-toggle-thumb {
+      left: 18px;
+    }
+
+    /* ============================================================
    CROPPER HANDLES
    ============================================================ */
     .crp-handle {
@@ -1370,9 +1545,8 @@
 
           <div class="tool-grid-layout">
 
-            <!-- LEFT: Upload + Preview -->
+            <!-- LEFT: Upload + Masonry Preview -->
             <div>
-              <!-- Upload zone -->
               <div class="upload-zone" id="conv-dropzone">
                 <input type="file" id="conv-file-input" accept="image/*,.tiff,.tif,.bmp,.ico,.webp,.avif" multiple>
                 <span class="upload-icon">⇈</span>
@@ -1387,8 +1561,8 @@
                 </div>
               </div>
 
-              <!-- File info (shown after upload) -->
-              <div id="conv-file-info-wrap" style="display:none; margin-top:14px;">
+              <!-- File info bar -->
+              <div id="conv-file-info-wrap" style="display:none;margin-top:14px;">
                 <div class="file-info" id="conv-file-info">
                   <span class="file-info-name" id="conv-fname">—</span>
                   <span class="file-info-type" id="conv-ftype">—</span>
@@ -1396,20 +1570,16 @@
                   <button class="btn-ghost" onclick="resetConverter()" title="Remove file"
                     style="font-size:18px;padding:2px 6px;color:var(--text3)">×</button>
                 </div>
-                <!-- Batch file list (if multiple) -->
-                <div id="conv-batch-list"
-                  style="display:none; max-height:140px; overflow-y:auto; background:var(--bg3); border-radius:var(--radius); border:1px solid var(--border); padding:8px 10px; margin-top:6px; font-size:12px; color:var(--text2);">
-                </div>
               </div>
 
               <!-- Stat row -->
-              <div class="stat-row" id="conv-stats" style="display:none; margin-top:14px;">
+              <div class="stat-row" id="conv-stats" style="display:none;margin-top:14px;">
                 <div class="stat-box">
-                  <div class="stat-box-label">Original size</div>
+                  <div class="stat-box-label">Files</div>
                   <div class="stat-box-val" id="conv-orig-size">—</div>
                 </div>
                 <div class="stat-box">
-                  <div class="stat-box-label">Output size</div>
+                  <div class="stat-box-label">Est. output</div>
                   <div class="stat-box-val green" id="conv-out-size">—</div>
                 </div>
               </div>
@@ -1422,13 +1592,16 @@
                 <div class="progress-label" id="conv-progress-label">0%</div>
               </div>
 
-              <!-- Preview -->
+              <!-- Masonry preview grid -->
               <div style="margin-top:16px;">
-                <div class="tool-card-title">Preview</div>
-                <div class="preview-container" id="conv-preview-box">
-                  <div class="preview-empty" id="conv-preview-empty">Upload an image to see preview</div>
-                  <img id="conv-preview-img" src="" alt="" style="display:none;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                  <div class="tool-card-title" style="margin-bottom:0;">Preview</div>
+                  <span id="conv-preview-count" style="font-size:11px;color:var(--text3);display:none;"></span>
                 </div>
+                <div class="preview-container" id="conv-preview-empty-box">
+                  <div class="preview-empty">Upload images to see preview</div>
+                </div>
+                <div id="conv-masonry-grid" class="conv-masonry" style="display:none;"></div>
               </div>
             </div>
 
@@ -1446,9 +1619,8 @@
                     <button class="format-btn" data-fmt="gif" onclick="selectFormat(this,'gif')">GIF</button>
                     <button class="format-btn" data-fmt="ico" onclick="selectFormat(this,'ico')">ICO</button>
                   </div>
-                  <div style="margin-top:8px;font-size:11px;color:var(--text3);" id="conv-fmt-note">
-                    WebP — best size/quality ratio for web
-                  </div>
+                  <div style="margin-top:8px;font-size:11px;color:var(--text3);" id="conv-fmt-note">WebP — best
+                    size/quality ratio for web</div>
                 </div>
 
                 <div class="section-divider"></div>
@@ -1463,22 +1635,33 @@
                   </div>
                 </div>
 
+                <!-- Resize toggle -->
                 <div class="control-group">
-                  <div class="control-label">Scale / Resize (optional)</div>
-                  <div style="display:flex;gap:8px;align-items:center;min-width:0;">
-                    <input type="number" id="conv-width" placeholder="Width px"
-                      style="flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;width:100%;"
-                      oninput="syncAspect('w')">
-                    <span style="color:var(--text3);flex-shrink:0;">×</span>
-                    <input type="number" id="conv-height" placeholder="Height px"
-                      style="flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;width:100%;"
-                      oninput="syncAspect('h')">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                    <div class="control-label" style="margin-bottom:0;">Scale / Resize</div>
+                    <label class="conv-toggle-wrap" title="Enable resize">
+                      <input type="checkbox" id="conv-resize-enabled" onchange="toggleConvResize(this.checked)">
+                      <span class="conv-toggle-track"><span class="conv-toggle-thumb"></span></span>
+                    </label>
                   </div>
-                  <label
-                    style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);margin-top:8px;cursor:pointer;">
-                    <input type="checkbox" id="conv-lock-aspect" checked style="accent-color:var(--accent);">
-                    Lock aspect ratio
-                  </label>
+                  <div id="conv-resize-fields" style="display:none;">
+                    <div style="display:flex;gap:8px;align-items:center;min-width:0;">
+                      <input type="number" id="conv-width" placeholder="Width px"
+                        style="flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;width:100%;"
+                        oninput="syncAspect('w')">
+                      <span style="color:var(--text3);flex-shrink:0;">×</span>
+                      <input type="number" id="conv-height" placeholder="Height px"
+                        style="flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;width:100%;"
+                        oninput="syncAspect('h')">
+                    </div>
+                    <label
+                      style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);margin-top:8px;cursor:pointer;">
+                      <input type="checkbox" id="conv-lock-aspect" checked style="accent-color:var(--accent);">
+                      Lock aspect ratio
+                    </label>
+                  </div>
+                  <div id="conv-resize-off-hint" style="font-size:11px;color:var(--text3);">Disabled — output keeps
+                    original dimensions</div>
                 </div>
 
                 <div class="control-group" id="conv-ico-size-wrap" style="display:none;">
@@ -1495,37 +1678,24 @@
                 </div>
               </div>
 
+              <!-- Output card -->
               <div class="tool-card">
                 <div class="tool-card-title">Output</div>
-                <div class="output-preview-wrap" id="conv-output-wrap">
-                  <div class="output-img-box">
-                    <img id="conv-output-img" src="" alt="">
-                  </div>
-                  <div class="output-meta">
-                    <span class="output-meta-badge" id="conv-out-badge">—</span>
-                    <span id="conv-out-dims">—</span>
-                    <span id="conv-out-size-label">—</span>
-                  </div>
-                </div>
-                <div id="conv-output-empty" style="color:var(--text3);font-size:12px;text-align:center;padding:20px 0;">
-                  Converted output will appear here
+
+                <div id="conv-output-empty" style="color:var(--text3);font-size:12px;text-align:center;padding:16px 0;">
+                  Converted files will appear here
                 </div>
 
-                <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px;">
-                  <button class="btn btn-primary" id="conv-btn-convert" onclick="runConversion()" disabled>
-                    ⇄ Convert
-                  </button>
-                  <button class="btn btn-secondary" id="conv-btn-download" onclick="downloadOutput()"
-                    style="display:none;">
-                    ↓ Download
-                  </button>
+                <!-- Per-file download list (shown after conversion) -->
+                <div id="conv-output-file-list"
+                  style="display:none;max-height:260px;overflow-y:auto;margin-bottom:10px;"></div>
+
+                <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;">
+                  <button class="btn btn-primary" id="conv-btn-convert" onclick="runConversion()" disabled>⇄
+                    Convert</button>
                   <button class="btn btn-secondary" id="conv-btn-batch-download" onclick="downloadBatch()"
-                    style="display:none;">
-                    ↓ Download All (ZIP)
-                  </button>
-                  <button class="btn btn-ghost" onclick="resetConverter()" style="margin-top:4px;">
-                    Reset
-                  </button>
+                    style="display:none;">↓ Download All (ZIP)</button>
+                  <button class="btn btn-ghost" onclick="resetConverter()" style="margin-top:2px;">Reset</button>
                 </div>
               </div>
 
@@ -2688,84 +2858,137 @@
       handleFiles(Array.from(e.target.files));
     });
 
+    function toggleConvResize(enabled) {
+      document.getElementById('conv-resize-fields').style.display = enabled ? 'block' : 'none';
+      document.getElementById('conv-resize-off-hint').style.display = enabled ? 'none' : 'block';
+      if (!enabled) {
+        document.getElementById('conv-width').value = '';
+        document.getElementById('conv-height').value = '';
+      } else if (convState.files.length) {
+        // auto-fill from first image if already loaded
+        const img = document.querySelector('#conv-masonry-grid img');
+        if (img && img.naturalWidth) {
+          document.getElementById('conv-width').value = img.naturalWidth;
+          document.getElementById('conv-height').value = img.naturalHeight;
+          convState.originalAspect = img.naturalWidth / img.naturalHeight;
+        }
+      }
+    }
+
     function handleFiles(rawFiles) {
       const valid = rawFiles.filter(f => validateFile(f));
       if (!valid.length) return;
 
+      // Revoke any old preview URLs
+      convState._previewUrls = convState._previewUrls || [];
+      convState._previewUrls.forEach(u => URL.revokeObjectURL(u));
+      convState._previewUrls = [];
+
       convState.files = valid;
       convState.outputBlobs = [];
 
-      const first = valid[0];
-      document.getElementById('conv-fname').textContent = valid.length > 1 ? `${valid.length} files selected` : first.name;
-      document.getElementById('conv-ftype').textContent = (first.type.split('/')[1] || 'unknown').toUpperCase();
-      document.getElementById('conv-fsize').textContent = formatBytes(valid.reduce((a, f) => a + f.size, 0));
+      const totalSize = valid.reduce((a, f) => a + f.size, 0);
+      document.getElementById('conv-fname').textContent = valid.length > 1 ? `${valid.length} files selected` : valid[0].name;
+      document.getElementById('conv-ftype').textContent = valid.length > 1 ? 'MIXED' : (valid[0].type.split('/')[1] || 'unknown').toUpperCase();
+      document.getElementById('conv-fsize').textContent = formatBytes(totalSize);
       document.getElementById('conv-file-info-wrap').style.display = 'block';
       document.getElementById('conv-stats').style.display = 'grid';
-      document.getElementById('conv-orig-size').textContent = formatBytes(first.size);
+      document.getElementById('conv-orig-size').textContent = valid.length > 1 ? `${valid.length} files` : formatBytes(valid[0].size);
       document.getElementById('conv-out-size').textContent = '—';
-
-      // Batch list
-      const batchList = document.getElementById('conv-batch-list');
-      if (valid.length > 1) {
-        batchList.style.display = 'block';
-        batchList.innerHTML = valid.map((f, i) =>
-          `<div style="padding:3px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
-        <span>${i + 1}. ${f.name}</span><span style="color:var(--text3)">${formatBytes(f.size)}</span>
-       </div>`
-        ).join('');
-      } else {
-        batchList.style.display = 'none';
-      }
-
-      // Preview first image
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const img = document.getElementById('conv-preview-img');
-        img.src = ev.target.result;
-        img.style.display = 'block';
-        document.getElementById('conv-preview-empty').style.display = 'none';
-        img.onload = () => {
-          convState.originalAspect = img.naturalWidth / img.naturalHeight;
-          document.getElementById('conv-width').value = img.naturalWidth;
-          document.getElementById('conv-height').value = img.naturalHeight;
-          estimateSize();
-        };
-      };
-      reader.onerror = () => ErrorSystem.log('PROCESSING', `Could not read file "${first.name}"`, reader.error?.message || '');
-      reader.readAsDataURL(first);
 
       document.getElementById('conv-btn-convert').disabled = false;
       document.getElementById('conv-output-empty').style.display = 'block';
-      document.getElementById('conv-output-wrap').classList.remove('visible');
-      document.getElementById('conv-btn-download').style.display = 'none';
+      document.getElementById('conv-output-file-list').style.display = 'none';
+      document.getElementById('conv-output-file-list').innerHTML = '';
       document.getElementById('conv-btn-batch-download').style.display = 'none';
+
+      // Build masonry preview
+      buildMasonryPreview(valid);
+
+      // Load first image dims for resize (if resize is enabled)
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const tmpImg = new Image();
+        tmpImg.onload = () => {
+          convState.originalAspect = tmpImg.naturalWidth / tmpImg.naturalHeight;
+          if (document.getElementById('conv-resize-enabled').checked) {
+            document.getElementById('conv-width').value = tmpImg.naturalWidth;
+            document.getElementById('conv-height').value = tmpImg.naturalHeight;
+          }
+          estimateSize();
+        };
+        tmpImg.src = ev.target.result;
+      };
+      reader.readAsDataURL(valid[0]);
+    }
+
+    function buildMasonryPreview(files) {
+      const grid = document.getElementById('conv-masonry-grid');
+      const emptyBox = document.getElementById('conv-preview-empty-box');
+      const countEl = document.getElementById('conv-preview-count');
+      grid.innerHTML = '';
+
+      // Load all files into masonry items
+      files.forEach((file, idx) => {
+        const item = document.createElement('div');
+        item.className = 'conv-masonry-item';
+        item.id = `conv-masonry-item-${idx}`;
+
+        const badgeHtml = `<span class="conv-converted-badge" id="conv-badge-${idx}" style="display:none;"></span>`;
+        const metaHtml = `
+      <div class="conv-item-meta">
+        <div class="conv-item-name">${file.name}</div>
+        <span>${formatBytes(file.size)}</span>
+      </div>`;
+        item.innerHTML = `<img id="conv-thumb-${idx}" src="" alt="">${badgeHtml}${metaHtml}`;
+        grid.appendChild(item);
+
+        const url = URL.createObjectURL(file);
+        convState._previewUrls = convState._previewUrls || [];
+        convState._previewUrls.push(url);
+        document.getElementById(`conv-thumb-${idx}`).src = url;
+      });
+
+      emptyBox.style.display = 'none';
+      grid.style.display = files.length === 1 ? 'block' : 'block'; // always block; columns handles layout
+      // Single image: full-width, no columns
+      grid.style.columns = files.length === 1 ? '1' : '2';
+      countEl.style.display = 'inline';
+      countEl.textContent = `${files.length} image${files.length > 1 ? 's' : ''}`;
+    }
+
+    function markMasonryItem(idx, status, label) {
+      const item = document.getElementById(`conv-masonry-item-${idx}`);
+      const badge = document.getElementById(`conv-badge-${idx}`);
+      if (!item || !badge) return;
+      item.classList.add(status === 'ok' ? 'converted' : 'failed');
+      badge.style.display = 'inline-block';
+      badge.textContent = label;
     }
 
     function syncAspect(changed) {
       if (!document.getElementById('conv-lock-aspect').checked) return;
+      if (!document.getElementById('conv-resize-enabled').checked) return;
       const w = parseFloat(document.getElementById('conv-width').value);
       const h = parseFloat(document.getElementById('conv-height').value);
-      if (changed === 'w' && w) {
-        document.getElementById('conv-height').value = Math.round(w / convState.originalAspect);
-      } else if (changed === 'h' && h) {
-        document.getElementById('conv-width').value = Math.round(h * convState.originalAspect);
-      }
+      if (changed === 'w' && w) document.getElementById('conv-height').value = Math.round(w / convState.originalAspect);
+      else if (changed === 'h' && h) document.getElementById('conv-width').value = Math.round(h * convState.originalAspect);
     }
 
     function estimateSize() {
       if (!convState.files.length) return;
       const q = parseInt(document.getElementById('conv-quality').value) / 100;
       const fmt = convState.selectedFormat;
-      const origSize = convState.files[0].size;
-      let est;
-      if (fmt === 'png') est = origSize * 0.95;
-      else if (fmt === 'webp') est = origSize * q * 0.4;
-      else if (fmt === 'jpg') est = origSize * q * 0.55;
-      else if (fmt === 'bmp') est = origSize * 1.5;
-      else if (fmt === 'gif') est = origSize * 0.7;
-      else if (fmt === 'ico') est = origSize * 0.2;
-      else est = origSize * 0.9;
-      document.getElementById('conv-out-size').textContent = '~' + formatBytes(est);
+      const origSize = convState.files.reduce((a, f) => a + f.size, 0);
+      let ratio;
+      if (fmt === 'png') ratio = 0.95;
+      else if (fmt === 'webp') ratio = q * 0.4;
+      else if (fmt === 'jpg') ratio = q * 0.55;
+      else if (fmt === 'bmp') ratio = 1.5;
+      else if (fmt === 'gif') ratio = 0.7;
+      else if (fmt === 'ico') ratio = 0.2;
+      else ratio = 0.9;
+      document.getElementById('conv-out-size').textContent = '~' + formatBytes(origSize * ratio);
     }
 
     /* ---- Core Conversion Engine ---- */
@@ -2787,48 +3010,31 @@
               const canvas = document.createElement('canvas');
               const targetW = width || img.naturalWidth;
               const targetH = height || img.naturalHeight;
-
               if (targetW <= 0 || targetH <= 0) throw new Error('Invalid dimensions: width and height must be > 0');
               if (targetW > 16000 || targetH > 16000) throw new Error('Dimensions exceed max allowed (16000px)');
-
-              canvas.width = targetW;
-              canvas.height = targetH;
+              canvas.width = targetW; canvas.height = targetH;
               const ctx = canvas.getContext('2d');
               if (!ctx) throw new Error('Could not get 2D canvas context');
-
-              // For JPG/BMP fill white bg (no transparency)
-              if (fmt === 'jpg' || fmt === 'bmp') {
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, targetW, targetH);
-              }
-
+              if (fmt === 'jpg' || fmt === 'bmp') { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, targetW, targetH); }
               ctx.drawImage(img, 0, 0, targetW, targetH);
-
               if (fmt === 'ico') {
-                // ICO via canvas — output as PNG-encoded ICO
                 const icoSize = parseInt(document.getElementById('conv-ico-size').value);
                 const icoCanvas = document.createElement('canvas');
                 icoCanvas.width = icoSize; icoCanvas.height = icoSize;
-                const icoCtx = icoCanvas.getContext('2d');
-                icoCtx.drawImage(canvas, 0, 0, icoSize, icoSize);
+                icoCanvas.getContext('2d').drawImage(canvas, 0, 0, icoSize, icoSize);
                 icoCanvas.toBlob(blob => {
                   if (!blob) { reject(new Error('ICO conversion failed: canvas returned null blob')); return; }
                   resolve(blob);
                 }, 'image/png');
                 return;
               }
-
               const mimeType = getMimeType(fmt);
               const qualityVal = (fmt === 'png' || fmt === 'bmp' || fmt === 'gif') ? undefined : quality / 100;
-
               canvas.toBlob(blob => {
-                if (!blob) { reject(new Error(`Conversion failed: canvas.toBlob returned null for format ${fmt}`)); return; }
+                if (!blob) { reject(new Error(`canvas.toBlob returned null for ${fmt}`)); return; }
                 resolve(blob);
               }, mimeType, qualityVal);
-
-            } catch (err) {
-              reject(err);
-            }
+            } catch (err) { reject(err); }
           };
           img.onerror = () => reject(new Error(`Failed to load image data for "${file.name}"`));
           img.src = ev.target.result;
@@ -2844,149 +3050,139 @@
       convState.outputBlobs = [];
 
       const btn = document.getElementById('conv-btn-convert');
-      btn.disabled = true;
-      btn.textContent = 'Converting…';
+      btn.disabled = true; btn.textContent = 'Converting…';
 
       const fmt = convState.selectedFormat;
       const quality = parseInt(document.getElementById('conv-quality').value);
-      const w = parseInt(document.getElementById('conv-width').value) || 0;
-      const h = parseInt(document.getElementById('conv-height').value) || 0;
+      const resizeEnabled = document.getElementById('conv-resize-enabled').checked;
+      const w = resizeEnabled ? (parseInt(document.getElementById('conv-width').value) || 0) : 0;
+      const h = resizeEnabled ? (parseInt(document.getElementById('conv-height').value) || 0) : 0;
       const files = convState.files;
-      let success = 0;
-      let failed = 0;
+      let successCount = 0, failedCount = 0;
+
+      // Validate resize dims if enabled
+      if (resizeEnabled && (w < 1 || h < 1)) {
+        ErrorSystem.log('PROCESSING', 'Resize is enabled but dimensions are empty or invalid.', 'Enter valid width and height, or turn off the resize toggle.');
+        btn.disabled = false; btn.textContent = '⇄ Convert';
+        convState.processing = false; return;
+      }
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const pct = Math.round(((i) / files.length) * 100);
-        setProgress(pct, `${i + 1}/${files.length} — ${file.name}`);
-
+        setProgress(Math.round((i / files.length) * 100), `${i + 1}/${files.length} — ${file.name}`);
         try {
           const blob = await convertSingleFile(file, fmt, quality, w, h);
           const baseName = file.name.replace(/\.[^.]+$/, '');
           const ext = fmt === 'ico' ? 'ico' : getExtension(fmt);
           const url = URL.createObjectURL(blob);
-          convState.outputBlobs.push({ blob, filename: `${baseName}.${ext}`, url });
-          success++;
+          convState.outputBlobs.push({ blob, filename: `${baseName}.${ext}`, url, origName: file.name });
+          markMasonryItem(i, 'ok', fmt.toUpperCase());
+          successCount++;
         } catch (err) {
-          failed++;
+          failedCount++;
+          markMasonryItem(i, 'failed', 'FAILED');
           ErrorSystem.log('PROCESSING', `Failed to convert "${file.name}"`, err.message);
         }
       }
 
       setProgress(100);
-
-      btn.textContent = '⇄ Convert';
-      btn.disabled = false;
+      btn.textContent = '⇄ Convert'; btn.disabled = false;
       convState.processing = false;
 
       if (!convState.outputBlobs.length) {
-        ErrorSystem.log('PROCESSING', 'Conversion produced no output', `All ${failed} file(s) failed. Check error log for details.`);
+        ErrorSystem.log('PROCESSING', 'Conversion produced no output', `All ${failedCount} file(s) failed.`);
         return;
       }
 
-      // Show first output
-      const first = convState.outputBlobs[0];
-      const outputImg = document.getElementById('conv-output-img');
-      outputImg.src = first.url;
-      outputImg.onload = () => {
-        document.getElementById('conv-out-badge').textContent = fmt.toUpperCase();
-        document.getElementById('conv-out-dims').textContent = `${outputImg.naturalWidth} × ${outputImg.naturalHeight}`;
-        document.getElementById('conv-out-size-label').textContent = formatBytes(first.blob.size);
-        document.getElementById('conv-out-size').textContent = formatBytes(first.blob.size);
-      };
-      document.getElementById('conv-output-wrap').classList.add('visible');
+      // Build per-file output list
+      buildOutputFileList(fmt);
+
       document.getElementById('conv-output-empty').style.display = 'none';
+      document.getElementById('conv-btn-batch-download').style.display = convState.outputBlobs.length > 1 ? 'flex' : 'none';
 
-      // Show download buttons
-      if (convState.outputBlobs.length === 1) {
-        document.getElementById('conv-btn-download').style.display = 'flex';
-        document.getElementById('conv-btn-batch-download').style.display = 'none';
-      } else {
-        document.getElementById('conv-btn-download').style.display = 'none';
-        document.getElementById('conv-btn-batch-download').style.display = 'flex';
-      }
+      if (failedCount > 0) ErrorSystem.warn(`${failedCount} of ${files.length} files failed. ${successCount} succeeded.`);
+      else ErrorSystem.success('Conversion complete', `${successCount} file${successCount > 1 ? 's' : ''} → ${fmt.toUpperCase()}`);
+    }
 
-      if (failed > 0) {
-        ErrorSystem.warn(`${failed} of ${files.length} files failed to convert. ${success} succeeded.`);
-      } else {
-        ErrorSystem.success('Conversion complete', `${success} file${success > 1 ? 's' : ''} converted to ${fmt.toUpperCase()} successfully.`);
-      }
+    function buildOutputFileList(fmt) {
+      const list = document.getElementById('conv-output-file-list');
+      list.innerHTML = convState.outputBlobs.map((item, i) => {
+        const ext = fmt.toUpperCase();
+        return `<div class="conv-output-row">
+      <img class="conv-output-row-thumb" src="${item.url}" alt="">
+      <span class="conv-output-row-name">${item.filename}</span>
+      <span class="conv-output-row-size">${formatBytes(item.blob.size)}</span>
+      <button class="conv-output-row-dl" onclick="downloadSingleConverted(${i})">↓</button>
+    </div>`;
+      }).join('');
+      list.style.display = 'block';
+    }
+
+    function downloadSingleConverted(idx) {
+      const item = convState.outputBlobs[idx];
+      if (!item) return;
+      const a = document.createElement('a');
+      a.href = item.url; a.download = item.filename; a.click();
+      ErrorSystem.success('Download started', item.filename);
     }
 
     function downloadOutput() {
-      if (!convState.outputBlobs.length) return;
-      const { url, filename } = convState.outputBlobs[0];
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      ErrorSystem.success('Download started', filename);
+      downloadSingleConverted(0);
     }
 
     async function downloadBatch() {
       if (!convState.outputBlobs.length) return;
-
-      // If only one, just download directly
-      if (convState.outputBlobs.length === 1) { downloadOutput(); return; }
-
-      // Check if JSZip is available, if not load it
+      if (convState.outputBlobs.length === 1) { downloadSingleConverted(0); return; }
       if (typeof JSZip === 'undefined') {
         await new Promise((res, rej) => {
           const s = document.createElement('script');
           s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-          s.onload = res;
-          s.onerror = () => rej(new Error('Failed to load JSZip'));
+          s.onload = res; s.onerror = () => rej(new Error('Failed to load JSZip'));
           document.head.appendChild(s);
-        }).catch(err => {
-          ErrorSystem.log('PROCESSING', 'Could not load ZIP library', err.message);
-          return;
-        });
+        }).catch(err => { ErrorSystem.log('PROCESSING', 'Could not load ZIP library', err.message); return; });
       }
-
+      if (typeof JSZip === 'undefined') return;
       const btn = document.getElementById('conv-btn-batch-download');
-      btn.disabled = true;
-      btn.textContent = 'Zipping…';
-
+      btn.disabled = true; btn.textContent = 'Zipping…';
       try {
         const zip = new JSZip();
-        for (const { blob, filename } of convState.outputBlobs) {
-          zip.file(filename, blob);
-        }
+        for (const { blob, filename } of convState.outputBlobs) zip.file(filename, blob);
         const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
         const url = URL.createObjectURL(content);
         const a = document.createElement('a');
-        a.href = url;
-        a.download = `pixelforge-converted-${Date.now()}.zip`;
-        a.click();
+        a.href = url; a.download = `pixelforge-converted-${Date.now()}.zip`; a.click();
         URL.revokeObjectURL(url);
         ErrorSystem.success('ZIP download started', `${convState.outputBlobs.length} files packaged.`);
-      } catch (err) {
-        ErrorSystem.log('PROCESSING', 'ZIP creation failed', err.message);
-      }
-
-      btn.disabled = false;
-      btn.textContent = '↓ Download All (ZIP)';
+      } catch (err) { ErrorSystem.log('PROCESSING', 'ZIP creation failed', err.message); }
+      btn.disabled = false; btn.textContent = '↓ Download All (ZIP)';
     }
 
     function resetConverter() {
       convState.files = [];
       convState.outputBlobs.forEach(o => URL.revokeObjectURL(o.url));
       convState.outputBlobs = [];
+      (convState._previewUrls || []).forEach(u => URL.revokeObjectURL(u));
+      convState._previewUrls = [];
 
       document.getElementById('conv-file-info-wrap').style.display = 'none';
       document.getElementById('conv-stats').style.display = 'none';
       document.getElementById('conv-progress').classList.remove('visible');
-      document.getElementById('conv-preview-img').style.display = 'none';
-      document.getElementById('conv-preview-empty').style.display = 'block';
-      document.getElementById('conv-output-wrap').classList.remove('visible');
+      document.getElementById('conv-masonry-grid').style.display = 'none';
+      document.getElementById('conv-masonry-grid').innerHTML = '';
+      document.getElementById('conv-preview-empty-box').style.display = 'flex';
+      document.getElementById('conv-preview-count').style.display = 'none';
       document.getElementById('conv-output-empty').style.display = 'block';
+      document.getElementById('conv-output-file-list').style.display = 'none';
+      document.getElementById('conv-output-file-list').innerHTML = '';
       document.getElementById('conv-btn-convert').disabled = true;
-      document.getElementById('conv-btn-download').style.display = 'none';
       document.getElementById('conv-btn-batch-download').style.display = 'none';
       document.getElementById('conv-file-input').value = '';
       document.getElementById('conv-width').value = '';
       document.getElementById('conv-height').value = '';
       document.getElementById('conv-out-size').textContent = '—';
+      // Reset resize toggle to off
+      document.getElementById('conv-resize-enabled').checked = false;
+      toggleConvResize(false);
     }
 
 
