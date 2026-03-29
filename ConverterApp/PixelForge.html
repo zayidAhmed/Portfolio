@@ -1261,28 +1261,40 @@
       cursor: default;
       transition: var(--trans);
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
 
     .conv-masonry-item:hover {
       border-color: var(--border2);
     }
 
-    .conv-masonry-item img {
+    .conv-masonry-thumb-wrap {
+      width: 100%;
+      min-height: 90px;
+      max-height: 160px;
+      overflow: hidden;
+      background: repeating-conic-gradient(#0e0020 0% 25%, #16002e 0% 50%) 0 0 / 12px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .conv-masonry-thumb-wrap img {
       display: block;
       width: 100%;
-      height: auto;
-      border-radius: var(--radius) var(--radius) 0 0;
+      height: 100%;
+      object-fit: cover;
     }
 
     .conv-masonry-item .conv-item-meta {
-      padding: 5px 8px 6px;
+      padding: 6px 8px 7px;
       font-size: 10px;
       color: var(--text3);
       line-height: 1.4;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-family: var(--mono);
+      flex-shrink: 0;
+      background: var(--bg3);
     }
 
     .conv-masonry-item .conv-item-name {
@@ -1295,22 +1307,29 @@
     }
 
     /* Converted state overlay */
-    .conv-masonry-item.converted .conv-converted-badge {
+    .conv-converted-badge {
       position: absolute;
       top: 6px;
       right: 6px;
-      background: var(--green-bg);
-      border: 1px solid rgba(45, 212, 160, 0.3);
-      color: var(--green);
       font-size: 10px;
       padding: 2px 7px;
       border-radius: 20px;
       font-family: var(--mono);
+      font-weight: 500;
+      display: none;
+    }
+
+    .conv-masonry-item.converted .conv-converted-badge {
+      display: inline-block;
+      background: var(--green-bg);
+      border: 1px solid rgba(45, 212, 160, 0.3);
+      color: var(--green);
     }
 
     .conv-masonry-item.failed .conv-converted-badge {
+      display: inline-block;
       background: var(--red-bg);
-      border-color: rgba(242, 99, 95, 0.3);
+      border: 1px solid rgba(242, 99, 95, 0.3);
       color: var(--red);
     }
 
@@ -1419,6 +1438,123 @@
     }
 
     /* ============================================================
+   PHASE 5 — COLOR EXTRACTOR & EXIF VIEWER
+   ============================================================ */
+    /* Palette swatch grid */
+    .pal-swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+    }
+
+    .pal-swatch-item {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: var(--trans);
+    }
+
+    .pal-swatch-item:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+
+    .pal-swatch-item.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .pal-swatch-color {
+      height: 72px;
+      width: 100%;
+      display: block;
+    }
+
+    .pal-swatch-meta {
+      padding: 6px 8px 7px;
+      background: var(--bg3);
+      font-size: 10px;
+      font-family: var(--mono);
+      color: var(--text2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pal-swatch-pct {
+      font-size: 9px;
+      color: var(--text3);
+      margin-top: 1px;
+    }
+
+    /* EXIF table rows */
+    .exif-row {
+      display: table-row;
+    }
+
+    .exif-row:nth-child(even) td {
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .exif-row:hover td {
+      background: var(--bg4);
+    }
+
+    .exif-row td {
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .exif-row.hidden {
+      display: none;
+    }
+
+    .exif-tag {
+      color: var(--text2);
+      font-weight: 500;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .exif-cat-badge {
+      display: inline-block;
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      margin-left: 5px;
+      font-weight: 400;
+      vertical-align: middle;
+    }
+
+    .exif-val {
+      color: var(--text);
+      font-size: 11px;
+      word-break: break-word;
+      font-family: var(--mono);
+    }
+
+    .exif-copy-btn {
+      background: transparent;
+      border: none;
+      color: var(--text3);
+      cursor: pointer;
+      font-size: 13px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: var(--trans);
+      display: block;
+      margin: 0 auto;
+    }
+
+    .exif-copy-btn:hover {
+      color: var(--accent);
+      background: var(--accent-glow2);
+    }
+
+    /* ============================================================
    CROPPER HANDLES
    ============================================================ */
     .crp-handle {
@@ -1464,7 +1600,7 @@
     <nav id="sidebar">
       <div class="sidebar-logo">
         <div class="wordmark">Pixel<span>Forge</span></div>
-        <div class="tagline">v2.0 · Professional Image Tools</div>
+        <div class="tagline">v2.6.0 | Professional Image Tools</div>
       </div>
 
       <div class="sidebar-section">
@@ -1502,12 +1638,12 @@
         <div class="nav-item" data-tool="palette" onclick="switchTool(this, 'palette')">
           <span class="nav-icon">◑</span>
           <span class="nav-label">Color Extractor</span>
-          <span class="nav-badge">soon</span>
+          <span class="nav-badge new">live</span>
         </div>
         <div class="nav-item" data-tool="exif" onclick="switchTool(this, 'exif')">
           <span class="nav-icon">≡</span>
           <span class="nav-label">EXIF Viewer</span>
-          <span class="nav-badge">soon</span>
+          <span class="nav-badge new">live</span>
         </div>
       </div>
 
@@ -1789,7 +1925,8 @@
                     oninput="document.getElementById('comp-quality-val').textContent=this.value;">
                   <div
                     style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px;">
-                    <span>1 — Max compression</span><span>100 — Best quality</span></div>
+                    <span>1 — Max compression</span><span>100 — Best quality</span>
+                  </div>
                 </div>
                 <div class="control-group">
                   <div class="control-label">Target Max Size <span
@@ -1995,7 +2132,8 @@
                         oninput="document.getElementById('bgr-tol-val').textContent=this.value;saveBgrSettings();">
                       <div
                         style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:3px;">
-                        <span>Precise</span><span>Aggressive</span></div>
+                        <span>Precise</span><span>Aggressive</span>
+                      </div>
                       <div class="control-label" style="margin-top:10px;margin-bottom:6px;">Smoothing <span
                           id="bgr-smooth-val">2</span>px</div>
                       <input type="range" id="bgr-smooth" min="0" max="8" value="2"
@@ -2158,7 +2296,8 @@
                     oninput="document.getElementById('rsz-pct-val').textContent=this.value; updateRszFromPct();">
                   <div
                     style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px;">
-                    <span>1%</span><span>200%</span></div>
+                    <span>1%</span><span>200%</span>
+                  </div>
                   <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;">
                     <button class="format-btn"
                       onclick="document.getElementById('rsz-pct-slider').value=25;document.getElementById('rsz-pct-val').textContent=25;updateRszFromPct();">25%</button>
@@ -2609,22 +2748,231 @@
             </div>
           </div>
         </div>
+        <!-- TOOL 07: COLOR EXTRACTOR -->
         <div class="tool-panel" id="panel-palette">
-          <div class="coming-soon-panel">
-            <div class="coming-soon-icon">◑</div>
-            <div class="coming-soon-title">Color Extractor</div>
-            <div class="coming-soon-sub">Extract dominant color palette from any image. Export HEX, RGB, HSL codes.
+          <div class="tool-grid-layout">
+            <!-- LEFT: upload + palette display -->
+            <div>
+              <div class="upload-zone" id="pal-dropzone">
+                <input type="file" id="pal-file-input" accept="image/*">
+                <span class="upload-icon">◑</span>
+                <div class="upload-title">Drop an image to extract palette</div>
+                <div class="upload-sub">Supports <strong>PNG, JPG, WebP, BMP, GIF</strong> · Max <strong>50 MB</strong>
+                </div>
+                <div class="upload-btn-row"><button class="btn-upload-trigger"
+                    onclick="document.getElementById('pal-file-input').click()">Browse File</button></div>
+              </div>
+              <div id="pal-file-info-wrap" style="display:none;margin-top:14px;">
+                <div class="file-info">
+                  <span class="file-info-name" id="pal-fname">—</span>
+                  <span class="file-info-type" id="pal-ftype">—</span>
+                  <span class="file-info-size" id="pal-fsize">—</span>
+                  <button class="btn-ghost" onclick="resetPalette()"
+                    style="font-size:18px;padding:2px 6px;color:var(--text3)">×</button>
+                </div>
+              </div>
+              <!-- Preview -->
+              <div style="margin-top:14px;">
+                <div class="tool-card-title">Preview</div>
+                <div class="preview-container" id="pal-preview-box" style="min-height:260px;">
+                  <div class="preview-empty" id="pal-preview-empty">Upload an image to extract colors</div>
+                  <img id="pal-preview-img" src="" alt="" style="display:none;max-height:320px;">
+                </div>
+              </div>
+              <!-- Color swatches -->
+              <div id="pal-swatches-wrap" style="display:none;margin-top:20px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                  <div class="tool-card-title" style="margin-bottom:0;">Extracted Palette</div>
+                  <div style="display:flex;gap:6px;">
+                    <button class="btn btn-secondary" style="width:auto;padding:5px 12px;font-size:11px;"
+                      onclick="copyAllColors()">Copy All HEX</button>
+                    <button class="btn btn-secondary" style="width:auto;padding:5px 12px;font-size:11px;"
+                      onclick="downloadPalette()">↓ Export</button>
+                  </div>
+                </div>
+                <div id="pal-swatch-grid" class="pal-swatch-grid"></div>
+              </div>
             </div>
-            <div class="coming-soon-badge">Phase 4 — Coming soon</div>
+
+            <!-- RIGHT: controls -->
+            <div style="display:flex;flex-direction:column;gap:16px;min-width:0;overflow:hidden;">
+              <div class="tool-card">
+                <div class="tool-card-title">Extraction Settings</div>
+                <div class="control-group">
+                  <div class="control-label">Number of Colors <span id="pal-count-val">8</span></div>
+                  <input type="range" id="pal-count" min="2" max="24" value="8"
+                    oninput="document.getElementById('pal-count-val').textContent=this.value;">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Quality / Sample Rate</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;" id="pal-quality-grid">
+                    <button class="format-btn" onclick="setPalQuality(1,this)">Fast</button>
+                    <button class="format-btn active" onclick="setPalQuality(5,this)">Balanced</button>
+                    <button class="format-btn" onclick="setPalQuality(10,this)">Precise</button>
+                  </div>
+                  <div style="font-size:11px;color:var(--text3);margin-top:5px;">Higher quality = slower but more
+                    accurate</div>
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Color Format</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;" id="pal-fmt-grid">
+                    <button class="format-btn active" onclick="setPalFmt('hex',this)">HEX</button>
+                    <button class="format-btn" onclick="setPalFmt('rgb',this)">RGB</button>
+                    <button class="format-btn" onclick="setPalFmt('hsl',this)">HSL</button>
+                  </div>
+                </div>
+                <button class="btn btn-primary" id="pal-btn-extract" onclick="runPaletteExtraction()" disabled>◑ Extract
+                  Palette</button>
+              </div>
+
+              <div class="tool-card" id="pal-detail-card" style="display:none;">
+                <div class="tool-card-title">Selected Color</div>
+                <div id="pal-selected-swatch"
+                  style="width:100%;height:64px;border-radius:var(--radius);margin-bottom:12px;background:#000;border:1px solid var(--border);transition:var(--trans);">
+                </div>
+                <div id="pal-selected-vals" style="display:flex;flex-direction:column;gap:6px;"></div>
+              </div>
+
+              <div class="tool-card">
+                <div class="tool-card-title">Export Options</div>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <button class="btn btn-secondary" onclick="exportPaletteAs('css')" id="pal-exp-css">↓ CSS
+                    Variables</button>
+                  <button class="btn btn-secondary" onclick="exportPaletteAs('json')" id="pal-exp-json">↓ JSON</button>
+                  <button class="btn btn-secondary" onclick="exportPaletteAs('txt')" id="pal-exp-txt">↓ Plain
+                    Text</button>
+                  <button class="btn btn-secondary" onclick="exportPaletteAs('png')" id="pal-exp-png">↓ Palette
+                    PNG</button>
+                </div>
+                <button class="btn btn-ghost" onclick="resetPalette()" style="margin-top:8px;">Reset</button>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- TOOL 08: EXIF VIEWER -->
         <div class="tool-panel" id="panel-exif">
-          <div class="coming-soon-panel">
-            <div class="coming-soon-icon">≡</div>
-            <div class="coming-soon-title">EXIF Data Viewer</div>
-            <div class="coming-soon-sub">Read camera model, GPS coordinates, timestamps and all metadata. Option to
-              strip EXIF before download.</div>
-            <div class="coming-soon-badge">Phase 4 — Coming soon</div>
+          <div class="tool-grid-layout">
+            <!-- LEFT: upload + metadata table -->
+            <div>
+              <div class="upload-zone" id="exif-dropzone">
+                <input type="file" id="exif-file-input"
+                  accept="image/jpeg,image/jpg,image/tiff,image/png,image/webp,image/heic">
+                <span class="upload-icon">≡</span>
+                <div class="upload-title">Drop an image to read metadata</div>
+                <div class="upload-sub">Best with <strong>JPEG/TIFF</strong> (richest EXIF) · Also reads PNG, WebP · Max
+                  <strong>50 MB</strong>
+                </div>
+                <div class="upload-btn-row"><button class="btn-upload-trigger"
+                    onclick="document.getElementById('exif-file-input').click()">Browse File</button></div>
+              </div>
+              <div id="exif-file-info-wrap" style="display:none;margin-top:14px;">
+                <div class="file-info">
+                  <span class="file-info-name" id="exif-fname">—</span>
+                  <span class="file-info-type" id="exif-ftype">—</span>
+                  <span class="file-info-size" id="exif-fsize">—</span>
+                  <button class="btn-ghost" onclick="resetExif()"
+                    style="font-size:18px;padding:2px 6px;color:var(--text3)">×</button>
+                </div>
+              </div>
+              <!-- Stats row -->
+              <div class="stat-row" id="exif-stats" style="display:none;margin-top:10px;">
+                <div class="stat-box">
+                  <div class="stat-box-label">Fields found</div>
+                  <div class="stat-box-val" id="exif-field-count">—</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-box-label">Image size</div>
+                  <div class="stat-box-val" id="exif-img-dims">—</div>
+                </div>
+              </div>
+              <!-- Metadata table -->
+              <div id="exif-data-wrap" style="display:none;margin-top:16px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                  <div class="tool-card-title" style="margin-bottom:0;">Metadata</div>
+                  <div style="display:flex;gap:6px;align-items:center;">
+                    <input type="text" id="exif-search" placeholder="Search fields…"
+                      style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:8px;font-size:12px;width:150px;"
+                      oninput="filterExifTable(this.value)">
+                    <button class="btn btn-secondary" style="width:auto;padding:5px 12px;font-size:11px;"
+                      onclick="copyAllExif()">Copy All</button>
+                  </div>
+                </div>
+                <div id="exif-table-wrap"
+                  style="max-height:440px;overflow-y:auto;border-radius:var(--radius);border:1px solid var(--border);">
+                  <table id="exif-table" style="width:100%;border-collapse:collapse;font-size:12px;">
+                    <thead>
+                      <tr style="background:var(--bg3);position:sticky;top:0;z-index:1;">
+                        <th
+                          style="padding:8px 12px;text-align:left;color:var(--text3);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border);width:38%;">
+                          Tag</th>
+                        <th
+                          style="padding:8px 12px;text-align:left;color:var(--text3);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border);">
+                          Value</th>
+                        <th
+                          style="padding:8px 12px;text-align:center;color:var(--text3);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border);width:50px;">
+                          Copy</th>
+                      </tr>
+                    </thead>
+                    <tbody id="exif-tbody"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="preview-container" id="exif-empty-box" style="min-height:240px;margin-top:14px;">
+                <div class="preview-empty">Upload an image to read its metadata</div>
+              </div>
+            </div>
+
+            <!-- RIGHT: controls + GPS + strip -->
+            <div style="display:flex;flex-direction:column;gap:16px;min-width:0;overflow:hidden;">
+              <div class="tool-card">
+                <div class="tool-card-title">Preview</div>
+                <div
+                  style="background:repeating-conic-gradient(#0e0020 0% 25%,#16002e 0% 50%) 0 0/12px 12px;border-radius:var(--radius);overflow:hidden;min-height:120px;display:flex;align-items:center;justify-content:center;">
+                  <img id="exif-preview-img" src="" alt=""
+                    style="display:none;max-width:100%;max-height:200px;object-fit:contain;">
+                  <span id="exif-preview-empty-txt" style="font-size:12px;color:var(--text3);">No image</span>
+                </div>
+              </div>
+
+              <!-- GPS card (shown if GPS data found) -->
+              <div class="tool-card" id="exif-gps-card" style="display:none;">
+                <div class="tool-card-title">GPS Location</div>
+                <div id="exif-gps-coords"
+                  style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.7;font-family:var(--mono);">
+                </div>
+                <a id="exif-gps-link" href="#" target="_blank"
+                  style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--accent);padding:6px 12px;background:var(--accent-glow2);border:1px solid var(--border-accent);border-radius:var(--radius);text-decoration:none;">
+                  ↗ Open in Google Maps
+                </a>
+              </div>
+
+              <!-- Strip & Download -->
+              <div class="tool-card">
+                <div class="tool-card-title">Strip EXIF & Download</div>
+                <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.6;">
+                  Remove all metadata from the image before sharing — protects location, device, and timestamp data.
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Output Format</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+                    <button class="format-btn active" id="exif-strip-fmt-same"
+                      onclick="setExifStripFmt('same',this)">Same</button>
+                    <button class="format-btn" id="exif-strip-fmt-jpg"
+                      onclick="setExifStripFmt('jpg',this)">JPG</button>
+                    <button class="format-btn" id="exif-strip-fmt-png"
+                      onclick="setExifStripFmt('png',this)">PNG</button>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <button class="btn btn-primary" id="exif-btn-strip" onclick="stripAndDownload()" disabled>⊘ Strip EXIF
+                    & Download</button>
+                  <button class="btn btn-secondary" id="exif-btn-export-json" onclick="exportExifJson()"
+                    style="display:none;">↓ Export Metadata JSON</button>
+                  <button class="btn btn-ghost" onclick="resetExif()" style="margin-top:2px;">Reset</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -5149,10 +5497,642 @@
       setBgrApiStatus('');
     }
 
-    /* ---- Update TOOL_META ---- */
-    TOOL_META['cropper'] = { title: 'Image Cropper', sub: 'Drag handles · Aspect ratio lock · Rotate & flip · Rule of thirds' };
-    TOOL_META['watermark'] = { title: 'Watermark Tool', sub: 'Text & image watermark · Drag to position · Tile mode · Live preview' };
-    TOOL_META['bg-remover'] = { title: 'Background Remover', sub: 'remove.bg · ClipDrop · PhotoRoom · Vanilla JS fallback · Settings saved locally' };
+
+    /* ---- Update TOOL_META Phase 5 ---- */
+    TOOL_META['palette'] = { title: 'Color Extractor', sub: 'Extract dominant palette · HEX, RGB, HSL · Export CSS, JSON, PNG' };
+    TOOL_META['exif'] = { title: 'EXIF Metadata Viewer', sub: 'Read camera, GPS, timestamps · Strip EXIF before sharing' };
+
+    /* ============================================================
+       TOOL 07 — COLOR EXTRACTOR
+       ============================================================ */
+    const palState = {
+      file: null,
+      colors: [],   // [{r,g,b,pct}]
+      selectedIdx: -1,
+      fmt: 'hex',
+      quality: 5,
+      count: 8,
+    };
+
+    /* ---- Drag & Drop ---- */
+    const palDropzone = document.getElementById('pal-dropzone');
+    palDropzone.addEventListener('dragover', e => { e.preventDefault(); palDropzone.classList.add('dragover'); });
+    palDropzone.addEventListener('dragleave', () => palDropzone.classList.remove('dragover'));
+    palDropzone.addEventListener('drop', e => { e.preventDefault(); palDropzone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) handlePalFile(f); });
+    palDropzone.addEventListener('click', e => { if (!e.target.classList.contains('btn-upload-trigger')) document.getElementById('pal-file-input').click(); });
+    document.getElementById('pal-file-input').addEventListener('change', e => { if (e.target.files[0]) handlePalFile(e.target.files[0]); });
+
+    function handlePalFile(file) {
+      if (!validateFile(file)) return;
+      palState.file = file;
+      palState.colors = [];
+      palState.selectedIdx = -1;
+      document.getElementById('pal-fname').textContent = file.name;
+      document.getElementById('pal-ftype').textContent = (file.type.split('/')[1] || 'image').toUpperCase();
+      document.getElementById('pal-fsize').textContent = formatBytes(file.size);
+      document.getElementById('pal-file-info-wrap').style.display = 'block';
+      document.getElementById('pal-btn-extract').disabled = false;
+      document.getElementById('pal-swatches-wrap').style.display = 'none';
+      document.getElementById('pal-detail-card').style.display = 'none';
+      ['css', 'json', 'txt', 'png'].forEach(t => { const el = document.getElementById(`pal-exp-${t}`); if (el) el.disabled = true; });
+
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = document.getElementById('pal-preview-img');
+        img.src = ev.target.result;
+        img.style.display = 'block';
+        document.getElementById('pal-preview-empty').style.display = 'none';
+      };
+      reader.onerror = () => ErrorSystem.log('PROCESSING', `Could not read "${file.name}"`, '');
+      reader.readAsDataURL(file);
+    }
+
+    function setPalQuality(q, btn) {
+      palState.quality = q;
+      document.querySelectorAll('#pal-quality-grid .format-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function setPalFmt(fmt, btn) {
+      palState.fmt = fmt;
+      document.querySelectorAll('#pal-fmt-grid .format-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // Re-render swatches with new format
+      if (palState.colors.length) renderSwatches();
+    }
+
+    /* Core: median cut quantisation */
+    async function runPaletteExtraction() {
+      if (!palState.file) return;
+      const btn = document.getElementById('pal-btn-extract');
+      btn.disabled = true; btn.textContent = 'Extracting…';
+      try {
+        palState.count = parseInt(document.getElementById('pal-count').value);
+        const colors = await extractColors(palState.file, palState.count, palState.quality);
+        palState.colors = colors;
+        renderSwatches();
+        document.getElementById('pal-swatches-wrap').style.display = 'block';
+        ['css', 'json', 'txt', 'png'].forEach(t => { const el = document.getElementById(`pal-exp-${t}`); if (el) el.disabled = false; });
+        ErrorSystem.success('Palette extracted', `${colors.length} dominant colors found`);
+      } catch (err) {
+        ErrorSystem.log('PROCESSING', `Palette extraction failed`, err.message);
+      }
+      btn.disabled = false; btn.textContent = '◑ Extract Palette';
+    }
+
+    async function extractColors(file, count, quality) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const img = new Image();
+          img.onload = () => {
+            try {
+              // Downsample for speed
+              const MAX = 200;
+              const scale = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
+              const W = Math.max(1, Math.round(img.naturalWidth * scale));
+              const H = Math.max(1, Math.round(img.naturalHeight * scale));
+              const canvas = document.createElement('canvas');
+              canvas.width = W; canvas.height = H;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, W, H);
+              const data = ctx.getImageData(0, 0, W, H).data;
+
+              // Build pixel array, sampling by quality step
+              const pixels = [];
+              for (let i = 0; i < data.length; i += 4 * quality) {
+                const a = data[i + 3];
+                if (a < 128) continue; // skip transparent
+                pixels.push([data[i], data[i + 1], data[i + 2]]);
+              }
+              if (!pixels.length) throw new Error('No opaque pixels found in image.');
+
+              // Median cut
+              const buckets = medianCut(pixels, count);
+              const result = buckets.map(bucket => {
+                const avg = bucket.reduce((s, p) => [s[0] + p[0], s[1] + p[1], s[2] + p[2]], [0, 0, 0]);
+                return {
+                  r: Math.round(avg[0] / bucket.length),
+                  g: Math.round(avg[1] / bucket.length),
+                  b: Math.round(avg[2] / bucket.length),
+                  pct: Math.round((bucket.length / pixels.length) * 100)
+                };
+              });
+              // Sort by brightness (darkest to lightest)
+              result.sort((a, b) => (b.r + b.g + b.b) - (a.r + a.g + a.b));
+              resolve(result);
+            } catch (e) { reject(e); }
+          };
+          img.onerror = () => reject(new Error('Could not decode image for color extraction.'));
+          img.src = ev.target.result;
+        };
+        reader.onerror = () => reject(new Error(`FileReader failed: ${reader.error?.message}`));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function medianCut(pixels, depth) {
+      if (depth === 0 || pixels.length === 0) return [pixels];
+      // Find channel with max range
+      const rng = [0, 1, 2].map(c => {
+        const vals = pixels.map(p => p[c]);
+        return Math.max(...vals) - Math.min(...vals);
+      });
+      const ch = rng.indexOf(Math.max(...rng));
+      pixels.sort((a, b) => a[ch] - b[ch]);
+      const mid = Math.floor(pixels.length / 2);
+      return [
+        ...medianCut(pixels.slice(0, mid), depth - 1),
+        ...medianCut(pixels.slice(mid), depth - 1)
+      ];
+    }
+
+    function rgbToHex(r, g, b) {
+      return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+    }
+    function rgbToHsl(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+      if (max === min) { h = s = 0; } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; }
+        h /= 6;
+      }
+      return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+    }
+    function colorLabel(c) {
+      const fmt = palState.fmt;
+      if (fmt === 'hex') return rgbToHex(c.r, c.g, c.b);
+      if (fmt === 'rgb') return `rgb(${c.r}, ${c.g}, ${c.b})`;
+      if (fmt === 'hsl') return rgbToHsl(c.r, c.g, c.b);
+      return rgbToHex(c.r, c.g, c.b);
+    }
+
+    function renderSwatches() {
+      const grid = document.getElementById('pal-swatch-grid');
+      grid.innerHTML = palState.colors.map((c, i) => {
+        const hex = rgbToHex(c.r, c.g, c.b);
+        const label = colorLabel(c);
+        return `<div class="pal-swatch-item${palState.selectedIdx === i ? ' selected' : ''}" onclick="selectColor(${i})">
+      <div class="pal-swatch-color" style="background:${hex};"></div>
+      <div class="pal-swatch-meta">${label}<div class="pal-swatch-pct">${c.pct}% dominance</div></div>
+    </div>`;
+      }).join('');
+    }
+
+    function selectColor(idx) {
+      palState.selectedIdx = idx;
+      renderSwatches();
+      const c = palState.colors[idx];
+      const hex = rgbToHex(c.r, c.g, c.b);
+      document.getElementById('pal-selected-swatch').style.background = hex;
+      document.getElementById('pal-detail-card').style.display = 'block';
+      const vals = [
+        { label: 'HEX', val: hex },
+        { label: 'RGB', val: `rgb(${c.r}, ${c.g}, ${c.b})` },
+        { label: 'HSL', val: rgbToHsl(c.r, c.g, c.b) },
+        { label: 'Dominance', val: `${c.pct}%` },
+      ];
+      document.getElementById('pal-selected-vals').innerHTML = vals.map(v =>
+        `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;">${v.label}</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:12px;color:var(--text);font-family:var(--mono);">${v.val}</span>
+        <button class="exif-copy-btn" onclick="navigator.clipboard.writeText('${v.val}').then(()=>ErrorSystem.success('Copied','${v.val}'))" title="Copy">⎘</button>
+      </div>
+    </div>`
+      ).join('');
+    }
+
+    function copyAllColors() {
+      const text = palState.colors.map(c => colorLabel(c)).join('\n');
+      navigator.clipboard.writeText(text).then(() => ErrorSystem.success('Copied', `${palState.colors.length} colors copied`));
+    }
+
+    function downloadPalette() { exportPaletteAs('png'); }
+
+    function exportPaletteAs(type) {
+      if (!palState.colors.length) return;
+      const colors = palState.colors;
+
+      if (type === 'css') {
+        const text = `:root {\n${colors.map((c, i) => `  --color-${i + 1}: ${rgbToHex(c.r, c.g, c.b)};`).join('\n')}\n}`;
+        downloadText(text, 'palette.css', 'text/css');
+      } else if (type === 'json') {
+        const data = colors.map((c, i) => ({ index: i + 1, hex: rgbToHex(c.r, c.g, c.b), rgb: `rgb(${c.r},${c.g},${c.b})`, hsl: rgbToHsl(c.r, c.g, c.b), dominance: `${c.pct}%` }));
+        downloadText(JSON.stringify(data, null, 2), 'palette.json', 'application/json');
+      } else if (type === 'txt') {
+        const lines = colors.map((c, i) => `${i + 1}. ${rgbToHex(c.r, c.g, c.b)}  rgb(${c.r},${c.g},${c.b})  ${rgbToHsl(c.r, c.g, c.b)}  ${c.pct}%`);
+        downloadText(lines.join('\n'), 'palette.txt', 'text/plain');
+      } else if (type === 'png') {
+        const SW = 120, SH = 100, PAD = 0;
+        const canvas = document.createElement('canvas');
+        canvas.width = SW * colors.length + PAD * 2;
+        canvas.height = SH + PAD * 2;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        colors.forEach((c, i) => {
+          ctx.fillStyle = rgbToHex(c.r, c.g, c.b);
+          ctx.fillRect(PAD + i * SW, PAD, SW, SH - 18);
+          ctx.fillStyle = '#ffffffcc';
+          ctx.font = '11px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(rgbToHex(c.r, c.g, c.b), PAD + i * SW + SW / 2, SH - 5);
+        });
+        canvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a'); a.href = url; a.download = 'palette.png'; a.click();
+          URL.revokeObjectURL(url);
+        }, 'image/png');
+        return;
+      }
+    }
+
+    function downloadText(text, filename, mime) {
+      const blob = new Blob([text], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+      ErrorSystem.success('Downloaded', filename);
+    }
+
+    function resetPalette() {
+      palState.file = null; palState.colors = []; palState.selectedIdx = -1;
+      document.getElementById('pal-file-info-wrap').style.display = 'none';
+      document.getElementById('pal-preview-img').style.display = 'none';
+      document.getElementById('pal-preview-empty').style.display = 'block';
+      document.getElementById('pal-swatches-wrap').style.display = 'none';
+      document.getElementById('pal-detail-card').style.display = 'none';
+      document.getElementById('pal-btn-extract').disabled = true;
+      document.getElementById('pal-file-input').value = '';
+    }
+
+
+    /* ============================================================
+       TOOL 08 — EXIF VIEWER
+       ============================================================ */
+    const exifState = {
+      file: null,
+      data: {},       // tag -> value map
+      stripFmt: 'same',
+    };
+
+    /* ---- Drag & Drop ---- */
+    const exifDropzone = document.getElementById('exif-dropzone');
+    exifDropzone.addEventListener('dragover', e => { e.preventDefault(); exifDropzone.classList.add('dragover'); });
+    exifDropzone.addEventListener('dragleave', () => exifDropzone.classList.remove('dragover'));
+    exifDropzone.addEventListener('drop', e => { e.preventDefault(); exifDropzone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) handleExifFile(f); });
+    exifDropzone.addEventListener('click', e => { if (!e.target.classList.contains('btn-upload-trigger')) document.getElementById('exif-file-input').click(); });
+    document.getElementById('exif-file-input').addEventListener('change', e => { if (e.target.files[0]) handleExifFile(e.target.files[0]); });
+
+    function handleExifFile(file) {
+      if (file.size > 50 * 1024 * 1024) { ErrorSystem.log('FILE_SIZE', `"${file.name}" exceeds 50 MB.`, formatBytes(file.size)); return; }
+      exifState.file = file;
+      exifState.data = {};
+      document.getElementById('exif-fname').textContent = file.name;
+      document.getElementById('exif-ftype').textContent = (file.type.split('/')[1] || 'image').toUpperCase();
+      document.getElementById('exif-fsize').textContent = formatBytes(file.size);
+      document.getElementById('exif-file-info-wrap').style.display = 'block';
+      document.getElementById('exif-btn-strip').disabled = false;
+      document.getElementById('exif-btn-export-json').style.display = 'none';
+      document.getElementById('exif-stats').style.display = 'none';
+      document.getElementById('exif-data-wrap').style.display = 'none';
+      document.getElementById('exif-gps-card').style.display = 'none';
+      document.getElementById('exif-empty-box').style.display = 'flex';
+
+      // Preview
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = document.getElementById('exif-preview-img');
+        img.src = ev.target.result;
+        img.style.display = 'block';
+        img.onload = () => {
+          document.getElementById('exif-preview-empty-txt').style.display = 'none';
+          document.getElementById('exif-img-dims').textContent = `${img.naturalWidth}×${img.naturalHeight}`;
+        };
+        // Parse EXIF
+        parseExifData(ev.target.result, file);
+      };
+      reader.onerror = () => ErrorSystem.log('PROCESSING', `FileReader failed for "${file.name}"`, reader.error?.message || '');
+      reader.readAsDataURL(file);
+    }
+
+    /* Lightweight EXIF parser - reads JPEG APP1/EXIF segment */
+    function parseExifData(dataUrl, file) {
+      const result = {};
+
+      // Basic file info always available
+      result['File Name'] = { val: file.name, cat: 'File' };
+      result['File Size'] = { val: formatBytes(file.size), cat: 'File' };
+      result['MIME Type'] = { val: file.type || 'unknown', cat: 'File' };
+      result['Last Modified'] = { val: new Date(file.lastModified).toLocaleString(), cat: 'File' };
+
+      // For JPEG: parse binary EXIF
+      if (file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/tiff') {
+        const b64 = dataUrl.split(',')[1];
+        try {
+          const binary = atob(b64);
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+          const tags = readJpegExif(bytes);
+          Object.assign(result, tags);
+        } catch (e) {
+          result['EXIF Note'] = { val: 'Could not parse binary EXIF: ' + e.message, cat: 'Info' };
+        }
+      } else {
+        result['EXIF Note'] = { val: 'Full EXIF binary parsing is available for JPEG/TIFF. Basic file info shown.', cat: 'Info' };
+      }
+
+      exifState.data = result;
+      renderExifTable(result);
+    }
+
+    const EXIF_TAGS = {
+      0x010E: 'ImageDescription', 0x010F: 'Make', 0x0110: 'Model', 0x0112: 'Orientation',
+      0x011A: 'XResolution', 0x011B: 'YResolution', 0x0128: 'ResolutionUnit',
+      0x0131: 'Software', 0x0132: 'DateTime', 0x013B: 'Artist',
+      0x013E: 'WhitePoint', 0x013F: 'PrimaryChromaticities',
+      0x0213: 'YCbCrPositioning', 0x8298: 'Copyright',
+      0x8769: 'ExifIFDPointer', 0x8825: 'GPSIFDPointer',
+      0x9000: 'ExifVersion', 0x9003: 'DateTimeOriginal', 0x9004: 'DateTimeDigitized',
+      0x9101: 'ComponentsConfiguration', 0x9102: 'CompressedBitsPerPixel',
+      0x9201: 'ShutterSpeedValue', 0x9202: 'ApertureValue', 0x9203: 'BrightnessValue',
+      0x9204: 'ExposureBiasValue', 0x9205: 'MaxApertureValue', 0x9206: 'SubjectDistance',
+      0x9207: 'MeteringMode', 0x9208: 'LightSource', 0x9209: 'Flash',
+      0x920A: 'FocalLength', 0x927C: 'MakerNote',
+      0x9286: 'UserComment', 0x9290: 'SubSecTime', 0x9291: 'SubSecTimeOriginal',
+      0xA000: 'FlashPixVersion', 0xA001: 'ColorSpace', 0xA002: 'ExifImageWidth',
+      0xA003: 'ExifImageHeight', 0xA004: 'RelatedSoundFile',
+      0xA20B: 'FlashEnergy', 0xA20E: 'FocalPlaneXResolution',
+      0xA20F: 'FocalPlaneYResolution', 0xA210: 'FocalPlaneResolutionUnit',
+      0xA214: 'SubjectLocation', 0xA215: 'ExposureIndex',
+      0xA217: 'SensingMethod', 0xA300: 'FileSource', 0xA301: 'SceneType',
+      0xA302: 'CFAPattern', 0xA401: 'CustomRendered', 0xA402: 'ExposureMode',
+      0xA403: 'WhiteBalance', 0xA404: 'DigitalZoomRatio', 0xA405: 'FocalLengthIn35mmFilm',
+      0xA406: 'SceneCaptureType', 0xA407: 'GainControl', 0xA408: 'Contrast',
+      0xA409: 'Saturation', 0xA40A: 'Sharpness', 0xA40B: 'DeviceSettingDescription',
+      0xA40C: 'SubjectDistanceRange', 0xA420: 'ImageUniqueID',
+      0x829A: 'ExposureTime', 0x829D: 'FNumber', 0x8822: 'ExposureProgram',
+      0x8824: 'SpectralSensitivity', 0x8827: 'ISOSpeedRatings',
+    };
+
+    const GPS_TAGS = {
+      0x0000: 'GPSVersionID', 0x0001: 'GPSLatitudeRef', 0x0002: 'GPSLatitude',
+      0x0003: 'GPSLongitudeRef', 0x0004: 'GPSLongitude', 0x0005: 'GPSAltitudeRef',
+      0x0006: 'GPSAltitude', 0x0007: 'GPSTimeStamp', 0x0012: 'GPSMapDatum',
+      0x001D: 'GPSDateStamp', 0x001B: 'GPSProcessingMethod',
+    };
+
+    function readJpegExif(bytes) {
+      const result = {};
+      // Check JPEG SOI
+      if (bytes[0] !== 0xFF || bytes[1] !== 0xD8) return result;
+      let offset = 2;
+      while (offset < bytes.length - 1) {
+        if (bytes[offset] !== 0xFF) break;
+        const marker = bytes[offset + 1];
+        offset += 2;
+        if (marker === 0xE1) { // APP1 — EXIF
+          const len = (bytes[offset] << 8) | bytes[offset + 1];
+          const seg = bytes.slice(offset + 2, offset + len);
+          if (seg[0] === 0x45 && seg[1] === 0x78 && seg[2] === 0x69 && seg[3] === 0x66) { // "Exif"
+            const tags = parseTiffIfd(seg.slice(6), result);
+            Object.assign(result, tags);
+          }
+          offset += len;
+        } else if (marker === 0xDA) { break; } // SOS
+        else {
+          const len = (bytes[offset] << 8) | bytes[offset + 1];
+          offset += len;
+        }
+      }
+      return result;
+    }
+
+    function parseTiffIfd(data, resultRef) {
+      const result = {};
+      if (data.length < 8) return result;
+      const little = data[0] === 0x49; // 'II' = little endian
+      function r16(o) { return little ? data[o] | (data[o + 1] << 8) : (data[o] << 8) | data[o + 1]; }
+      function r32(o) { return little ? data[o] | (data[o + 1] << 8) | (data[o + 2] << 16) | (data[o + 3] << 24) : (data[o] << 24) | (data[o + 1] << 16) | (data[o + 2] << 8) | data[o + 3]; }
+      if (r16(2) !== 42) return result; // TIFF magic
+      const ifdOffset = r32(4);
+      readIfd(ifdOffset, false);
+
+      function readIfd(offset, isGps) {
+        if (offset + 2 > data.length) return;
+        const count = r16(offset); offset += 2;
+        for (let i = 0; i < count; i++) {
+          const base = offset + i * 12;
+          if (base + 12 > data.length) break;
+          const tag = r16(base);
+          const type = r16(base + 2);
+          const nvals = r32(base + 4);
+          const valOff = base + 8;
+          const tagName = isGps ? (GPS_TAGS[tag] || `GPS_0x${tag.toString(16)}`) : (EXIF_TAGS[tag] || null);
+          if (!tagName) continue;
+
+          let value;
+          try {
+            value = readTagValue(data, type, nvals, valOff, r16, r32, little);
+          } catch (e) { value = '(parse error)'; }
+
+          // Handle sub-IFDs
+          if (tag === 0x8769 || tag === 0x8825) { // ExifIFD or GPSIFD
+            try { readIfd(r32(valOff), tag === 0x8825); } catch (e) { }
+            continue;
+          }
+
+          // Format GPS rational pairs into decimal degrees
+          if (isGps && (tagName === 'GPSLatitude' || tagName === 'GPSLongitude') && Array.isArray(value)) {
+            const [d, m, s] = value;
+            value = (parseFloat(d) + parseFloat(m) / 60 + parseFloat(s) / 3600).toFixed(6);
+          }
+
+          const cat = isGps ? 'GPS' : getCat(tag);
+          result[tagName] = { val: Array.isArray(value) ? value.join(', ') : String(value), cat };
+        }
+      }
+
+      return result;
+    }
+
+    function readTagValue(data, type, nvals, valOff, r16, r32, little) {
+      function r32s(o) { const v = r32(o); return v >= 0x80000000 ? v - 0x100000000 : v; }
+      const typeSizes = [0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8];
+      const size = typeSizes[type] || 1;
+      const totalSize = size * nvals;
+      const dataOff = totalSize > 4 ? r32(valOff) : valOff;
+      if (type === 2) { // ASCII
+        let s = ''; const end = Math.min(dataOff + nvals, data.length);
+        for (let i = dataOff; i < end && data[i] !== 0; i++) s += String.fromCharCode(data[i]);
+        return s.trim();
+      }
+      if (nvals === 1) {
+        if (type === 1 || type === 7) return data[dataOff];
+        if (type === 3) return r16(dataOff);
+        if (type === 4) return r32(dataOff) >>> 0;
+        if (type === 9) return r32s(dataOff);
+        if (type === 5) return `${r32(dataOff) >>> 0}/${r32(dataOff + 4) >>> 0}`;
+        if (type === 10) return `${r32s(dataOff)}/${r32s(dataOff + 4)}`;
+        return data[dataOff];
+      }
+      const arr = [];
+      for (let i = 0; i < Math.min(nvals, 8); i++) {
+        const o = dataOff + i * size;
+        if (o + size > data.length) break;
+        if (type === 5) arr.push(`${r32(o) >>> 0}/${r32(o + 4) >>> 0}`);
+        else if (type === 10) arr.push(`${r32s(o)}/${r32s(o + 4)}`);
+        else if (type === 3) arr.push(r16(o));
+        else if (type === 4) arr.push(r32(o) >>> 0);
+        else arr.push(data[o]);
+      }
+      return arr;
+    }
+
+    function getCat(tag) {
+      if (tag >= 0x8825 && tag <= 0x8827) return 'GPS';
+      if (tag >= 0x9000 && tag <= 0xA420) return 'Exif';
+      if (tag >= 0x010E && tag <= 0x0132) return 'Image';
+      if (tag >= 0x829A && tag <= 0x8827) return 'Exif';
+      return 'Other';
+    }
+
+    const CAT_COLORS = {
+      File: { bg: 'rgba(91,163,245,0.12)', color: 'var(--blue)' },
+      Image: { bg: 'rgba(45,212,160,0.12)', color: 'var(--green)' },
+      Exif: { bg: 'rgba(255,107,53,0.12)', color: 'var(--accent)' },
+      GPS: { bg: 'rgba(245,166,35,0.12)', color: 'var(--amber)' },
+      Info: { bg: 'rgba(156,144,192,0.12)', color: 'var(--text2)' },
+      Other: { bg: 'rgba(156,144,192,0.1)', color: 'var(--text3)' },
+    };
+
+    function renderExifTable(data) {
+      const tbody = document.getElementById('exif-tbody');
+      const entries = Object.entries(data);
+      tbody.innerHTML = entries.map(([tag, info]) => {
+        const c = CAT_COLORS[info.cat] || CAT_COLORS.Other;
+        const badge = `<span class="exif-cat-badge" style="background:${c.bg};color:${c.color};">${info.cat}</span>`;
+        const safe = String(info.val).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const copyVal = String(info.val).replace(/'/g, "\\'");
+        return `<tr class="exif-row" data-tag="${tag.toLowerCase()}">
+      <td class="exif-tag">${tag}${badge}</td>
+      <td class="exif-val">${safe}</td>
+      <td><button class="exif-copy-btn" onclick="navigator.clipboard.writeText('${copyVal}').then(()=>ErrorSystem.success('Copied','${tag}'))" title="Copy">⎘</button></td>
+    </tr>`;
+      }).join('');
+
+      document.getElementById('exif-field-count').textContent = entries.length;
+      document.getElementById('exif-stats').style.display = 'grid';
+      document.getElementById('exif-data-wrap').style.display = 'block';
+      document.getElementById('exif-empty-box').style.display = 'none';
+      document.getElementById('exif-btn-export-json').style.display = 'flex';
+
+      // GPS card
+      const lat = data['GPSLatitude'], latRef = data['GPSLatitudeRef'];
+      const lon = data['GPSLongitude'], lonRef = data['GPSLongitudeRef'];
+      if (lat && lon) {
+        const latDeg = parseFloat(lat.val) * (latRef?.val === 'S' ? -1 : 1);
+        const lonDeg = parseFloat(lon.val) * (lonRef?.val === 'W' ? -1 : 1);
+        document.getElementById('exif-gps-coords').innerHTML =
+          `Latitude: <strong>${latDeg.toFixed(6)}°</strong><br>Longitude: <strong>${lonDeg.toFixed(6)}°</strong>`;
+        document.getElementById('exif-gps-link').href =
+          `https://www.google.com/maps?q=${latDeg},${lonDeg}`;
+        document.getElementById('exif-gps-card').style.display = 'block';
+      }
+
+      ErrorSystem.success('Metadata read', `${entries.length} fields found`);
+    }
+
+    function filterExifTable(query) {
+      const q = query.toLowerCase();
+      document.querySelectorAll('#exif-tbody .exif-row').forEach(row => {
+        const tag = row.dataset.tag || '';
+        const text = row.textContent.toLowerCase();
+        row.classList.toggle('hidden', q.length > 0 && !tag.includes(q) && !text.includes(q));
+      });
+    }
+
+    function copyAllExif() {
+      const lines = Object.entries(exifState.data).map(([k, v]) => `${k}: ${v.val}`).join('\n');
+      navigator.clipboard.writeText(lines).then(() =>
+        ErrorSystem.success('Copied', `${Object.keys(exifState.data).length} metadata fields`));
+    }
+
+    function setExifStripFmt(fmt, btn) {
+      exifState.stripFmt = fmt;
+      ['same', 'jpg', 'png'].forEach(f => {
+        const el = document.getElementById(`exif-strip-fmt-${f}`);
+        if (el) el.classList.toggle('active', f === fmt);
+      });
+    }
+
+    async function stripAndDownload() {
+      if (!exifState.file) return;
+      const btn = document.getElementById('exif-btn-strip');
+      btn.disabled = true; btn.textContent = 'Stripping…';
+      try {
+        const blob = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = ev => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+              const ctx = canvas.getContext('2d');
+              let mime = exifState.file.type || 'image/jpeg';
+              if (exifState.stripFmt === 'jpg') mime = 'image/jpeg';
+              if (exifState.stripFmt === 'png') mime = 'image/png';
+              if (mime === 'image/jpeg') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+              ctx.drawImage(img, 0, 0);
+              canvas.toBlob(b => {
+                if (!b) { reject(new Error('canvas.toBlob returned null')); return; }
+                resolve(b);
+              }, mime, 0.95);
+            };
+            img.onerror = () => reject(new Error('Could not decode image.'));
+            img.src = ev.target.result;
+          };
+          reader.onerror = () => reject(new Error(`FileReader failed`));
+          reader.readAsDataURL(exifState.file);
+        });
+
+        const ext = exifState.stripFmt === 'jpg' ? 'jpg' : exifState.stripFmt === 'png' ? 'png' :
+          (exifState.file.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
+        const base = exifState.file.name.replace(/\.[^.]+$/, '');
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = `${base}-clean.${ext}`; a.click();
+        URL.revokeObjectURL(url);
+        ErrorSystem.success('EXIF stripped & downloaded', `${base}-clean.${ext} · ${formatBytes(blob.size)}`);
+      } catch (err) {
+        ErrorSystem.log('PROCESSING', 'Strip EXIF failed', err.message);
+      }
+      btn.disabled = false; btn.textContent = '⊘ Strip EXIF & Download';
+    }
+
+    function exportExifJson() {
+      const data = Object.fromEntries(Object.entries(exifState.data).map(([k, v]) => [k, v.val]));
+      downloadText(JSON.stringify(data, null, 2), `${exifState.file?.name || 'exif'}.json`, 'application/json');
+    }
+
+    function resetExif() {
+      exifState.file = null; exifState.data = {};
+      document.getElementById('exif-file-info-wrap').style.display = 'none';
+      document.getElementById('exif-stats').style.display = 'none';
+      document.getElementById('exif-data-wrap').style.display = 'none';
+      document.getElementById('exif-gps-card').style.display = 'none';
+      document.getElementById('exif-empty-box').style.display = 'flex';
+      document.getElementById('exif-preview-img').style.display = 'none';
+      document.getElementById('exif-preview-empty-txt').style.display = 'block';
+      document.getElementById('exif-btn-strip').disabled = true;
+      document.getElementById('exif-btn-export-json').style.display = 'none';
+      document.getElementById('exif-file-input').value = '';
+      document.getElementById('exif-search').value = '';
+      document.getElementById('exif-tbody').innerHTML = '';
+    }
 
     /* ---- Init on load ---- */
     restoreAllSettings();
