@@ -4,155 +4,1430 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Random Color Genarator</title>
-    <link rel="stylesheet" href="style.css">
+    <title>PaletteForge — Harmonic Color Generator</title>
+    <style>
+        /* ============================================================
+   FONT
+   ============================================================ */
+        @import url('https://fonts.googleapis.com/css2?family=Saira:wght@300;400;500;600;700;800;900&display=swap');
+
+        /* ============================================================
+   DESIGN TOKENS (PixelForge System)
+   ============================================================ */
+        :root {
+            --primary-950: #060010;
+            --primary-900: #0d0018;
+            --primary-800: #130022;
+            --primary-700: #1a0030;
+            --primary-600: #220040;
+            --primary-500: #2e0058;
+            --primary-400: #3d0075;
+            --primary-300: #5a00a8;
+            --primary-200: #7b2fd4;
+            --primary-100: #b07ef0;
+            --primary-50: #e8d9ff;
+
+            --accent-500: #ff6b35;
+            --accent-600: #e85520;
+            --accent-400: #ff8559;
+            --accent-300: #ffa07a;
+            --accent-100: #ffe8de;
+            --accent-glow: rgba(255, 107, 53, 0.18);
+            --accent-glow2: rgba(255, 107, 53, 0.08);
+
+            --bg: #060010;
+            --bg2: #0b001a;
+            --bg3: #110026;
+            --bg4: #190038;
+            --bg5: #22004d;
+
+            --border: rgba(255, 255, 255, 0.06);
+            --border2: rgba(255, 255, 255, 0.11);
+            --border-accent: rgba(255, 107, 53, 0.25);
+
+            --text: #f2eeff;
+            --text2: #9e90c0;
+            --text3: #5c4e80;
+
+            --accent: #ff6b35;
+            --accent2: #e85520;
+
+            --green: #2dd4a0;
+            --green-bg: rgba(45, 212, 160, 0.09);
+            --red: #f2635f;
+            --red-bg: rgba(242, 99, 95, 0.09);
+            --amber: #f5a623;
+            --amber-bg: rgba(245, 166, 35, 0.09);
+            --blue: #5ba3f5;
+            --blue-bg: rgba(91, 163, 245, 0.09);
+
+            --font: 'Saira', sans-serif;
+            --radius: 10px;
+            --radius-lg: 14px;
+            --header-h: 56px;
+            --trans: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ============================================================
+   RESET
+   ============================================================ */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            font-size: 16px;
+        }
+
+        button {
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        input,
+        select {
+            font-family: var(--font);
+            outline: none;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg4);
+            border-radius: 4px;
+        }
+
+        /* ============================================================
+   LAYOUT
+   ============================================================ */
+        #app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ---- TOPBAR ---- */
+        #topbar {
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            z-index: 100;
+        }
+
+        /* Row 1 — wordmark + controls + actions */
+        #topbar-row1 {
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 10px;
+        }
+
+        /* Row 2 — harmony pills (always full width, scrollable) */
+        #topbar-row2 {
+            height: 36px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 6px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        #topbar-row2::-webkit-scrollbar {
+            display: none;
+        }
+
+        .wordmark {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .wordmark span {
+            color: var(--accent);
+        }
+
+        .topbar-sep {
+            width: 1px;
+            height: 20px;
+            background: var(--border2);
+            flex-shrink: 0;
+        }
+
+        .topbar-spacer {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Harmony label in row2 */
+        .harmony-label {
+            font-size: 10px;
+            color: var(--text3);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-right: 2px;
+        }
+
+        /* Harmony selector pills */
+        .harmony-btn {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text2);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            transition: var(--trans);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .harmony-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .harmony-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        /* Column controls */
+        #col-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .col-label {
+            font-size: 11px;
+            color: var(--text3);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .col-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text2);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--trans);
+            flex-shrink: 0;
+        }
+
+        .col-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .col-btn:disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        #col-count {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            min-width: 16px;
+            text-align: center;
+        }
+
+        /* Generate button */
+        #gen-btn {
+            background: var(--accent);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 7px 18px;
+            border-radius: var(--radius);
+            letter-spacing: 0.03em;
+            transition: var(--trans);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        #gen-btn:hover {
+            background: var(--accent2);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(255, 107, 53, 0.35);
+        }
+
+        #gen-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Saved btn */
+        #saved-btn {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text2);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--trans);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        #saved-btn:hover {
+            border-color: var(--border2);
+            color: var(--text);
+        }
+
+        #saved-badge {
+            background: var(--accent);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        #saved-badge.visible {
+            display: inline-block;
+        }
+
+        /* ---- PALETTE AREA ---- */
+        #palette-area {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* ---- COLUMNS ---- */
+        #columns-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .color-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 28px;
+            position: relative;
+            cursor: default;
+            transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        /* Column info (bottom) */
+        .col-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .col-hex {
+            font-size: clamp(12px, 1.4vw, 18px);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 6px;
+            transition: var(--trans);
+            text-transform: uppercase;
+        }
+
+        .col-hex:hover {
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .col-rgb {
+            font-size: clamp(10px, 1vw, 13px);
+            font-weight: 500;
+            opacity: 0.7;
+            cursor: pointer;
+            padding: 3px 8px;
+            border-radius: 5px;
+            transition: var(--trans);
+        }
+
+        .col-rgb:hover {
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .col-hsl {
+            font-size: clamp(9px, 0.9vw, 12px);
+            font-weight: 400;
+            opacity: 0.55;
+            cursor: pointer;
+            padding: 3px 8px;
+            border-radius: 5px;
+            transition: var(--trans);
+        }
+
+        .col-hsl:hover {
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        /* Column actions (top-right, appear on hover) */
+        .col-actions {
+            position: absolute;
+            top: 14px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 10;
+        }
+
+        .color-col:hover .col-actions {
+            opacity: 1;
+        }
+
+        .col-action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: var(--trans);
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .col-action-btn:hover {
+            background: rgba(0, 0, 0, 0.45);
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .col-action-btn.locked {
+            background: rgba(255, 107, 53, 0.25);
+            border-color: rgba(255, 107, 53, 0.4);
+            color: var(--accent);
+        }
+
+        .col-action-btn.faved {
+            background: rgba(242, 99, 95, 0.25);
+            border-color: rgba(242, 99, 95, 0.4);
+            color: #f2635f;
+        }
+
+        /* Color name tag */
+        .col-name {
+            font-size: clamp(9px, 0.85vw, 11px);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            opacity: 0.45;
+            margin-bottom: 4px;
+        }
+
+        /* Shade strip at bottom of col */
+        .col-shade-strip {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: rgba(0, 0, 0, 0.18);
+        }
+
+        /* Column dividers */
+        .color-col+.color-col {
+            border-left: 1px solid rgba(0, 0, 0, 0.12);
+        }
+
+        /* ---- COPY TOAST ---- */
+        #copy-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--bg2);
+            border: 1px solid var(--border-accent);
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 9px 18px;
+            border-radius: var(--radius-lg);
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        #copy-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ---- SAVED PANEL ---- */
+        #saved-panel {
+            width: 0;
+            min-width: 0;
+            background: var(--bg2);
+            border-left: none;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.3s,
+                min-width 0.3s;
+        }
+
+        #saved-panel.open {
+            width: 300px;
+            min-width: 260px;
+            border-left: 1px solid var(--border);
+        }
+
+        .saved-header {
+            height: 52px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 10px;
+            flex-shrink: 0;
+            min-width: 260px;
+        }
+
+        .saved-header h3 {
+            font-size: 13px;
+            font-weight: 600;
+            flex: 1;
+            color: var(--text);
+        }
+
+        .saved-close {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text3);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--trans);
+        }
+
+        .saved-close:hover {
+            background: var(--bg3);
+            color: var(--text);
+        }
+
+        .saved-empty {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text3);
+            font-size: 12px;
+        }
+
+        .saved-empty-icon {
+            font-size: 28px;
+            opacity: 0.4;
+        }
+
+        #saved-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .saved-item {
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            background: var(--bg3);
+            transition: var(--trans);
+        }
+
+        .saved-item:hover {
+            border-color: var(--border2);
+        }
+
+        .saved-item-swatches {
+            display: flex;
+            height: 40px;
+        }
+
+        .saved-swatch {
+            flex: 1;
+        }
+
+        .saved-item-footer {
+            display: flex;
+            align-items: center;
+            padding: 6px 10px;
+            gap: 6px;
+        }
+
+        .saved-item-label {
+            flex: 1;
+            font-size: 10px;
+            color: var(--text3);
+            font-weight: 500;
+        }
+
+        .saved-item-del {
+            background: transparent;
+            color: var(--text3);
+            font-size: 13px;
+            padding: 2px 6px;
+            border-radius: 5px;
+            transition: var(--trans);
+        }
+
+        .saved-item-del:hover {
+            background: var(--red-bg);
+            color: var(--red);
+        }
+
+        .saved-item-load {
+            background: var(--accent-glow2);
+            border: 1px solid var(--border-accent);
+            color: var(--accent);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 5px;
+            transition: var(--trans);
+        }
+
+        .saved-item-load:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* Export actions */
+        .saved-footer {
+            border-top: 1px solid var(--border);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 260px;
+        }
+
+        .export-btn {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text2);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 7px 12px;
+            border-radius: 8px;
+            text-align: left;
+            transition: var(--trans);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .export-btn:hover {
+            border-color: var(--border2);
+            color: var(--text);
+        }
+
+        .export-icon {
+            font-size: 13px;
+        }
+
+        /* ---- CURRENT EXPORT ROW ---- */
+        #export-row {
+            height: 40px;
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .exp-label {
+            font-size: 10px;
+            color: var(--text3);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        .exp-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text3);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 5px;
+            transition: var(--trans);
+        }
+
+        .exp-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .credit {
+            margin-left: auto;
+            font-size: 10px;
+            color: var(--text3);
+        }
+
+        .credit b {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ---- KEYBOARD HINT ---- */
+        #key-hint {
+            font-size: 10px;
+            color: var(--text3);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        kbd {
+            background: var(--bg3);
+            border: 1px solid var(--border2);
+            color: var(--text2);
+            font-family: var(--font);
+            font-size: 10px;
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        /* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+        /* Hide key hint on smaller screens */
+        @media (max-width: 900px) {
+            #key-hint {
+                display: none;
+            }
+
+            .topbar-sep {
+                display: none;
+            }
+        }
+
+        /* Compact col-label on medium */
+        @media (max-width: 600px) {
+            .col-label {
+                display: none;
+            }
+
+            #topbar-row1 {
+                padding: 0 10px;
+                gap: 7px;
+            }
+
+            .wordmark {
+                font-size: 15px;
+            }
+
+            #gen-btn {
+                padding: 7px 14px;
+                font-size: 12px;
+            }
+
+            #saved-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+        }
+
+        /* MOBILE: stack columns vertically */
+        @media (max-width: 700px) {
+            #columns-wrap {
+                flex-direction: column;
+            }
+
+            .color-col {
+                flex: none;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: center;
+                padding: 0 14px;
+                min-height: 80px;
+                border-left: none !important;
+                border-top: 1px solid rgba(0, 0, 0, 0.12);
+            }
+
+            .col-info {
+                flex-direction: row;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap;
+                flex: 1;
+            }
+
+            .col-hex {
+                font-size: 15px;
+            }
+
+            .col-rgb {
+                font-size: 11px;
+                opacity: 0.65;
+            }
+
+            .col-hsl {
+                display: none;
+            }
+
+            .col-name {
+                display: none;
+            }
+
+            .col-shade-strip {
+                display: none;
+            }
+
+            /* Actions always visible on mobile, on right side */
+            .col-actions {
+                opacity: 1;
+                position: relative;
+                top: auto;
+                right: auto;
+                flex-direction: row;
+                flex-shrink: 0;
+                margin-left: auto;
+            }
+
+            #export-row {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 8px 12px;
+                gap: 6px;
+            }
+
+            /* Mobile: saved panel goes full width, columns hide */
+            #saved-panel.open {
+                width: 100%;
+                min-width: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 200;
+            }
+
+            #palette-area {
+                position: relative;
+            }
+        }
+
+        @media (max-width: 400px) {
+            #topbar-row1 {
+                gap: 5px;
+                padding: 0 8px;
+            }
+
+            .wordmark {
+                font-size: 13px;
+            }
+
+            #gen-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            #saved-btn {
+                padding: 5px 8px;
+                font-size: 11px;
+            }
+
+            #col-controls {
+                gap: 4px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Page Preloader -->
-    <div id="preloader">
-        <div class="loader">
-            <svg viewBox="0 0 80 80">
-                <circle id="test" cx="40" cy="40" r="32"></circle>
-            </svg>
+
+    <div id="app">
+
+        <!-- TOPBAR -->
+        <div id="topbar">
+            <!-- Row 1: wordmark / col controls / actions -->
+            <div id="topbar-row1">
+                <div class="wordmark">Palette<span>Forge</span></div>
+                <div class="topbar-sep"></div>
+
+                <!-- Column controls -->
+                <div id="col-controls">
+                    <span class="col-label">Columns</span>
+                    <button class="col-btn" id="col-minus">−</button>
+                    <span id="col-count">5</span>
+                    <button class="col-btn" id="col-plus">+</button>
+                </div>
+
+                <div class="topbar-spacer"></div>
+
+                <div id="key-hint"><kbd>Space</kbd> to generate</div>
+                <div class="topbar-sep"></div>
+                <button id="saved-btn">♥ Saved <span id="saved-badge">0</span></button>
+                <button id="gen-btn">⚡ Generate</button>
+            </div>
+
+            <!-- Row 2: harmony pills (horizontally scrollable) -->
+            <div id="topbar-row2">
+                <span class="harmony-label">Harmony</span>
+                <button class="harmony-btn active" data-harmony="analogous">Analogous</button>
+                <button class="harmony-btn" data-harmony="mono">Monochromatic</button>
+                <button class="harmony-btn" data-harmony="complementary">Complementary</button>
+                <button class="harmony-btn" data-harmony="triadic">Triadic</button>
+                <button class="harmony-btn" data-harmony="split">Split-Comp</button>
+                <button class="harmony-btn" data-harmony="random">Free</button>
+            </div>
         </div>
 
-        <div class="loader triangle">
-            <svg viewBox="0 0 86 80">
-                <polygon points="43 8 79 72 7 72"></polygon>
-            </svg>
+        <!-- PALETTE AREA -->
+        <div id="palette-area">
+            <div id="columns-wrap"></div>
+
+            <!-- SAVED PANEL -->
+            <div id="saved-panel">
+                <div class="saved-header">
+                    <h3>Saved Palettes</h3>
+                    <button class="saved-close" id="saved-close">✕</button>
+                </div>
+                <div id="saved-list-wrap" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+                    <div class="saved-empty" id="saved-empty">
+                        <div class="saved-empty-icon">♡</div>
+                        <div>No saved palettes yet</div>
+                        <div style="font-size:10px;color:var(--text3);">Click ♥ on any column</div>
+                    </div>
+                    <div id="saved-list" style="display:none;"></div>
+                </div>
+                <div class="saved-footer">
+                    <div
+                        style="font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;">
+                        Export current palette</div>
+                    <button class="export-btn" onclick="exportCSS()"><span class="export-icon">{ }</span> CSS
+                        Variables</button>
+                    <button class="export-btn" onclick="exportJSON()"><span class="export-icon">[ ]</span> JSON</button>
+                    <button class="export-btn" onclick="exportTXT()"><span class="export-icon">≡</span> Plain
+                        Text</button>
+                </div>
+            </div>
         </div>
 
-        <div class="loader">
-            <svg viewBox="0 0 80 80">
-                <rect x="8" y="8" width="64" height="64"></rect>
-            </svg>
+        <!-- BOTTOM BAR -->
+        <div id="export-row">
+            <span class="exp-label">Export</span>
+            <button class="exp-btn" onclick="exportCSS()">CSS Vars</button>
+            <button class="exp-btn" onclick="exportJSON()">JSON</button>
+            <button class="exp-btn" onclick="exportTXT()">Text</button>
+            <div class="credit">Made by <b>Zayid Ahmed</b></div>
         </div>
     </div>
 
-    <!-- Color Code Copy Massage -->
-    <div id="message"></div>
+    <!-- COPY TOAST -->
+    <div id="copy-toast">Copied!</div>
 
-    <!-- Navbar -->
-    <nav class="nav">
-        <h1><span>C</span>olor <span>P</span>icker</h1>
-        <p id="palletsSavedBtn"><i class="fa-solid fa-heart"></i>Saved</p>
-    </nav>
+    <script>
+        /* ============================================================
+           STATE
+           ============================================================ */
+        let state = {
+            harmony: 'analogous',
+            colCount: 5,
+            colors: [],    // [{h,s,l, hex, rgb, hsl, locked, faved}]
+            saved: [],     // [{colors:[...], ts}]
+            panelOpen: false,
+        };
 
-    <!-- Saved PAnnel  -->
-    <div id="savedPallets" class="pallet">
-        <div class="header">
-            <h3>Saved Pannels</h3>
-            <i id="palletsCancelBtn" class="fa-solid fa-x"></i>
-        </div>
-        <div class="lists">
-            <ul id="palletList"></ul>
-        </div>
+        const MIN_COLS = 3;
+        const MAX_COLS = 8;
+
+        /* ============================================================
+           COLOR MATH
+           ============================================================ */
+        function hslToRgb(h, s, l) {
+            s /= 100; l /= 100;
+            const k = n => (n + h / 30) % 12;
+            const a = s * Math.min(l, 1 - l);
+            const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+            return [Math.round(f(0) * 255), Math.round(f(8) * 255), Math.round(f(4) * 255)];
+        }
+
+        function rgbToHex(r, g, b) {
+            return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+        }
+
+        function isLight(h, s, l) {
+            const [r, g, b] = hslToRgb(h, s, l);
+            return (0.299 * r + 0.587 * g + 0.114 * b) > 128;
+        }
+
+        function makeColor(h, s, l) {
+            h = ((h % 360) + 360) % 360;
+            s = Math.max(10, Math.min(100, s));
+            l = Math.max(15, Math.min(85, l));
+            const [r, g, b] = hslToRgb(h, s, l);
+            const hex = rgbToHex(r, g, b);
+            const rgb = `rgb(${r},${g},${b})`;
+            const hslStr = `hsl(${Math.round(h)},${Math.round(s)}%,${Math.round(l)}%)`;
+            const light = isLight(h, s, l);
+            return { h, s, l, hex, rgb, hslStr, light, locked: false, faved: false };
+        }
+
+        function generatePalette(harmony, count) {
+            // Base hue — totally random each time
+            const baseH = Math.random() * 360;
+            // Saturation + lightness strategy per harmony
+            const baseSat = 55 + Math.random() * 35;
+            const baseLit = 40 + Math.random() * 25;
+
+            let hues = [];
+
+            if (harmony === 'analogous') {
+                const spread = 20 + Math.random() * 25;
+                for (let i = 0; i < count; i++) {
+                    hues.push(baseH + (i - (count - 1) / 2) * spread);
+                }
+            } else if (harmony === 'mono') {
+                hues = Array.from({ length: count }, () => baseH);
+            } else if (harmony === 'complementary') {
+                const comp = baseH + 180;
+                // Distribute around base and comp
+                const half1 = Math.ceil(count / 2);
+                const half2 = count - half1;
+                const spread = 15;
+                for (let i = 0; i < half1; i++) hues.push(baseH + (i - (half1 - 1) / 2) * spread);
+                for (let i = 0; i < half2; i++) hues.push(comp + (i - (half2 - 1) / 2) * spread);
+            } else if (harmony === 'triadic') {
+                const h1 = baseH, h2 = baseH + 120, h3 = baseH + 240;
+                const thirds = [h1, h2, h3];
+                for (let i = 0; i < count; i++) hues.push(thirds[i % 3] + (Math.floor(i / 3) * 18));
+            } else if (harmony === 'split') {
+                const sp1 = baseH + 150, sp2 = baseH + 210;
+                const base_ct = Math.ceil(count / 3);
+                const sp_ct = Math.floor((count - base_ct) / 2);
+                const rem = count - base_ct - sp_ct * 2;
+                for (let i = 0; i < base_ct; i++) hues.push(baseH + (i - (base_ct - 1) / 2) * 12);
+                for (let i = 0; i < sp_ct; i++) hues.push(sp1 + (i - (sp_ct - 1) / 2) * 12);
+                for (let i = 0; i < sp_ct + rem; i++) hues.push(sp2 + (i - (sp_ct + rem - 1) / 2) * 12);
+            } else {
+                // free/random — but still aesthetically sensible (avoid muddy combos)
+                for (let i = 0; i < count; i++) hues.push(Math.random() * 360);
+            }
+
+            return hues.map((h, i) => {
+                let sat = baseSat, lit = baseLit;
+                if (harmony === 'mono') {
+                    // vary lightness across columns
+                    const step = 60 / (count - 1 || 1);
+                    lit = 20 + i * step;
+                    sat = baseSat - i * 3;
+                } else {
+                    // subtle variation
+                    sat += (Math.random() - 0.5) * 15;
+                    lit += (Math.random() - 0.5) * 18;
+                }
+                return makeColor(h, sat, lit);
+            });
+        }
+
+        /* ============================================================
+           RENDER
+           ============================================================ */
+        function render() {
+            const wrap = document.getElementById('columns-wrap');
+
+            // Re-generate colors for non-locked columns
+            const newColors = generatePalette(state.harmony, state.colCount);
+            const cols = [];
+            for (let i = 0; i < state.colCount; i++) {
+                if (state.colors[i] && state.colors[i].locked) {
+                    cols.push(state.colors[i]); // keep locked
+                } else {
+                    const nc = newColors[i] || newColors[newColors.length - 1];
+                    nc.locked = false;
+                    nc.faved = state.colors[i] ? state.colors[i].faved : false;
+                    cols.push(nc);
+                }
+            }
+            state.colors = cols;
+
+            buildColumns();
+        }
+
+        function buildColumns() {
+            const wrap = document.getElementById('columns-wrap');
+            const isMobile = window.innerWidth <= 700;
+
+            wrap.innerHTML = '';
+            state.colors.forEach((col, i) => {
+                const div = document.createElement('div');
+                div.className = 'color-col';
+                div.style.backgroundColor = col.hex;
+
+                const textColor = col.light ? 'rgba(0,0,0,0.75)' : 'rgba(255,255,255,0.9)';
+                const textColorDim = col.light ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.55)';
+
+                div.innerHTML = `
+      <div class="col-actions">
+        <button class="col-action-btn ${col.locked ? 'locked' : ''}" title="${col.locked ? 'Unlock' : 'Lock'}" onclick="toggleLock(${i})">
+          ${col.locked ? '🔒' : '🔓'}
+        </button>
+        <button class="col-action-btn ${col.faved ? 'faved' : ''}" title="Save palette" onclick="saveSingle(${i})">
+          ${col.faved ? '♥' : '♡'}
+        </button>
+      </div>
+      <div class="col-info">
+        <div class="col-name" style="color:${textColorDim};">${getColorName(col.h, col.s, col.l)}</div>
+        <div class="col-hex" style="color:${textColor};" onclick="copyText('${col.hex}', this)" title="Copy HEX">${col.hex.toUpperCase()}</div>
+        <div class="col-rgb" style="color:${textColorDim};" onclick="copyText('${col.rgb}', this)" title="Copy RGB">${col.rgb}</div>
+        <div class="col-hsl" style="color:${textColorDim};" onclick="copyText('${col.hslStr}', this)" title="Copy HSL">${col.hslStr}</div>
+      </div>
+      <div class="col-shade-strip"></div>
+    `;
+
+                wrap.appendChild(div);
+            });
+        }
+
+        function refreshColumns() {
+            // Rebuild without re-generating
+            buildColumns();
+        }
+
+        /* ============================================================
+           COLOR NAMING (simple)
+           ============================================================ */
+        function getColorName(h, s, l) {
+            if (s < 12) {
+                if (l < 20) return 'Near Black';
+                if (l > 80) return 'Near White';
+                return 'Gray';
+            }
+            const hNames = [
+                [15, 'Red'],
+                [40, 'Orange'],
+                [65, 'Yellow'],
+                [150, 'Green'],
+                [185, 'Cyan'],
+                [255, 'Blue'],
+                [285, 'Indigo'],
+                [330, 'Violet'],
+                [355, 'Pink'],
+                [360, 'Red'],
+            ];
+            let name = 'Color';
+            for (const [max, n] of hNames) { if (h <= max) { name = n; break; } }
+            if (l < 28) return `Dark ${name}`;
+            if (l > 72) return `Light ${name}`;
+            if (s > 80) return `Vivid ${name}`;
+            return name;
+        }
+
+        /* ============================================================
+           ACTIONS
+           ============================================================ */
+        function toggleLock(i) {
+            state.colors[i].locked = !state.colors[i].locked;
+            refreshColumns();
+        }
+
+        function saveSingle(i) {
+            // Save the whole current palette
+            saveCurrentPalette();
+            state.colors[i].faved = true;
+            refreshColumns();
+        }
+
+        function saveCurrentPalette() {
+            const entry = {
+                colors: state.colors.map(c => ({ ...c })),
+                ts: Date.now(),
+                harmony: state.harmony,
+            };
+            state.saved.unshift(entry);
+            persistSaved();
+            renderSaved();
+            showToast('Palette saved ♥');
+        }
+
+        function deleteSaved(idx) {
+            state.saved.splice(idx, 1);
+            persistSaved();
+            renderSaved();
+        }
+
+        function loadSaved(idx) {
+            const entry = state.saved[idx];
+            state.colors = entry.colors.map(c => ({ ...c, locked: false, faved: false }));
+            state.colCount = state.colors.length;
+            updateColCount();
+            buildColumns();
+            showToast('Palette loaded');
+        }
+
+        function renderSaved() {
+            const list = document.getElementById('saved-list');
+            const empty = document.getElementById('saved-empty');
+            const badge = document.getElementById('saved-badge');
+
+            if (!state.saved.length) {
+                empty.style.display = 'flex';
+                list.style.display = 'none';
+                badge.classList.remove('visible');
+                return;
+            }
+            empty.style.display = 'none';
+            list.style.display = 'flex';
+            badge.textContent = state.saved.length;
+            badge.classList.add('visible');
+
+            list.innerHTML = state.saved.map((entry, idx) => `
+    <div class="saved-item">
+      <div class="saved-item-swatches">
+        ${entry.colors.map(c => `<div class="saved-swatch" style="background:${c.hex};" title="${c.hex}"></div>`).join('')}
+      </div>
+      <div class="saved-item-footer">
+        <div class="saved-item-label">${entry.harmony} · ${entry.colors.length} cols · ${new Date(entry.ts).toLocaleTimeString()}</div>
+        <button class="saved-item-load" onclick="loadSaved(${idx})">Load</button>
+        <button class="saved-item-del" onclick="deleteSaved(${idx})">✕</button>
+      </div>
     </div>
+  `).join('');
+        }
 
-    <!-- Total Section -->
-    <div class="total">
-        <div class="container">
-            <div class="pallets txtOne" id="palletOne">
-                <div class="palletTextBox">
-                    <p class="palletTxt" id="palletTextOneRgb">#000</p>
-                    <p class="tooltip">Copy</p>
-                </div>
-                <div class="palletTextBox">
-                    <p class="palletTxt" id="palletTextOneHex">rgb(0, 0, 0)</p>
-                    <p class="tooltip">Copy</p>
-                </div>
-                <div class="favorite palletTextBox">
-                    <i id="fav1" class="fa-regular fa-heart"></i>
-                    <p class="tooltip">Save Pallet</p>
-                </div>
-                <div class="lock palletTextBox">
-                    <i id="lock1" class="fa-solid fa-lock-open"></i>
-                    <p class="tooltip">Lock Pallet</p>
-                </div>
-            </div>
-            <div class="pallets txtTwo" id="palletTwo">
-                <div class="palletTextBox">
-                    <p class="palletTxt" id="palletTextTwoRgb">#000</p>
-                    <p class="tooltip">Copy</p>
-                </div>
-                <div class="palletTextBox">
-                    <p class="palletTxt" id="palletTextTwoHex">rgb(0, 0, 0)</p>
-                    <p class="tooltip">Copy</p>
-                </div>
-                <div class="favorite palletTextBox">
-                    <i id="fav2" class="fa-regular fa-heart"></i>
-                    <p class="tooltip">Save Pallet</p>
-                </div>
-                <div class="lock palletTextBox">
-                    <i id="lock2" class="fa-solid fa-lock-open"></i>
-                    <p class="tooltip">Lock Pallet</p>
-                </div>
-            </div>
-            <div class="pallets txtThree" id="palletThree">
-                <div class="palletTextBox">
-                    <p class="palletTxt" id="palletTextThreeRgb">#000</p>
-                    <p class="tooltip">Copy</p>
-                </div>
-                <div class="palletTextBox">
-                    <p class="palletTxt" id="palletTextThreeHex">rgb(0, 0, 0)</p>
-                    <p class="tooltip">Copy</p>
-                </div>
-                <div class="favorite palletTextBox">
-                    <i id="fav3" class="fa-regular fa-heart"></i>
-                    <p class="tooltip">Save Pallet</p>
-                </div>
-                <div class="lock palletTextBox">
-                    <i id="lock3" class="fa-solid fa-lock-open"></i>
-                    <p class="tooltip">Lock Pallet</p>
-                </div>
-            </div>
-            <div class="pallets txtFour" id="palletFour">
-                <div class="palletTextBox">
-                    <p class="palletTxt" id="palletTextFourRgb">#000</p>
-                    <p class="tooltip">Copy</p>
-                </div>
-                <div class="palletTextBox">
-                    <p class="palletTxt" id="palletTextFourHex">rgb(0, 0, 0)</p>
-                    <p class="tooltip">Copy</p>
-                </div>
-                <div class="favorite palletTextBox">
-                    <i id="fav4" class="fa-regular fa-heart"></i>
-                    <p class="tooltip">Save Pallet</p>
-                </div>
-                <div class="lock palletTextBox">
-                    <i id="lock4" class="fa-solid fa-lock-open"></i>
-                    <p class="tooltip">Lock Pallet</p>
-                </div>
-            </div>
-            <div class="pallets txtFive" id="palletFive">
-                <div class="palletTextBox">
-                    <p class="palletTxt" id="palletTextFiveRgb">#000</p>
-                    <p class="tooltip">Copy</p>
-                </div>
-                <div class="palletTextBox">
-                    <p class="palletTxt" id="palletTextFiveHex">rgb(0, 0, 0)</p>
-                    <p class="tooltip">Copy</p>
-                </div>
-                <div class="favorite palletTextBox">
-                    <i id="fav5" class="fa-regular fa-heart"></i>
-                    <p class="tooltip">Save Pallet</p>
-                </div>
-                <div class="lock palletTextBox">
-                    <i id="lock5" class="fa-solid fa-lock-open"></i>
-                    <p class="tooltip">Lock Pallet</p>
-                </div>
-            </div>
-        </div>
+        /* ============================================================
+           COPY
+           ============================================================ */
+        let toastTimer = null;
+        function showToast(msg) {
+            const t = document.getElementById('copy-toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+        }
 
-        <!--Color Generate Button -->
-        <button id="btn" onclick="colorUpdater()">GENERATE</button>
+        function copyText(text, el) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`Copied: ${text}`);
+            }).catch(() => {
+                // Fallback
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast(`Copied: ${text}`);
+            });
+        }
 
-        <p class="credit">Made By <br> <b>Zayid Ahmed.</b></p>
-    </div>
+        /* ============================================================
+           EXPORT
+           ============================================================ */
+        function exportCSS() {
+            const lines = [':root {'];
+            state.colors.forEach((c, i) => {
+                lines.push(`  --color-${i + 1}: ${c.hex};`);
+                lines.push(`  --color-${i + 1}-rgb: ${c.rgb};`);
+                lines.push(`  --color-${i + 1}-hsl: ${c.hslStr};`);
+            });
+            lines.push('}');
+            downloadText(lines.join('\n'), 'palette.css', 'text/css');
+        }
 
-    <script src="https://kit.fontawesome.com/0bf079f869.js" crossorigin="anonymous"></script>
-    <script src="script.js"></script>
+        function exportJSON() {
+            const data = state.colors.map((c, i) => ({
+                index: i + 1,
+                hex: c.hex,
+                rgb: c.rgb,
+                hsl: c.hslStr,
+                name: getColorName(c.h, c.s, c.l)
+            }));
+            downloadText(JSON.stringify(data, null, 2), 'palette.json', 'application/json');
+        }
+
+        function exportTXT() {
+            const lines = state.colors.map((c, i) =>
+                `${i + 1}. ${c.hex.toUpperCase()}  |  ${c.rgb}  |  ${c.hslStr}  |  ${getColorName(c.h, c.s, c.l)}`
+            );
+            downloadText(lines.join('\n'), 'palette.txt', 'text/plain');
+        }
+
+        function downloadText(text, filename, mime) {
+            const blob = new Blob([text], { type: mime });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename; a.click();
+            URL.revokeObjectURL(url);
+            showToast(`Downloaded ${filename}`);
+        }
+
+        /* ============================================================
+           PERSIST
+           ============================================================ */
+        function persistSaved() {
+            try { localStorage.setItem('paletteforge_saved', JSON.stringify(state.saved)); } catch (e) { }
+        }
+        function loadPersisted() {
+            try {
+                const s = localStorage.getItem('paletteforge_saved');
+                if (s) state.saved = JSON.parse(s);
+            } catch (e) { }
+        }
+
+        /* ============================================================
+           COLUMN COUNT
+           ============================================================ */
+        function updateColCount() {
+            document.getElementById('col-count').textContent = state.colCount;
+            document.getElementById('col-minus').disabled = state.colCount <= MIN_COLS;
+            document.getElementById('col-plus').disabled = state.colCount >= MAX_COLS;
+        }
+
+        document.getElementById('col-minus').addEventListener('click', () => {
+            if (state.colCount <= MIN_COLS) return;
+            state.colCount--;
+            state.colors = state.colors.slice(0, state.colCount);
+            updateColCount();
+            buildColumns();
+        });
+
+        document.getElementById('col-plus').addEventListener('click', () => {
+            if (state.colCount >= MAX_COLS) return;
+            state.colCount++;
+            // Add a new harmonious color
+            const newCols = generatePalette(state.harmony, state.colCount);
+            state.colors.push(newCols[state.colCount - 1] || newCols[0]);
+            updateColCount();
+            buildColumns();
+        });
+
+        /* ============================================================
+           HARMONY
+           ============================================================ */
+        document.querySelectorAll('.harmony-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.harmony-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.harmony = btn.dataset.harmony;
+                render();
+            });
+        });
+
+        /* ============================================================
+           PANEL
+           ============================================================ */
+        document.getElementById('saved-btn').addEventListener('click', () => {
+            state.panelOpen = !state.panelOpen;
+            document.getElementById('saved-panel').classList.toggle('open', state.panelOpen);
+        });
+        document.getElementById('saved-close').addEventListener('click', () => {
+            state.panelOpen = false;
+            document.getElementById('saved-panel').classList.remove('open');
+        });
+
+        /* ============================================================
+           GENERATE BUTTON & SPACEBAR
+           ============================================================ */
+        document.getElementById('gen-btn').addEventListener('click', render);
+
+        document.addEventListener('keydown', e => {
+            if (e.code === 'Space' && e.target === document.body) {
+                e.preventDefault();
+                render();
+            }
+        });
+
+        /* ============================================================
+           INIT
+           ============================================================ */
+        loadPersisted();
+        renderSaved();
+        updateColCount();
+        render();
+    </script>
 </body>
 
 </html>

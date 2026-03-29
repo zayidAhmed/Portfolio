@@ -1567,6 +1567,30 @@
       pointer-events: all;
       z-index: 10;
     }
+
+    /* ============================================================
+   Creator credit badge
+   ============================================================ */
+    .credit {
+      color: var(--text);
+      z-index: 999;
+      font-size: 12px;
+      background-color: var(--primary-800);
+      padding: 10px;
+      border-radius: 5px;
+      user-select: text;
+      text-align: center;
+      margin-top: 10px;
+
+      & b {
+        color: var(--accent);
+        user-select: text;
+      }
+
+      & br {
+        display: none;
+      }
+    }
   </style>
 </head>
 
@@ -1652,6 +1676,7 @@
           All processing is done <strong style="color:var(--text2)">locally in your browser</strong>. No files are
           uploaded to any server.
         </div>
+        <p class="credit">Made By <br> <b>Zayid Ahmed.</b></p>
       </div>
     </nav>
 
