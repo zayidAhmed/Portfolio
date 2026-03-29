@@ -6,14 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PaletteForge — Harmonic Color Generator</title>
     <style>
-        /* ============================================================
-   FONT
-   ============================================================ */
         @import url('https://fonts.googleapis.com/css2?family=Saira:wght@300;400;500;600;700;800;900&display=swap');
 
-        /* ============================================================
-   DESIGN TOKENS (PixelForge System)
-   ============================================================ */
         :root {
             --primary-950: #060010;
             --primary-900: #0d0018;
@@ -68,9 +62,6 @@
             --trans: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* ============================================================
-   RESET
-   ============================================================ */
         *,
         *::before,
         *::after {
@@ -126,8 +117,8 @@
         }
 
         /* ============================================================
-   LAYOUT
-   ============================================================ */
+           LAYOUT
+           ============================================================ */
         #app {
             display: flex;
             flex-direction: column;
@@ -152,7 +143,7 @@
             gap: 10px;
         }
 
-        /* Row 2 — harmony pills (always full width, scrollable) */
+        /* Row 2 — harmony pills */
         #topbar-row2 {
             height: 36px;
             border-top: 1px solid var(--border);
@@ -195,7 +186,6 @@
             min-width: 0;
         }
 
-        /* Harmony label in row2 */
         .harmony-label {
             font-size: 10px;
             color: var(--text3);
@@ -207,7 +197,6 @@
             margin-right: 2px;
         }
 
-        /* Harmony selector pills */
         .harmony-btn {
             background: var(--bg3);
             border: 1px solid var(--border);
@@ -236,6 +225,7 @@
         #col-controls {
             display: flex;
             align-items: center;
+            justify-content: flex-end;
             gap: 5px;
             flex-shrink: 0;
         }
@@ -372,7 +362,6 @@
             overflow: hidden;
         }
 
-        /* Column info (bottom) */
         .col-info {
             display: flex;
             flex-direction: column;
@@ -425,7 +414,6 @@
             background: rgba(0, 0, 0, 0.15);
         }
 
-        /* Column actions (top-right, appear on hover) */
         .col-actions {
             position: absolute;
             top: 14px;
@@ -475,7 +463,6 @@
             color: #f2635f;
         }
 
-        /* Color name tag */
         .col-name {
             font-size: clamp(9px, 0.85vw, 11px);
             font-weight: 600;
@@ -485,7 +472,6 @@
             margin-bottom: 4px;
         }
 
-        /* Shade strip at bottom of col */
         .col-shade-strip {
             position: absolute;
             bottom: 0;
@@ -495,7 +481,6 @@
             background: rgba(0, 0, 0, 0.18);
         }
 
-        /* Column dividers */
         .color-col+.color-col {
             border-left: 1px solid rgba(0, 0, 0, 0.12);
         }
@@ -674,7 +659,6 @@
             color: #fff;
         }
 
-        /* Export actions */
         .saved-footer {
             border-top: 1px solid var(--border);
             padding: 10px;
@@ -755,6 +739,46 @@
             font-weight: 600;
         }
 
+        /* ---- HISTORY CONTROLS ---- */
+        #history-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .hist-btn {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text2);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: var(--radius);
+            transition: var(--trans);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .hist-btn:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .hist-btn:disabled {
+            opacity: 0.28;
+            pointer-events: none;
+        }
+
+        .hist-pos {
+            font-size: 10px;
+            color: var(--text3);
+            font-weight: 600;
+            min-width: 32px;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+        }
+
         /* ---- KEYBOARD HINT ---- */
         #key-hint {
             font-size: 10px;
@@ -776,10 +800,8 @@
         }
 
         /* ============================================================
-   RESPONSIVE
-   ============================================================ */
-
-        /* Hide key hint on smaller screens */
+           RESPONSIVE — TABLET
+           ============================================================ */
         @media (max-width: 900px) {
             #key-hint {
                 display: none;
@@ -790,36 +812,83 @@
             }
         }
 
-        /* Compact col-label on medium */
+        @media (max-width: 700px) {
+            #history-controls .hist-pos {
+                display: none;
+            }
+
+            .hist-btn {
+                padding: 5px 9px;
+                font-size: 10px;
+            }
+        }
+
+        /* ============================================================
+           RESPONSIVE — MOBILE (<= 600px)
+           Two-row topbar: row1 splits into two mini-rows
+           ============================================================ */
         @media (max-width: 600px) {
+
+            /* ---- TOPBAR ROW 1: stack into two sub-rows ---- */
+            #topbar-row1 {
+                height: auto;
+                flex-wrap: wrap;
+                padding: 8px 12px 6px;
+                gap: 0;
+                row-gap: 6px;
+            }
+
+            /* Sub-row A: wordmark left, gen-btn right */
+            .wordmark {
+                font-size: 15px;
+                order: 1;
+                flex: 1;
+            }
+
+            #saved-btn {
+                order: 2;
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+
+            #gen-btn {
+                order: 3;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            /* Sub-row B: col controls + history — push to full width second line */
+            #col-controls {
+                order: 4;
+                flex: 1;
+            }
+
             .col-label {
                 display: none;
             }
 
-            #topbar-row1 {
-                padding: 0 10px;
-                gap: 7px;
+            #history-controls {
+                order: 5;
+                margin: 0 auto;
             }
 
-            .wordmark {
-                font-size: 15px;
+            /* Spacer hidden on mobile — the wrap handles spacing */
+            .topbar-spacer {
+                display: none;
             }
 
-            #gen-btn {
-                padding: 7px 14px;
-                font-size: 12px;
+            /* ---- EXPORT ROW ---- */
+            #export-row {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 7px 12px;
+                gap: 6px;
             }
 
-            #saved-btn {
-                padding: 6px 10px;
-                font-size: 11px;
-            }
-        }
-
-        /* MOBILE: stack columns vertically */
-        @media (max-width: 700px) {
+            /* ---- COLUMNS: stacked vertically ---- */
             #columns-wrap {
                 flex-direction: column;
+                overflow-y: auto;
             }
 
             .color-col {
@@ -828,7 +897,7 @@
                 justify-content: flex-start;
                 align-items: center;
                 padding: 0 14px;
-                min-height: 80px;
+                min-height: 72px;
                 border-left: none !important;
                 border-top: 1px solid rgba(0, 0, 0, 0.12);
             }
@@ -873,14 +942,7 @@
                 margin-left: auto;
             }
 
-            #export-row {
-                flex-wrap: wrap;
-                height: auto;
-                padding: 8px 12px;
-                gap: 6px;
-            }
-
-            /* Mobile: saved panel goes full width, columns hide */
+            /* Saved panel full screen on mobile */
             #saved-panel.open {
                 width: 100%;
                 min-width: 100%;
@@ -897,12 +959,8 @@
             }
         }
 
-        @media (max-width: 400px) {
-            #topbar-row1 {
-                gap: 5px;
-                padding: 0 8px;
-            }
-
+        /* ---- Very small screens ---- */
+        @media (max-width: 380px) {
             .wordmark {
                 font-size: 13px;
             }
@@ -914,7 +972,12 @@
 
             #saved-btn {
                 padding: 5px 8px;
-                font-size: 11px;
+                font-size: 10px;
+            }
+
+            .hist-btn {
+                padding: 5px 7px;
+                font-size: 10px;
             }
 
             #col-controls {
@@ -933,20 +996,30 @@
             <!-- Row 1: wordmark / col controls / actions -->
             <div id="topbar-row1">
                 <div class="wordmark">Palette<span>Forge</span></div>
+
+                <div class="topbar-spacer"></div>
+
+                <div id="key-hint"><kbd>Space</kbd> generate · <kbd>←/→</kbd> history</div>
+                <div class="topbar-sep"></div>
+
+                <div id="history-controls">
+                    <button class="hist-btn" id="hist-prev" title="Previous palette" disabled>← Prev</button>
+                    <span id="hist-pos" class="hist-pos"></span>
+                    <button class="hist-btn" id="hist-next" title="Next palette" disabled>Next →</button>
+                </div>
+
                 <div class="topbar-sep"></div>
 
                 <!-- Column controls -->
                 <div id="col-controls">
-                    <span class="col-label">Columns</span>
+                    <span class="col-label">Cols</span>
                     <button class="col-btn" id="col-minus">−</button>
                     <span id="col-count">5</span>
                     <button class="col-btn" id="col-plus">+</button>
                 </div>
 
-                <div class="topbar-spacer"></div>
-
-                <div id="key-hint"><kbd>Space</kbd> to generate</div>
                 <div class="topbar-sep"></div>
+
                 <button id="saved-btn">♥ Saved <span id="saved-badge">0</span></button>
                 <button id="gen-btn">⚡ Generate</button>
             </div>
@@ -1008,23 +1081,20 @@
     <div id="copy-toast">Copied!</div>
 
     <script>
-        /* ============================================================
-           STATE
-           ============================================================ */
         let state = {
             harmony: 'analogous',
             colCount: 5,
-            colors: [],    // [{h,s,l, hex, rgb, hsl, locked, faved}]
-            saved: [],     // [{colors:[...], ts}]
+            colors: [],
+            saved: [],
             panelOpen: false,
+            history: [],
+            histIdx: -1,
         };
 
+        const MAX_HISTORY = 50;
         const MIN_COLS = 3;
         const MAX_COLS = 8;
 
-        /* ============================================================
-           COLOR MATH
-           ============================================================ */
         function hslToRgb(h, s, l) {
             s /= 100; l /= 100;
             const k = n => (n + h / 30) % 12;
@@ -1055,32 +1125,25 @@
         }
 
         function generatePalette(harmony, count) {
-            // Base hue — totally random each time
             const baseH = Math.random() * 360;
-            // Saturation + lightness strategy per harmony
             const baseSat = 55 + Math.random() * 35;
             const baseLit = 40 + Math.random() * 25;
-
             let hues = [];
 
             if (harmony === 'analogous') {
                 const spread = 20 + Math.random() * 25;
-                for (let i = 0; i < count; i++) {
-                    hues.push(baseH + (i - (count - 1) / 2) * spread);
-                }
+                for (let i = 0; i < count; i++) hues.push(baseH + (i - (count - 1) / 2) * spread);
             } else if (harmony === 'mono') {
                 hues = Array.from({ length: count }, () => baseH);
             } else if (harmony === 'complementary') {
                 const comp = baseH + 180;
-                // Distribute around base and comp
                 const half1 = Math.ceil(count / 2);
                 const half2 = count - half1;
                 const spread = 15;
                 for (let i = 0; i < half1; i++) hues.push(baseH + (i - (half1 - 1) / 2) * spread);
                 for (let i = 0; i < half2; i++) hues.push(comp + (i - (half2 - 1) / 2) * spread);
             } else if (harmony === 'triadic') {
-                const h1 = baseH, h2 = baseH + 120, h3 = baseH + 240;
-                const thirds = [h1, h2, h3];
+                const thirds = [baseH, baseH + 120, baseH + 240];
                 for (let i = 0; i < count; i++) hues.push(thirds[i % 3] + (Math.floor(i / 3) * 18));
             } else if (harmony === 'split') {
                 const sp1 = baseH + 150, sp2 = baseH + 210;
@@ -1091,19 +1154,16 @@
                 for (let i = 0; i < sp_ct; i++) hues.push(sp1 + (i - (sp_ct - 1) / 2) * 12);
                 for (let i = 0; i < sp_ct + rem; i++) hues.push(sp2 + (i - (sp_ct + rem - 1) / 2) * 12);
             } else {
-                // free/random — but still aesthetically sensible (avoid muddy combos)
                 for (let i = 0; i < count; i++) hues.push(Math.random() * 360);
             }
 
             return hues.map((h, i) => {
                 let sat = baseSat, lit = baseLit;
                 if (harmony === 'mono') {
-                    // vary lightness across columns
                     const step = 60 / (count - 1 || 1);
                     lit = 20 + i * step;
                     sat = baseSat - i * 3;
                 } else {
-                    // subtle variation
                     sat += (Math.random() - 0.5) * 15;
                     lit += (Math.random() - 0.5) * 18;
                 }
@@ -1111,34 +1171,55 @@
             });
         }
 
-        /* ============================================================
-           RENDER
-           ============================================================ */
         function render() {
-            const wrap = document.getElementById('columns-wrap');
-
-            // Re-generate colors for non-locked columns
             const newColors = generatePalette(state.harmony, state.colCount);
             const cols = [];
             for (let i = 0; i < state.colCount; i++) {
                 if (state.colors[i] && state.colors[i].locked) {
-                    cols.push(state.colors[i]); // keep locked
+                    cols.push(state.colors[i]);
                 } else {
                     const nc = newColors[i] || newColors[newColors.length - 1];
                     nc.locked = false;
-                    nc.faved = state.colors[i] ? state.colors[i].faved : false;
+                    nc.faved = false;
                     cols.push(nc);
                 }
             }
             state.colors = cols;
 
+            if (state.histIdx < state.history.length - 1) {
+                state.history = state.history.slice(0, state.histIdx + 1);
+            }
+            state.history.push(state.colors.map(c => ({ ...c })));
+            if (state.history.length > MAX_HISTORY) state.history.shift();
+            state.histIdx = state.history.length - 1;
+
             buildColumns();
+            updateHistoryBtns();
+        }
+
+        function historyGo(dir) {
+            const target = state.histIdx + dir;
+            if (target < 0 || target >= state.history.length) return;
+            state.histIdx = target;
+            state.colors = state.history[state.histIdx].map(c => ({ ...c }));
+            state.colCount = state.colors.length;
+            updateColCount();
+            buildColumns();
+            updateHistoryBtns();
+            showToast(dir < 0 ? '← Previous palette' : 'Next palette →');
+        }
+
+        function updateHistoryBtns() {
+            const prev = document.getElementById('hist-prev');
+            const next = document.getElementById('hist-next');
+            const pos = document.getElementById('hist-pos');
+            prev.disabled = state.histIdx <= 0;
+            next.disabled = state.histIdx >= state.history.length - 1;
+            pos.textContent = state.history.length > 1 ? (state.histIdx + 1) + '/' + state.history.length : '';
         }
 
         function buildColumns() {
             const wrap = document.getElementById('columns-wrap');
-            const isMobile = window.innerWidth <= 700;
-
             wrap.innerHTML = '';
             state.colors.forEach((col, i) => {
                 const div = document.createElement('div');
@@ -1149,35 +1230,31 @@
                 const textColorDim = col.light ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.55)';
 
                 div.innerHTML = `
-      <div class="col-actions">
-        <button class="col-action-btn ${col.locked ? 'locked' : ''}" title="${col.locked ? 'Unlock' : 'Lock'}" onclick="toggleLock(${i})">
-          ${col.locked ? '🔒' : '🔓'}
-        </button>
-        <button class="col-action-btn ${col.faved ? 'faved' : ''}" title="Save palette" onclick="saveSingle(${i})">
-          ${col.faved ? '♥' : '♡'}
-        </button>
-      </div>
-      <div class="col-info">
-        <div class="col-name" style="color:${textColorDim};">${getColorName(col.h, col.s, col.l)}</div>
-        <div class="col-hex" style="color:${textColor};" onclick="copyText('${col.hex}', this)" title="Copy HEX">${col.hex.toUpperCase()}</div>
-        <div class="col-rgb" style="color:${textColorDim};" onclick="copyText('${col.rgb}', this)" title="Copy RGB">${col.rgb}</div>
-        <div class="col-hsl" style="color:${textColorDim};" onclick="copyText('${col.hslStr}', this)" title="Copy HSL">${col.hslStr}</div>
-      </div>
-      <div class="col-shade-strip"></div>
-    `;
+                    <div class="col-actions">
+                        <button class="col-action-btn ${col.locked ? 'locked' : ''}" title="${col.locked ? 'Unlock' : 'Lock'}" onclick="toggleLock(${i})">
+                            ${col.locked ? '🔒' : '🔓'}
+                        </button>
+                        <button class="col-action-btn ${col.faved ? 'faved' : ''}" title="Save palette" onclick="saveSingle(${i})">
+                            ${col.faved ? '♥' : '♡'}
+                        </button>
+                    </div>
+                    <div class="col-info">
+                        <div class="col-name" style="color:${textColorDim};">${getColorName(col.h, col.s, col.l)}</div>
+                        <div class="col-hex" style="color:${textColor};" onclick="copyText('${col.hex}', this)" title="Copy HEX">${col.hex.toUpperCase()}</div>
+                        <div class="col-rgb" style="color:${textColorDim};" onclick="copyText('${col.rgb}', this)" title="Copy RGB">${col.rgb}</div>
+                        <div class="col-hsl" style="color:${textColorDim};" onclick="copyText('${col.hslStr}', this)" title="Copy HSL">${col.hslStr}</div>
+                    </div>
+                    <div class="col-shade-strip"></div>
+                `;
 
                 wrap.appendChild(div);
             });
         }
 
         function refreshColumns() {
-            // Rebuild without re-generating
             buildColumns();
         }
 
-        /* ============================================================
-           COLOR NAMING (simple)
-           ============================================================ */
         function getColorName(h, s, l) {
             if (s < 12) {
                 if (l < 20) return 'Near Black';
@@ -1185,16 +1262,9 @@
                 return 'Gray';
             }
             const hNames = [
-                [15, 'Red'],
-                [40, 'Orange'],
-                [65, 'Yellow'],
-                [150, 'Green'],
-                [185, 'Cyan'],
-                [255, 'Blue'],
-                [285, 'Indigo'],
-                [330, 'Violet'],
-                [355, 'Pink'],
-                [360, 'Red'],
+                [15, 'Red'], [40, 'Orange'], [65, 'Yellow'], [150, 'Green'],
+                [185, 'Cyan'], [255, 'Blue'], [285, 'Indigo'], [330, 'Violet'],
+                [355, 'Pink'], [360, 'Red'],
             ];
             let name = 'Color';
             for (const [max, n] of hNames) { if (h <= max) { name = n; break; } }
@@ -1204,27 +1274,19 @@
             return name;
         }
 
-        /* ============================================================
-           ACTIONS
-           ============================================================ */
         function toggleLock(i) {
             state.colors[i].locked = !state.colors[i].locked;
             refreshColumns();
         }
 
         function saveSingle(i) {
-            // Save the whole current palette
             saveCurrentPalette();
             state.colors[i].faved = true;
             refreshColumns();
         }
 
         function saveCurrentPalette() {
-            const entry = {
-                colors: state.colors.map(c => ({ ...c })),
-                ts: Date.now(),
-                harmony: state.harmony,
-            };
+            const entry = { colors: state.colors.map(c => ({ ...c })), ts: Date.now(), harmony: state.harmony };
             state.saved.unshift(entry);
             persistSaved();
             renderSaved();
@@ -1263,22 +1325,19 @@
             badge.classList.add('visible');
 
             list.innerHTML = state.saved.map((entry, idx) => `
-    <div class="saved-item">
-      <div class="saved-item-swatches">
-        ${entry.colors.map(c => `<div class="saved-swatch" style="background:${c.hex};" title="${c.hex}"></div>`).join('')}
-      </div>
-      <div class="saved-item-footer">
-        <div class="saved-item-label">${entry.harmony} · ${entry.colors.length} cols · ${new Date(entry.ts).toLocaleTimeString()}</div>
-        <button class="saved-item-load" onclick="loadSaved(${idx})">Load</button>
-        <button class="saved-item-del" onclick="deleteSaved(${idx})">✕</button>
-      </div>
-    </div>
-  `).join('');
+                <div class="saved-item">
+                    <div class="saved-item-swatches">
+                        ${entry.colors.map(c => `<div class="saved-swatch" style="background:${c.hex};" title="${c.hex}"></div>`).join('')}
+                    </div>
+                    <div class="saved-item-footer">
+                        <div class="saved-item-label">${entry.harmony} · ${entry.colors.length} cols · ${new Date(entry.ts).toLocaleTimeString()}</div>
+                        <button class="saved-item-load" onclick="loadSaved(${idx})">Load</button>
+                        <button class="saved-item-del" onclick="deleteSaved(${idx})">✕</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        /* ============================================================
-           COPY
-           ============================================================ */
         let toastTimer = null;
         function showToast(msg) {
             const t = document.getElementById('copy-toast');
@@ -1292,7 +1351,6 @@
             navigator.clipboard.writeText(text).then(() => {
                 showToast(`Copied: ${text}`);
             }).catch(() => {
-                // Fallback
                 const ta = document.createElement('textarea');
                 ta.value = text;
                 document.body.appendChild(ta);
@@ -1303,9 +1361,6 @@
             });
         }
 
-        /* ============================================================
-           EXPORT
-           ============================================================ */
         function exportCSS() {
             const lines = [':root {'];
             state.colors.forEach((c, i) => {
@@ -1319,11 +1374,7 @@
 
         function exportJSON() {
             const data = state.colors.map((c, i) => ({
-                index: i + 1,
-                hex: c.hex,
-                rgb: c.rgb,
-                hsl: c.hslStr,
-                name: getColorName(c.h, c.s, c.l)
+                index: i + 1, hex: c.hex, rgb: c.rgb, hsl: c.hslStr, name: getColorName(c.h, c.s, c.l)
             }));
             downloadText(JSON.stringify(data, null, 2), 'palette.json', 'application/json');
         }
@@ -1344,9 +1395,6 @@
             showToast(`Downloaded ${filename}`);
         }
 
-        /* ============================================================
-           PERSIST
-           ============================================================ */
         function persistSaved() {
             try { localStorage.setItem('paletteforge_saved', JSON.stringify(state.saved)); } catch (e) { }
         }
@@ -1357,9 +1405,6 @@
             } catch (e) { }
         }
 
-        /* ============================================================
-           COLUMN COUNT
-           ============================================================ */
         function updateColCount() {
             document.getElementById('col-count').textContent = state.colCount;
             document.getElementById('col-minus').disabled = state.colCount <= MIN_COLS;
@@ -1377,16 +1422,12 @@
         document.getElementById('col-plus').addEventListener('click', () => {
             if (state.colCount >= MAX_COLS) return;
             state.colCount++;
-            // Add a new harmonious color
             const newCols = generatePalette(state.harmony, state.colCount);
             state.colors.push(newCols[state.colCount - 1] || newCols[0]);
             updateColCount();
             buildColumns();
         });
 
-        /* ============================================================
-           HARMONY
-           ============================================================ */
         document.querySelectorAll('.harmony-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.harmony-btn').forEach(b => b.classList.remove('active'));
@@ -1396,9 +1437,6 @@
             });
         });
 
-        /* ============================================================
-           PANEL
-           ============================================================ */
         document.getElementById('saved-btn').addEventListener('click', () => {
             state.panelOpen = !state.panelOpen;
             document.getElementById('saved-panel').classList.toggle('open', state.panelOpen);
@@ -1408,21 +1446,18 @@
             document.getElementById('saved-panel').classList.remove('open');
         });
 
-        /* ============================================================
-           GENERATE BUTTON & SPACEBAR
-           ============================================================ */
         document.getElementById('gen-btn').addEventListener('click', render);
 
         document.addEventListener('keydown', e => {
-            if (e.code === 'Space' && e.target === document.body) {
-                e.preventDefault();
-                render();
-            }
+            if (e.target !== document.body) return;
+            if (e.code === 'Space') { e.preventDefault(); render(); }
+            if (e.code === 'ArrowLeft') { e.preventDefault(); historyGo(-1); }
+            if (e.code === 'ArrowRight') { e.preventDefault(); historyGo(+1); }
         });
 
-        /* ============================================================
-           INIT
-           ============================================================ */
+        document.getElementById('hist-prev').addEventListener('click', () => historyGo(-1));
+        document.getElementById('hist-next').addEventListener('click', () => historyGo(+1));
+
         loadPersisted();
         renderSaved();
         updateColCount();
