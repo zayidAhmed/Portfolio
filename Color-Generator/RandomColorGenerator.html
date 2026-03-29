@@ -745,6 +745,8 @@
             align-items: center;
             gap: 4px;
             flex-shrink: 0;
+            /* order: 5; */
+            margin-left: auto;
         }
 
         .hist-btn {
@@ -827,7 +829,7 @@
            RESPONSIVE — MOBILE (<= 600px)
            Two-row topbar: row1 splits into two mini-rows
            ============================================================ */
-        @media (max-width: 600px) {
+        @media (max-width: 650px) {
 
             /* ---- TOPBAR ROW 1: stack into two sub-rows ---- */
             #topbar-row1 {
@@ -869,7 +871,7 @@
 
             #history-controls {
                 order: 5;
-                margin: 0 auto;
+                margin-left: auto;
             }
 
             /* Spacer hidden on mobile — the wrap handles spacing */
@@ -960,7 +962,7 @@
         }
 
         /* ---- Very small screens ---- */
-        @media (max-width: 380px) {
+        @media (max-width: 400px) {
             .wordmark {
                 font-size: 13px;
             }
@@ -1021,6 +1023,7 @@
                 <div class="topbar-sep"></div>
 
                 <button id="saved-btn">♥ Saved <span id="saved-badge">0</span></button>
+                <button id="docs-btn" title="Documentation">?</button>
                 <button id="gen-btn">⚡ Generate</button>
             </div>
 
@@ -1080,6 +1083,311 @@
     <!-- COPY TOAST -->
     <div id="copy-toast">Copied!</div>
 
+    <!-- DOCS MODAL -->
+    <div id="docs-overlay">
+        <div id="docs-modal">
+            <div id="docs-header">
+                <div id="docs-title">Palette<span>Forge</span> — Docs</div>
+                <button id="docs-close">✕</button>
+            </div>
+            <div id="docs-body">
+
+                <section class="doc-section">
+                    <h2>What is PaletteForge?</h2>
+                    <p>A browser-based color palette generator. Pick a harmony type, set how many columns you want, and
+                        hit <strong>Generate</strong> — or press <kbd>Space</kbd>. Colors are derived from color theory
+                        so they always look good together.</p>
+                </section>
+
+                <section class="doc-section">
+                    <h2>Harmony Types</h2>
+                    <div class="doc-table">
+                        <div class="doc-row doc-head"><span>Type</span><span>What it does</span></div>
+                        <div class="doc-row"><span><strong>Analogous</strong></span><span>Colors close together on the
+                                wheel — smooth, natural feel.</span></div>
+                        <div class="doc-row"><span><strong>Monochromatic</strong></span><span>One hue, varied lightness
+                                — minimal and cohesive.</span></div>
+                        <div class="doc-row"><span><strong>Complementary</strong></span><span>Opposite hues — bold, high
+                                contrast.</span></div>
+                        <div class="doc-row"><span><strong>Triadic</strong></span><span>Three hues 120° apart — vibrant
+                                and balanced.</span></div>
+                        <div class="doc-row"><span><strong>Split-Comp</strong></span><span>One base + two neighbors of
+                                its complement — softer than Complementary.</span></div>
+                        <div class="doc-row"><span><strong>Free</strong></span><span>Fully random hues — no
+                                rules.</span></div>
+                    </div>
+                </section>
+
+                <section class="doc-section">
+                    <h2>Controls</h2>
+                    <div class="doc-table">
+                        <div class="doc-row doc-head"><span>Control</span><span>What it does</span></div>
+                        <div class="doc-row"><span>− / + (Columns)</span><span>Change the number of swatches
+                                (3–8).</span></div>
+                        <div class="doc-row"><span>← Prev / Next →</span><span>Navigate your generation history.</span>
+                        </div>
+                        <div class="doc-row"><span>♥ Saved</span><span>Open saved palettes to load or delete
+                                them.</span></div>
+                        <div class="doc-row"><span>⚡ Generate</span><span>Generate a new palette (locked colors are
+                                kept).</span></div>
+                    </div>
+                </section>
+
+                <section class="doc-section">
+                    <h2>Keyboard Shortcuts</h2>
+                    <div class="doc-table">
+                        <div class="doc-row doc-head"><span>Key</span><span>Action</span></div>
+                        <div class="doc-row"><span><kbd>Space</kbd></span><span>Generate a new palette.</span></div>
+                        <div class="doc-row"><span><kbd>←</kbd></span><span>Previous palette in history.</span></div>
+                        <div class="doc-row"><span><kbd>→</kbd></span><span>Next palette in history.</span></div>
+                    </div>
+                    <p class="doc-note">Shortcuts work when the page body is focused (not when typing in an input).</p>
+                </section>
+
+                <section class="doc-section">
+                    <h2>Column Actions</h2>
+                    <p>Hover a color column (or tap on mobile) to reveal two buttons in the top-right corner:</p>
+                    <div class="doc-table">
+                        <div class="doc-row"><span>🔒 Lock</span><span>Pins this color — it won't change on the next
+                                Generate. Click again to unlock.</span></div>
+                        <div class="doc-row"><span>♡ Save</span><span>Saves the whole current palette to your Saved
+                                list.</span></div>
+                    </div>
+                    <p>Click any <strong>HEX</strong>, <strong>RGB</strong>, or <strong>HSL</strong> value to copy it to
+                        clipboard.</p>
+                </section>
+
+                <section class="doc-section">
+                    <h2>Exporting</h2>
+                    <div class="doc-table">
+                        <div class="doc-row doc-head"><span>Format</span><span>Output</span></div>
+                        <div class="doc-row"><span><strong>CSS Vars</strong></span><span>A <code>:root { }</code> block
+                                with HEX, RGB, and HSL custom properties.</span></div>
+                        <div class="doc-row"><span><strong>JSON</strong></span><span>An array of color objects with all
+                                values and names.</span></div>
+                        <div class="doc-row"><span><strong>Text</strong></span><span>A plain <code>.txt</code> file with
+                                values listed line by line.</span></div>
+                    </div>
+                </section>
+
+                <section class="doc-section">
+                    <h2>Saved Palettes</h2>
+                    <p>Palettes are stored in <code>localStorage</code> and persist across page reloads in the same
+                        browser. From the Saved panel you can <strong>Load</strong> any palette back into the editor or
+                        <strong>✕</strong> delete it.
+                    </p>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* DOCS BUTTON */
+        #docs-btn {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text3);
+            font-size: 13px;
+            font-weight: 700;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--trans);
+            flex-shrink: 0;
+        }
+
+        #docs-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* DOCS OVERLAY */
+        #docs-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.22s ease;
+        }
+
+        #docs-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* DOCS MODAL */
+        #docs-modal {
+            background: var(--bg2);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 620px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+            transform: translateY(12px);
+            transition: transform 0.22s ease;
+        }
+
+        #docs-overlay.open #docs-modal {
+            transform: translateY(0);
+        }
+
+        #docs-header {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        #docs-title {
+            font-size: 15px;
+            font-weight: 700;
+            flex: 1;
+            color: var(--text);
+        }
+
+        #docs-title span {
+            color: var(--accent);
+        }
+
+        #docs-close {
+            background: transparent;
+            border: none;
+            color: var(--text3);
+            font-size: 16px;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--trans);
+        }
+
+        #docs-close:hover {
+            background: var(--bg3);
+            color: var(--text);
+        }
+
+        #docs-body {
+            overflow-y: auto;
+            padding: 20px 20px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .doc-section h2 {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .doc-section p {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .doc-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .doc-section strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .doc-section code {
+            background: var(--bg4);
+            color: var(--primary-100);
+            font-family: monospace;
+            font-size: 11px;
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        .doc-section kbd {
+            background: var(--bg3);
+            border: 1px solid var(--border2);
+            color: var(--text2);
+            font-size: 11px;
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        .doc-note {
+            font-size: 11px !important;
+            color: var(--text3) !important;
+            font-style: italic;
+        }
+
+        /* TABLE */
+        .doc-table {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            font-size: 13px;
+        }
+
+        .doc-row {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 12px;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        .doc-row:last-child {
+            border-bottom: none;
+        }
+
+        .doc-row:nth-child(even):not(.doc-head) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .doc-row.doc-head {
+            background: var(--bg3);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text3);
+        }
+
+        @media (max-width: 500px) {
+            #docs-overlay {
+                padding: 12px;
+            }
+
+            .doc-row {
+                grid-template-columns: 130px 1fr;
+                gap: 8px;
+                font-size: 12px;
+            }
+        }
+    </style>
     <script>
         let state = {
             harmony: 'analogous',
@@ -1462,6 +1770,13 @@
         renderSaved();
         updateColCount();
         render();
+
+        // DOCS MODAL
+        const docsOverlay = document.getElementById('docs-overlay');
+        document.getElementById('docs-btn').addEventListener('click', () => docsOverlay.classList.add('open'));
+        document.getElementById('docs-close').addEventListener('click', () => docsOverlay.classList.remove('open'));
+        docsOverlay.addEventListener('click', e => { if (e.target === docsOverlay) docsOverlay.classList.remove('open'); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') docsOverlay.classList.remove('open'); });
     </script>
 </body>
 
