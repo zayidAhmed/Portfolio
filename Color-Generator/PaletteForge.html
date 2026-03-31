@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <title>PaletteForge — Harmonic Color Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="PaletteForge.css">
+</head>
+
+<body>
+
+    <div id="app">
+
+        <!-- TOPBAR -->
+        <div id="topbar">
+            <!-- Row 1: wordmark / col controls / actions -->
+            <div id="topbar-row1">
+                <div class="wordmark">Palette<span>Forge</span></div>
+
+                <div class="topbar-spacer"></div>
+
+                <div id="key-hint"><kbd>Space</kbd> generate · <kbd><i class="ri-arrow-left-line"></i>/<i
+                            class="ri-arrow-right-line"></i></kbd> history</div>
+                <div class="topbar-sep"></div>
+
+                <div id="history-controls">
+                    <button class="hist-btn" id="hist-prev" title="Previous palette" disabled><i
+                            class="ri-arrow-left-line"></i> Prev</button>
+                    <span id="hist-pos" class="hist-pos"></span>
+                    <button class="hist-btn" id="hist-next" title="Next palette" disabled>Next <i
+                            class="ri-arrow-right-line"></i></button>
+                </div>
+
+                <div class="topbar-sep"></div>
+
+                <!-- Column controls -->
+                <div id="col-controls">
+                    <span class="col-label">Cols</span>
+                    <button class="col-btn" id="col-minus"><i class="ri-subtract-line"></i></button>
+                    <span id="col-count">5</span>
+                    <button class="col-btn" id="col-plus"><i class="ri-add-line"></i></button>
+                </div>
+
+                <div class="topbar-sep"></div>
+
+                <button id="saved-btn"><i class="ri-heart-add-2-line"></i> Saved <span
+                        id="saved-badge">0</span></button>
+                <button id="docs-btn" title="Documentation"><i class="ri-file-ai-line"></i></i></button>
+                <button id="gen-btn"><i class="ri-flashlight-line"></i> Generate</button>
+            </div>
+
+            <!-- Row 2: harmony pills (horizontally scrollable) -->
+            <div id="topbar-row2">
+                <span class="harmony-label">Harmony</span>
+                <button class="harmony-btn active" data-harmony="analogous">Analogous</button>
+                <button class="harmony-btn" data-harmony="mono">Monochromatic</button>
+                <button class="harmony-btn" data-harmony="complementary">Complementary</button>
+                <button class="harmony-btn" data-harmony="triadic">Triadic</button>
+                <button class="harmony-btn" data-harmony="split">Split-Comp</button>
+                <button class="harmony-btn" data-harmony="random">Free</button>
+            </div>
+        </div>
+
+        <!-- PALETTE AREA -->
+        <div id="palette-area">
+            <div id="columns-wrap"></div>
+
+            <!-- SAVED PANEL -->
+            <div id="saved-panel">
+                <div class="saved-header">
+                    <h3>Saved Palettes</h3>
+                    <button class="saved-close" id="saved-close">✕</button>
+                </div>
+                <div id="saved-list-wrap" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+                    <div class="saved-empty" id="saved-empty">
+                        <div class="saved-empty-icon"><i class="ri-heart-add-2-line"></i></div>
+                        <div>No saved palettes yet</div>
+                        <div style="font-size:10px;color:var(--text3);">Click ♥ on any column</div>
+                    </div>
+                    <div id="saved-list" style="display:none;"></div>
+                </div>
+                <div class="saved-footer">
+                    <div
+                        style="font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;">
+                        Export current palette</div>
+                    <button class="export-btn" onclick="exportCSS()"><span class="export-icon">{ }</span> CSS
+                        Variables</button>
+                    <button class="export-btn" onclick="exportJSON()"><span class="export-icon">[ ]</span> JSON</button>
+                    <button class="export-btn" onclick="exportTXT()"><span class="export-icon">≡</span> Plain
+                        Text</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM BAR -->
+        <div id="export-row">
+            <span class="exp-label">Export</span>
+            <button class="exp-btn" onclick="exportCSS()">CSS Vars</button>
+            <button class="exp-btn" onclick="exportJSON()">JSON</button>
+            <button class="exp-btn" onclick="exportTXT()">Text</button>
+            <div class="credit">Made by <b><a href="https://zayidahmed.github.io/Portfolio/" target="_blank">Zayid
+                        Ahmed</a></b></div>
+        </div>
+    </div>
+
+    <!-- COPY TOAST -->
+    <div id="copy-toast">Copied!</div>
+
+    <!-- DOCS MODAL -->
+    <div id="docs-overlay">
+        <div id="docs-modal">
+            <div id="docs-header">
+                <div id="docs-title">Palette<span>Forge</span> — Docs</div>
+                <button id="docs-close">✕</button>
+            </div>
+            <div id="docs-body">
+
+                <section class="doc-section">
+                    <h2>What is PaletteForge?</h2>
+                    <p>A browser-based color palette generator. Pick a harmony type, set how many columns you want, and
+                        hit <strong>Generate</strong> — or press <kbd>Space</kbd>. Colors are derived from color theory
+                        so they always look good together.</p>
+                </section>
+
+                <section class="doc-section">
+                    <h2>Harmony Types</h2>
+                    <div class="doc-table">
+                        <div class="doc-row doc-head"><span>Type</span><span>What it does</span></div>
+                        <div class="doc-row"><span><strong>Analogous</strong></span><span>Colors close together on the
+                                wheel — smooth, natural feel.</span></div>
+                        <div class="doc-row"><span><strong>Monochromatic</strong></span><span>One hue, varied lightness
+                                — minimal and cohesive.</span></div>
+                        <div class="doc-row"><span><strong>Complementary</strong></span><span>Opposite hues — bold, high
+                                contrast.</span></div>
+                        <div class="doc-row"><span><strong>Triadic</strong></span><span>Three hues 120° apart — vibrant
+                                and balanced.</span></div>
+                        <div class="doc-row"><span><strong>Split-Comp</strong></span><span>One base + two neighbors of
+                                its complement — softer than Complementary.</span></div>
+                        <div class="doc-row"><span><strong>Free</strong></span><span>Fully random hues — no
+                                rules.</span></div>
+                    </div>
+                </section>
+
+                <section class="doc-section">
+                    <h2>Controls</h2>
+                    <div class="doc-table">
+                        <div class="doc-row doc-head"><span>Control</span><span>What it does</span></div>
+                        <div class="doc-row"><span>− / + (Columns)</span><span>Change the number of swatches
+                                (3–8).</span></div>
+                        <div class="doc-row"><span>← Prev / Next →</span><span>Navigate your generation history.</span>
+                        </div>
+                        <div class="doc-row"><span>♥ Saved</span><span>Open saved palettes to load or delete
+                                them.</span></div>
+                        <div class="doc-row"><span>⚡ Generate</span><span>Generate a new palette (locked colors are
+                                kept).</span></div>
+                    </div>
+                </section>
+
+                <section class="doc-section">
+                    <h2>Keyboard Shortcuts</h2>
+                    <div class="doc-table">
+                        <div class="doc-row doc-head"><span>Key</span><span>Action</span></div>
+                        <div class="doc-row"><span><kbd>Space</kbd></span><span>Generate a new palette.</span></div>
+                        <div class="doc-row"><span><kbd>←</kbd></span><span>Previous palette in history.</span></div>
+                        <div class="doc-row"><span><kbd>→</kbd></span><span>Next palette in history.</span></div>
+                    </div>
+                    <p class="doc-note">Shortcuts work when the page body is focused (not when typing in an input).</p>
+                </section>
+
+                <section class="doc-section">
+                    <h2>Column Actions</h2>
+                    <p>Hover a color column (or tap on mobile) to reveal two buttons in the top-right corner:</p>
+                    <div class="doc-table">
+                        <div class="doc-row"><span>🔒 Lock</span><span>Pins this color — it won't change on the next
+                                Generate. Click again to unlock.</span></div>
+                        <div class="doc-row"><span>♡ Save</span><span>Saves the whole current palette to your Saved
+                                list.</span></div>
+                    </div>
+                    <p>Click any <strong>HEX</strong>, <strong>RGB</strong>, or <strong>HSL</strong> value to copy it to
+                        clipboard.</p>
+                </section>
+
+                <section class="doc-section">
+                    <h2>Exporting</h2>
+                    <div class="doc-table">
+                        <div class="doc-row doc-head"><span>Format</span><span>Output</span></div>
+                        <div class="doc-row"><span><strong>CSS Vars</strong></span><span>A <code>:root { }</code> block
+                                with HEX, RGB, and HSL custom properties.</span></div>
+                        <div class="doc-row"><span><strong>JSON</strong></span><span>An array of color objects with all
+                                values and names.</span></div>
+                        <div class="doc-row"><span><strong>Text</strong></span><span>A plain <code>.txt</code> file with
+                                values listed line by line.</span></div>
+                    </div>
+                </section>
+
+                <section class="doc-section">
+                    <h2>Saved Palettes</h2>
+                    <p>Palettes are stored in <code>localStorage</code> and persist across page reloads in the same
+                        browser. From the Saved panel you can <strong>Load</strong> any palette back into the editor or
+                        <strong>✕</strong> delete it.
+                    </p>
+                </section>
+
+            </div>
+        </div>
+    </div>
+    <script src="PaletteForge.js"></script>
+</body>
+
+</html>
